@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Deep Space Visual Editor</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="main.css">
+
+  <!-- Hack font -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3/build/web/hack-subset.css">
+
+  <!-- FontAwesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- TypewriterJS -->
+  <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module" src="dsv.js"></script>
+</head>
+
+<body>
+  <main>
+    <div class="header">
+      <span>
+        DEEP SPACE<br>
+        VISUAL EDITOR
+      </span>
+
+      <div>
+        <button class="do-translate" data-original="[-52, -169]" />
+        <button class="do-translate" data-original="[-52, -170]" />
+      </div>
+
+      <div class="button-row">
+        <a id="retheme">
+          <i class="fa fa-adjust"></i>
+        </a>
+        <a id="mute">
+          <i class="fa fa-volume-up"></i>
+        </a>
+        <a id="toggle-sidebar">
+          <i class="fa fa-bars"></i>
+        </a>
+      </div>
+    </div>
+    <div class="sidebar">
+
+      <div class="dictionary">
+        <div class="click-zone">
+          <label id="dictionary-click-zone" for="dictionary-input">
+            <p>
+              CLICK HERE TO LOAD DICTIONARY FROM FILE<br>
+              OR DRAG ONTO WINDOW
+            </p>
+          </label>
+          <p id="clipboard-zone">
+            <i class="fa fa-clipboard"></i>
+
+            <dialog class="clipboard-paste">
+              <div class="dialog-content">
+                <p class="dialog-title">Copy or Paste Raw Dictionary
+                  <button class="close-dialog">
+                    X
+                  </button>
+                </p>
+
+                <textarea class="dict-paste-contents" autofocus></textarea>
+                <div class="button-row">
+                  <button class="save-dictionary">Update Dictionary</button>
+                </div>
+              </div>
+            </dialog>
+          </p>
+        </div>
+        <input type="file" id="dictionary-input" />
+      </div>
+      <div class="dict-view">
+        <p class="sidebar-header do-translate" data-original="[-52]">
+        <div class="dict-view-content">
+
+        </div>
+      </div>
+
+      <div class="encryption-keys" data-n="0">
+        <div class="sidebar-title num-encryption-keys"></div>
+        <div id="all-encryption-keys">
+        </div>
+      </div>
+
+      
+    </div>
+    <div class="view" id="view" data-disabled="true">
+      <div id="all-messages"></div>
+    </div>
+    
+    <div class="footer">
+      <p class="do-translate" data-original="[-130,0,-86,-119,-237,-38,-85,-2,-2,-241,-193,-86,-119,-237,-38,-29,-85]">
+      </p>
+    </div>
+  </main>
+</body>
