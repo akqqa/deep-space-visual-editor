@@ -19,6 +19,11 @@ let lastLoadedDict = "";
 let typewriters = [];
 let retrying = false;
 
+let camera;
+let renderer;
+let composer;
+let sceneDiv;
+
 //**************************************************//
 // THEME
 
@@ -148,6 +153,111 @@ const initialiseDict = () => {
     lastLoadedDict = dictRaw;
     updateDict();
   }
+}
+
+//**************************************************//
+// TRANSLATION
+
+const getTranslation = (str) => {
+
+  let newText = str
+    .map((x, i) => {
+      if (x < 0) {
+        let entry = dict[x];
+        if (entry) {
+          let p = "";
+          if (i > 0) {
+            const prev = dict[str[i - 1]];
+            const wasUndef = (str[i - 1] < 0 && !prev);
+            if (entry.desc.formatMode > 0 || prev?.desc.formatModeAfter > 0 || wasUndef) {
+              p = `<span class="spacer"> </span>`;
+            }
+          }
+          const s = `<span class="signal" title="SIGNAL ${x}">${entry.value}</span>`;
+          return `${p}${s}`;
+        }
+        else {
+          // UNDEF is always rendered with a space
+          let p = "";
+          if (i > 0) {
+            p = `<span class="spacer"> </span>`;
+          }
+          return `${p}<span class="signal undef">@${x}_UNDEF</span>`;
+        }
+      }
+      else {
+        const prev = dict[str[i - 1]];
+        const wasUndef = (str[i - 1] < 0 && !prev);
+        let p = "";
+        if (prev?.desc.formatModeAfter > 0 || wasUndef) {
+          p = `<span class="spacer"> </span>`;
+        }
+        return `${p}<span class="signal number">${x}</span>`;
+      }
+    })
+    .join("");
+
+  return newText;
+}
+
+const addTypewriter = (el, fullText, fullHTML) => {
+
+  let n = typewriters.length;
+
+  let t =
+    new Typewriter(el, {
+      delay: 1,
+      loop: false,
+    })
+      .typeString(fullText)
+      .callFunction(({ elements: { cursor, wrapper } }) => {
+        cursor.remove();
+        wrapper.replaceWith(...wrapper.childNodes);
+        el.innerHTML = fullHTML;
+        typewriters[n] = null;
+
+        // Scroll to bottom (again)
+        $(".view").scrollTop = $(".view").scrollHeight;
+
+      })
+      .start();
+
+  typewriters[n] = t;
+
+  el.setAttribute("data-typewriter", n);
+  return n;
+}
+
+const doTranslation = () => {
+  const elems = $$(".do-translate");
+  elems.forEach((el) => {
+    const st = el.getAttribute("data-status");
+    if (st == "done") {
+      return;
+    }
+
+    console.log("Found new element")
+
+    const original = el.getAttribute("data-original");
+    let str = JSON.parse(original);
+
+    // Truncate
+    if (str.length > 100) {
+      str = str.slice(0, 100);
+      str.push(-25);
+    }
+
+    const newText = getTranslation(str);
+
+    el.innerHTML = newText;
+    const rawText = el.textContent;
+
+    el.setAttribute("data-status", "done");
+
+    addTypewriter(el, rawText, newText);
+
+    return el;
+  })
 }
 
 
@@ -444,101 +554,117 @@ const getGradientColor = function (start_color, end_color, percent) {
   return "0x" + diff_red + diff_green + diff_blue;
 };
 
+//***************************************************************
+// VISUAL EDITOR
+
 const initialiseEditor = () => {
+  // Create the scene
+  sceneDiv = document.getElementById("view");
 
-    // Else create the scene
-    let sceneDiv = document.getElementById("view");
-    sceneDiv.classList.add("imageScene");
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, sceneDiv.clientWidth /sceneDiv.clientHeight, 0.1, 2000);
-    camera.position.x = -18.5;
-    const renderer = new THREE.WebGLRenderer();
-    renderer.logarithmicDepthBuffer = true;
-    renderer.setSize(sceneDiv.clientWidth , sceneDiv.clientHeight);
-    sceneDiv.appendChild(renderer.domElement);
-    const composer = new EffectComposer(renderer);
-    const renderPixelatedPass = new RenderPixelatedPass(4, scene, camera);
-    composer.addPass(renderPixelatedPass);
-
-    const bottomGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
-    bottomGrid.position.y = -8;
-    bottomGrid.color
-    const topGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
-    topGrid.position.y = 8;
-    scene.add(bottomGrid);
-    scene.add(topGrid);
-
-    let sphereData = [[0,0,0,1,1]];
-
-    sphereData.forEach(([x, y, z, radius, color]) => {
-      const sphere = new THREE.SphereGeometry(radius / 2);
-      // map the color - using the key levels apples described to match the game and interpolatee between
-      let c = calculateColor(color);
-      // https://medium.com/@aurelienagtn/introduction-to-shaders-with-three-js-create-an-animated-sphere-d4920fbab126
-      // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/2.2.basic_lighting.fs
-      const mat = new THREE.ShaderMaterial({
-        vertexShader: `
-          varying vec3 Normal;
-          varying vec3 camDir;
-          
-          void main() {
-            Normal = normalize(normal);
-
-            vec3 sphereCenter = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-            camDir = normalize(cameraPosition - sphereCenter);
-
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: `
-          varying vec3 Normal;  
-          varying vec3 camDir;
-            
-          uniform vec3 lightPos; 
-          uniform vec3 lightColor;
-          uniform vec3 objectColor;
-          
-          void main()
-          {
-              // diffuse 
-              float diffuseStrength = 0.93;
-              vec3 norm = normalize(Normal);
-              vec3 lightDir = camDir;
-              float diff = max(dot(norm, lightDir), 0.0);
-              vec3 diffuse = diff * lightColor * diffuseStrength;
-
-              // specular
-              float specularStrength = 0.2;
-              vec3 viewDir = camDir;
-              vec3 reflectDir = reflect(-lightDir, norm);  
-              float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
-              vec3 specular = specularStrength * spec * lightColor;  
-                  
-              vec3 result = ( specular + diffuse) * objectColor;
-              gl_FragColor  = vec4(result, 1.0);
-          } 
-        `,
-        uniforms: {
-          lightColor: { value: new THREE.Color(0xffffff) },
-          objectColor: { value: c },
-        }
-      });
-
-      const mesh = new THREE.Mesh(sphere, mat);
-      mesh.position.set(x, z, y); // Alien coords!
-      scene.add(mesh);
-    })
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-
-    function animate(time) {
-      controls.update();
-      composer.render(scene, camera);
-    }
-    renderer.setAnimationLoop(animate);
+  if (sceneDiv.getAttribute("data-disabled") === "true") {
+    return;
   }
 
+  sceneDiv.classList.add("imageScene");
+
+  const scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(50, sceneDiv.clientWidth /sceneDiv.clientHeight, 0.1, 2000);
+  camera.position.x = -18.5;
+  renderer = new THREE.WebGLRenderer();
+  renderer.logarithmicDepthBuffer = true;
+  renderer.setSize(sceneDiv.clientWidth , sceneDiv.clientHeight);
+  sceneDiv.appendChild(renderer.domElement);
+  composer = new EffectComposer(renderer);
+  const renderPixelatedPass = new RenderPixelatedPass(4, scene, camera);
+  composer.addPass(renderPixelatedPass);
+
+  const bottomGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
+  bottomGrid.position.y = -8;
+  bottomGrid.color
+  const topGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
+  topGrid.position.y = 8;
+  scene.add(bottomGrid);
+  scene.add(topGrid);
+
+  let sphereData = [[0,0,0,1,1]];
+
+  sphereData.forEach(([x, y, z, radius, color]) => {
+    const sphere = new THREE.SphereGeometry(radius / 2);
+    // map the color - using the key levels apples described to match the game and interpolatee between
+    let c = calculateColor(color);
+    // https://medium.com/@aurelienagtn/introduction-to-shaders-with-three-js-create-an-animated-sphere-d4920fbab126
+    // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/2.2.basic_lighting.fs
+    const mat = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec3 Normal;
+        varying vec3 camDir;
+        
+        void main() {
+          Normal = normalize(normal);
+
+          vec3 sphereCenter = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+          camDir = normalize(cameraPosition - sphereCenter);
+
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 Normal;  
+        varying vec3 camDir;
+          
+        uniform vec3 lightPos; 
+        uniform vec3 lightColor;
+        uniform vec3 objectColor;
+        
+        void main()
+        {
+            // diffuse 
+            float diffuseStrength = 0.93;
+            vec3 norm = normalize(Normal);
+            vec3 lightDir = camDir;
+            float diff = max(dot(norm, lightDir), 0.0);
+            vec3 diffuse = diff * lightColor * diffuseStrength;
+
+            // specular
+            float specularStrength = 0.2;
+            vec3 viewDir = camDir;
+            vec3 reflectDir = reflect(-lightDir, norm);  
+            float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
+            vec3 specular = specularStrength * spec * lightColor;  
+                
+            vec3 result = ( specular + diffuse) * objectColor;
+            gl_FragColor  = vec4(result, 1.0);
+        } 
+      `,
+      uniforms: {
+        lightColor: { value: new THREE.Color(0xffffff) },
+        objectColor: { value: c },
+      }
+    });
+
+    const mesh = new THREE.Mesh(sphere, mat);
+    mesh.position.set(x, z, y); // Alien coords!
+    scene.add(mesh);
+  })
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+
+  function animate(time) {
+    controls.update();
+    composer.render(scene, camera);
+  }
+  renderer.setAnimationLoop(animate);
+}
+
+//  todo - add listener for view size update
+// Add internal store of spheredata
+// add import and export of that internal store
+// add clicking and moving spheres
+// add creating sphere
+// add sidebar controls
+
+//**************************************************
+// SETUP AND LISTENERS
 
 window.onload = () => {
 
@@ -605,7 +731,6 @@ window.onload = () => {
   });
 
   initialiseDict();
-  initialiseEditor();
 
   // Auto-translate anything with the "do-translate" class
   window.setInterval(() => {
@@ -657,4 +782,16 @@ window.onload = () => {
 
   });
 
+  // Initialise the 3D editor
+  initialiseEditor();
+
+  // Set an observer to ensure the editor window is always sized correctly
+  const observer = new ResizeObserver(() => {    camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
+    composer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
+  })
+  observer.observe(sceneDiv);
+  
 }
