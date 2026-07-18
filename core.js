@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { initialiseEditor, calculateColor, renderSpheres  } from "./editor.js";
+import { initialiseEditor, calculateColor, createSphere  } from "./editor.js";
 
 // Core js code adapted from Dixonary's Deep Space Communication Relay project
 
@@ -602,9 +602,6 @@ window.onload = () => {
   // Initialise the 3D editor
   const {camera, renderer, composer, sceneDiv, scene} = initialiseEditor();
 
-  // Initial sphere render
-  renderSpheres(sphereData, scene);
-
   // Set an observer to ensure the editor window is always sized correctly
   const observer = new ResizeObserver(() => {   
     camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
@@ -614,5 +611,9 @@ window.onload = () => {
     composer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
   })
   observer.observe(sceneDiv);
+
+  // Create listener for adding sphere on button press (new)
+  // Create listener for adding sphere on button press (copy)
+  // Delete sphere? unsure how. selected then press delete button ig
   
 }

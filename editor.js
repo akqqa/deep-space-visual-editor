@@ -122,31 +122,30 @@ const initialiseEditor = () => {
   };
 }
 
-const renderSpheres = (sphereData, scene) => {
-    sphereData.forEach(([x, y, z, radius, color]) => {
+const createSphere = (x,y,z,radius,color) => {
     const sphere = new THREE.SphereGeometry(radius / 2);
     // map the color - using the key levels apples described to match the game and interpolatee between
     let c = calculateColor(color);
     // https://medium.com/@aurelienagtn/introduction-to-shaders-with-three-js-create-an-animated-sphere-d4920fbab126
     // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/2.2.basic_lighting.fs
     const mat = new THREE.ShaderMaterial({
-      vertexShader: `
+    vertexShader: `
         varying vec3 Normal;
         varying vec3 camDir;
         
         void main() {
-          Normal = normalize(normal);
+        Normal = normalize(normal);
 
-          vec3 sphereCenter = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-          camDir = normalize(cameraPosition - sphereCenter);
+        vec3 sphereCenter = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+        camDir = normalize(cameraPosition - sphereCenter);
 
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
-      `,
-      fragmentShader: `
+    `,
+    fragmentShader: `
         varying vec3 Normal;  
         varying vec3 camDir;
-          
+        
         uniform vec3 lightPos; 
         uniform vec3 lightColor;
         uniform vec3 objectColor;
@@ -170,17 +169,29 @@ const renderSpheres = (sphereData, scene) => {
             vec3 result = ( specular + diffuse) * objectColor;
             gl_FragColor  = vec4(result, 1.0);
         } 
-      `,
-      uniforms: {
+    `,
+    uniforms: {
         lightColor: { value: new THREE.Color(0xffffff) },
         objectColor: { value: c },
-      }
+    }
     });
 
     const mesh = new THREE.Mesh(sphere, mat);
     mesh.position.set(x, z, y); // Alien coords!
     scene.add(mesh);
-  })
+
+    return mesh;
+}
+
+
+
+
+
+
+const renderSpheres = (sphereData, scene) => {
+    sphereData.forEach(([x, y, z, radius, color]) => {
+        
+    })
 }
 
 //  todo - add listener for view size update
@@ -196,4 +207,4 @@ const renderSpheres = (sphereData, scene) => {
 // When importing, parse, then turn into spheres to add to the spherelist and add to the scene
 // when exporting, turj spheredata into the output - this part shoudl be simple if a bit long  winded)
 
-export {initialiseEditor, getGradientColor, calculateColor, renderSpheres};
+export {initialiseEditor, getGradientColor, calculateColor, createSphere};
