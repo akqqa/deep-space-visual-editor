@@ -30,12 +30,12 @@ const COLORS = [
 ];
 
 const calculateColor = (value) => {
-  let n = value / 64 * (COLORS.length - 1);
-  let lo = Math.floor(n);
-  let hi = Math.ceil(n);
-  let c = getGradientColor(COLORS[lo], COLORS[hi], n % 1)
-  console.log("COLOUR " + c);
-  return new THREE.Color(Number(c));
+    let n = value / 64 * (COLORS.length - 1);
+    let lo = Math.floor(n);
+    let hi = Math.ceil(n);
+    let c = getGradientColor(COLORS[lo], COLORS[hi], n % 1)
+    console.log("COLOUR " + c);
+    return new THREE.Color(Number(c));
 }
 
 // Source - https://stackoverflow.com/a/27709336
@@ -43,86 +43,86 @@ const calculateColor = (value) => {
 // Retrieved 2026-07-15, License - CC BY-SA 4.0
 const getGradientColor = function (start_color, end_color, percent) {
 
-  // get colors
-  let start_red = parseInt(start_color.substr(0, 2), 16),
-    start_green = parseInt(start_color.substr(2, 2), 16),
-    start_blue = parseInt(start_color.substr(4, 2), 16);
+    // get colors
+    let start_red = parseInt(start_color.substr(0, 2), 16),
+        start_green = parseInt(start_color.substr(2, 2), 16),
+        start_blue = parseInt(start_color.substr(4, 2), 16);
 
-  let end_red = parseInt(end_color.substr(0, 2), 16),
-    end_green = parseInt(end_color.substr(2, 2), 16),
-    end_blue = parseInt(end_color.substr(4, 2), 16);
+    let end_red = parseInt(end_color.substr(0, 2), 16),
+        end_green = parseInt(end_color.substr(2, 2), 16),
+        end_blue = parseInt(end_color.substr(4, 2), 16);
 
-  // calculate new color
-  let diff_red = end_red - start_red;
-  let diff_green = end_green - start_green;
-  let diff_blue = end_blue - start_blue;
+    // calculate new color
+    let diff_red = end_red - start_red;
+    let diff_green = end_green - start_green;
+    let diff_blue = end_blue - start_blue;
 
-  diff_red = ((diff_red * percent) + start_red).toString(16).split('.')[0];
-  diff_green = ((diff_green * percent) + start_green).toString(16).split('.')[0];
-  diff_blue = ((diff_blue * percent) + start_blue).toString(16).split('.')[0];
+    diff_red = ((diff_red * percent) + start_red).toString(16).split('.')[0];
+    diff_green = ((diff_green * percent) + start_green).toString(16).split('.')[0];
+    diff_blue = ((diff_blue * percent) + start_blue).toString(16).split('.')[0];
 
-  // ensure 2 digits by color
-  if (diff_red.length == 1) diff_red = '0' + diff_red
-  if (diff_green.length == 1) diff_green = '0' + diff_green
-  if (diff_blue.length == 1) diff_blue = '0' + diff_blue
+    // ensure 2 digits by color
+    if (diff_red.length == 1) diff_red = '0' + diff_red
+    if (diff_green.length == 1) diff_green = '0' + diff_green
+    if (diff_blue.length == 1) diff_blue = '0' + diff_blue
 
-  console.log("red diff " + diff_red)
-  console.log("blue diff " + diff_blue)
-  console.log("green diff " + diff_green)
+    console.log("red diff " + diff_red)
+    console.log("blue diff " + diff_blue)
+    console.log("green diff " + diff_green)
 
-  return "0x" + diff_red + diff_green + diff_blue;
+    return "0x" + diff_red + diff_green + diff_blue;
 };
 
 //***************************************************************
 // VISUAL EDITOR
 
 const initialiseEditor = () => {
-  // Create the scene
-  let sceneDiv = document.getElementById("view");
+    // Create the scene
+    let sceneDiv = document.getElementById("view");
 
-  if (sceneDiv.getAttribute("data-disabled") === "true") {
-    return;
-  }
+    if (sceneDiv.getAttribute("data-disabled") === "true") {
+        return;
+    }
 
-  sceneDiv.classList.add("imageScene");
+    sceneDiv.classList.add("imageScene");
 
-  const scene = new THREE.Scene();
-  let camera = new THREE.PerspectiveCamera(50, sceneDiv.clientWidth /sceneDiv.clientHeight, 0.1, 2000);
-  camera.position.x = -18.5;
-  let renderer = new THREE.WebGLRenderer();
-  renderer.logarithmicDepthBuffer = true;
-  renderer.setSize(sceneDiv.clientWidth , sceneDiv.clientHeight);
-  sceneDiv.appendChild(renderer.domElement);
-  let composer = new EffectComposer(renderer);
-  const renderPixelatedPass = new RenderPixelatedPass(4, scene, camera);
-  composer.addPass(renderPixelatedPass);
+    const scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(50, sceneDiv.clientWidth /sceneDiv.clientHeight, 0.1, 2000);
+    camera.position.x = -18.5;
+    let renderer = new THREE.WebGLRenderer();
+    renderer.logarithmicDepthBuffer = true;
+    renderer.setSize(sceneDiv.clientWidth , sceneDiv.clientHeight);
+    sceneDiv.appendChild(renderer.domElement);
+    let composer = new EffectComposer(renderer);
+    const renderPixelatedPass = new RenderPixelatedPass(4, scene, camera);
+    composer.addPass(renderPixelatedPass);
 
-  const bottomGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
-  bottomGrid.position.y = -8;
-  bottomGrid.color
-  const topGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
-  topGrid.position.y = 8;
-  scene.add(bottomGrid);
-  scene.add(topGrid);
+    const bottomGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
+    bottomGrid.position.y = -8;
+    bottomGrid.color
+    const topGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
+    topGrid.position.y = 8;
+    scene.add(bottomGrid);
+    scene.add(topGrid);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
-  function animate(time) {
-    controls.update();
-    composer.render(scene, camera);
-  }
-  renderer.setAnimationLoop(animate);
+    function animate(time) {
+        controls.update();
+        composer.render(scene, camera);
+    }
+    renderer.setAnimationLoop(animate);
 
-  return {
-    camera,
-    renderer,
-    composer,
-    sceneDiv,
-    scene,
-  };
+    return {
+        camera,
+        renderer,
+        composer,
+        sceneDiv,
+        scene,
+    };
 }
 
-const createSphere = (x,y,z,radius,color) => {
+const createSphere = (x, y, z, radius, color, scene) => {
     const sphere = new THREE.SphereGeometry(radius / 2);
     // map the color - using the key levels apples described to match the game and interpolatee between
     let c = calculateColor(color);
@@ -183,16 +183,6 @@ const createSphere = (x,y,z,radius,color) => {
     return mesh;
 }
 
-
-
-
-
-
-const renderSpheres = (sphereData, scene) => {
-    sphereData.forEach(([x, y, z, radius, color]) => {
-        
-    })
-}
 
 //  todo - add listener for view size update
 // Add internal store of spheredata

@@ -15,7 +15,7 @@ let lastLoadedDict = "";
 let typewriters = [];
 let retrying = false;
 
-let sphereData = [[0,0,0,1,1]];
+let sphereData = [];
 
 //**************************************************//
 // THEME
@@ -615,5 +615,11 @@ window.onload = () => {
   // Create listener for adding sphere on button press (new)
   // Create listener for adding sphere on button press (copy)
   // Delete sphere? unsure how. selected then press delete button ig
+
+  window.newSphere = () => {
+    const sphereMesh = createSphere(0,0,0,10,1,scene);
+    sphereData.push(sphereMesh);
+  }
   
 }
+
