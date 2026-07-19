@@ -16,7 +16,7 @@ let lastLoadedDict = "";
 let typewriters = [];
 let retrying = false;
 
-let sphereData = []; // For simplicity, sphereData is stored as an array of sphereMesh
+let sphereData = []; // For simplicity, sphereData is stored as an array of {mesh: sphereMesh, color: color}
 let currentSphere; // The currently selected sphere (as a mesh) for transformation and alteration
 let mouseDownPos = new THREE.Vector2;
 let transformControls;
@@ -100,7 +100,11 @@ const updateDict = () => {
   );
 
   // Enable editor
-  $(".view").removeAttribute("data-disabled");
+  if (dict[-53] != "@-53_UNDEF" && !dict[-53]) {
+    $(".view").removeAttribute("data-disabled");
+  } else {
+    $(".view").setAttribute("data-disabled", "true");
+  }
 
   $("#dictionary-click-zone p").innerHTML = "DICTIONARY LOADED<br>CLICK HERE TO CHANGE";
   $("#dictionary-click-zone").setAttribute("loaded", "true");
@@ -512,43 +516,57 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
   }
   // delete all current spheres
   sphereData.forEach(element => {
-    scene.remove(element);
+    scene.remove(element.mesh);
     transformControls.detach();
-    element.geometry.dispose();
-    element.material.dispose();
+    element.mesh.geometry.dispose();
+    element.mesh.material.dispose();
     currentSphere = null;
   });
   sphereData = [];
   // for each sphere, add to sphereData and scene
   importSphereData.forEach(element => {
     const sphereMesh = createSphere(element[0],element[1],element[2],element[3],element[4],scene);
-    sphereData.push(sphereMesh);
+    sphereData.push({mesh: sphereMesh, color: element[4]});
     deselectSphere(transformControls, overlayScene);
   });
-  localStorage.setItem("sphereData", JSON.stringify(sphereData));
+  setLocalStorageSphereData();
 
   return true;
 }
 
-
-// NEED TO CHANGE THIS TO SERIALISING THE NEEDED DATA RATHER THAN JSUT STRINGIFYING THE SPHEREDATA
-const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
-  const localStorageSphereData = JSON.parse(localStorage.getItem("sphereData"));
+const setLocalStorageSphereData = () => {
+  let data = [];
   sphereData.forEach(element => {
-    scene.remove(element);
+    let res = [];
+    res[0] = element.mesh.position.x;
+    res[1] = element.mesh.position.z;
+    res[2] = element.mesh.position.y;
+    element.mesh.geometry.computeBoundingSphere();
+    res[3] = element.mesh.geometry.boundingSphere.radius * 2;
+    res[4] = element.color // set to colour backwards compute method when made
+    data.push(res);
+  });
+  localStorage.setItem("sphereData", JSON.stringify(data));
+}
+
+const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
+  const data = localStorage.getItem("sphereData");
+  if (data == "") {
+    return;
+  }
+  const localStorageSphereData = JSON.parse(data);
+  console.log("retrieved data: " + data)
+  sphereData.forEach(element => {
+    scene.remove(element.mesh);
     transformControls.detach();
-    element.geometry.dispose();
-    element.material.dispose();
+    element.mesh.geometry.dispose();
+    element.mesh.material.dispose();
     currentSphere = null;
   });
   sphereData = [];
   // for each sphere, add to sphereData and scene
   localStorageSphereData.forEach(element => {
-    element.geometry.computeBoundingSphere();
-    const geometryRadius = element.geometry.boundingSphere.radius;
-    const sphereMesh = createSphere(element.position.x,element.position.z,element.position.y,geometryRadius*2,64,scene);
-    sphereData.push(sphereMesh);
-    deselectSphere(transformControls, overlayScene);
+    addSphere(element[0], element[1], element[2], element[3], element[4], scene, transformControls, overlayScene, false);
   });
 }
 
@@ -559,13 +577,14 @@ const sphereDataToExportString = () => {
   }
   let res = [-53,-14];
   sphereData.forEach((element) => {
-    element.geometry.computeBoundingSphere();
-    const geometryRadius = element.geometry.boundingSphere.radius;
+      console.log("spheredata element" + element.color);
+    element.mesh.geometry.computeBoundingSphere();
+    const geometryRadius = element.mesh.geometry.boundingSphere.radius;
 
     const [posX, posY, posZ, diameter] = [
-      element.position.x,
-      element.position.z,
-      element.position.y,
+      element.mesh.position.x,
+      element.mesh.position.z,
+      element.mesh.position.y,
       geometryRadius*2
     ].map(v => {
       let resArray = []
@@ -587,7 +606,7 @@ const sphereDataToExportString = () => {
       return resArray;
     });
 
-    res = res.concat([-52,...posX,-3,...posY,-3,...posZ,-3,...diameter,-3,64,-3])
+    res = res.concat([-52,...posX,-3,...posY,-3,...posZ,-3,...diameter,-3,element.color,-3])
   });
   res.pop();
   res.push(-15);
@@ -719,7 +738,7 @@ window.onload = () => {
 
   // Set up localstorage for sphereData
   if (!localStorage.getItem("sphereData")) {
-    localStorage.setItem("sphereData",JSON.stringify([]));
+    setLocalStorageSphereData();
   }
 
   // Initialise the 3D editor
@@ -815,45 +834,37 @@ window.onload = () => {
   });
 
   window.newSphere = () => {
-    const sphereMesh = createSphere(0,0,0,2,64,scene);
-    sphereData.push(sphereMesh);
-    deselectSphere(transformControls, overlayScene);
-    selectSphere(sphereMesh, transformControls, overlayScene);
-    localStorage.setItem("sphereData", JSON.stringify(sphereData));
+    addSphere(0, 0, 0, 2, 64, scene, transformControls, overlayScene, true);
   }
 
   window.deleteMostRecentSphere = () => {
-    const sphereMesh = sphereData.pop();
-    if (sphereMesh) {
-      if (currentSphere == sphereMesh) {
-        // If deletes currently selected, unselect and remove transform controls
-        currentSphere = null;
-        transformControls.detach();
-      }
-      scene.remove(sphereMesh);
-      sphereMesh.geometry.dispose();
-      sphereMesh.material.dispose();
+    const sphere = sphereData.pop();
+    if (sphere) {
+      removeSphere(sphere.mesh, scene, transformControls);
     }
-    localStorage.setItem("sphereData",  JSON.stringify(sphereData));
   }
 
   window.deleteCurrentSphere = () => {
     if (currentSphere) {
-      sphereData = sphereData.filter(item => item !== currentSphere);
-      console.log(sphereData);
-      transformControls.detach();
-      scene.remove(currentSphere);
-      currentSphere.geometry.dispose();
-      currentSphere.material.dispose();
-      currentSphere = null;
+      removeSphere(currentSphere, scene, transformControls);
     }
-    localStorage.setItem("sphereData",  JSON.stringify(sphereData));
+  }
+
+  window.deleteAllSpheres = () => {
+    const res = confirm("Are you sure you want to reset the canvas?");
+    if (res) {
+      sphereData.forEach(element => {
+        removeSphere(element.mesh, scene, transformControls);
+      });
+    }
   }
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   transformControls.addEventListener("dragging-changed", (event) => { // Disable orbit controls when dragging transformcontrols
     orbitControls.enabled = !event.value;
+    // Updates localstorage
+    setLocalStorageSphereData();
   });
 
 
@@ -873,7 +884,7 @@ window.onload = () => {
     mouse.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
     raycaster.setFromCamera(mouse, camera);
 
-    const intersects = raycaster.intersectObjects(sphereData, false);
+    const intersects = raycaster.intersectObjects(sphereData.map(sphere => sphere.mesh), false);
     if (intersects.length > 0) {
       selectSphere(intersects[0].object, transformControls, overlayScene);
     } else {
@@ -892,6 +903,9 @@ window.onload = () => {
       // If control held, transform scale goes to 0.1
       transformControls.translationSnap = 0.1;
     } 
+    if (event.code == "KeyX") {
+      orbitControls.dollyIn(1);
+    }
   });
 
   window.addEventListener("keyup", (event) => {
@@ -902,6 +916,30 @@ window.onload = () => {
   })
 }
 
+// Helper methods to add and remove a given sphere, handled the spheredata and selection logic
+const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select) => {
+    const sphereMesh = createSphere(x, z, y, diameter, color, scene);
+    sphereData.push({mesh: sphereMesh, color: color});
+    deselectSphere(transformControls, overlayScene);
+    if (select) {
+      selectSphere(sphereMesh, transformControls, overlayScene);
+    }
+    setLocalStorageSphereData();
+}
+const removeSphere = (sphereMesh, scene, transformControls) => {
+  sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
+  if (currentSphere == sphereMesh) {
+    // If deletes currently selected, unselect and remove transform controls
+    currentSphere = null;
+    transformControls.detach();
+  }
+  scene.remove(sphereMesh);
+  sphereMesh.geometry.dispose();
+  sphereMesh.material.dispose();
+  setLocalStorageSphereData();
+}
+
+    
 const selectSphere = (sphere, transformControls, overlayScene) => {
     currentSphere = sphere;
     transformControls.attach(currentSphere);
@@ -913,4 +951,5 @@ const deselectSphere = (transformControls, overlayScene) => {
   overlayScene.remove(transformControls.getHelper());
   currentSphere = null;
 }
+
 
