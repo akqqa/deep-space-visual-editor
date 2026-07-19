@@ -127,6 +127,7 @@ const loadDictionary = (text) => {
     lastLoadedDict = text;
 
     updateDict();
+    location.reload(); // Reloads window to initialise editor properly
     return true;
   }
 
@@ -193,6 +194,29 @@ const getTranslation = (str) => {
       }
     })
     .join("");
+
+  return newText;
+}
+
+// Copy of above, but returns raw string instead of html formatted one
+const getRawTranslation = (str) => {
+  let newText = str
+    .map((x, i) => {
+      if (x < 0) {
+        let entry = dict[x];
+        if (entry) {
+          return entry.value;
+        }
+        else {
+          // If undefined signal, dont work because then the output wont be valid
+          return false;
+        }
+      }
+      else {
+        return x;
+      }
+    })
+    .join(" ");
 
   return newText;
 }
@@ -501,19 +525,74 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
     sphereData.push(sphereMesh);
     deselectSphere(transformControls, overlayScene);
   });
+  localStorage.setItem("sphereData", JSON.stringify(sphereData));
 
   return true;
 }
 
-// cant just use strings must use dict translation :(. and also reverse colour method
+
+// NEED TO CHANGE THIS TO SERIALISING THE NEEDED DATA RATHER THAN JSUT STRINGIFYING THE SPHEREDATA
+const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
+  const localStorageSphereData = JSON.parse(localStorage.getItem("sphereData"));
+  sphereData.forEach(element => {
+    scene.remove(element);
+    transformControls.detach();
+    element.geometry.dispose();
+    element.material.dispose();
+    currentSphere = null;
+  });
+  sphereData = [];
+  // for each sphere, add to sphereData and scene
+  localStorageSphereData.forEach(element => {
+    element.geometry.computeBoundingSphere();
+    const geometryRadius = element.geometry.boundingSphere.radius;
+    const sphereMesh = createSphere(element.position.x,element.position.z,element.position.y,geometryRadius*2,64,scene);
+    sphereData.push(sphereMesh);
+    deselectSphere(transformControls, overlayScene);
+  });
+}
+
+// Takes the mesh spheredata and transforms it into a valid render string
 const sphereDataToExportString = () => {
   if (sphereData.length == 0) {
     return false;
   }
-  let res = "RENDER(";
+  let res = [-53,-14];
   sphereData.forEach((element) => {
+    element.geometry.computeBoundingSphere();
+    const geometryRadius = element.geometry.boundingSphere.radius;
 
+    const [posX, posY, posZ, diameter] = [
+      element.position.x,
+      element.position.z,
+      element.position.y,
+      geometryRadius*2
+    ].map(v => {
+      let resArray = []
+      // Set negative signal if applicable
+      if (v < 0) { 
+        resArray.push(-1)
+      }
+      v = Math.abs(v);
+      const stringV = v.toString();
+      if (stringV.includes(".")) {
+        const decimalIndex = stringV.indexOf(".");
+        resArray.push(Number(stringV.slice(0,decimalIndex))); // Push the number before the .
+        resArray.push(-10);
+        resArray.push(Number(stringV[decimalIndex + 1]));
+      } else {
+        resArray.push(v)
+      }
+      console.log(resArray);
+      return resArray;
+    });
+
+    res = res.concat([-52,...posX,-3,...posY,-3,...posZ,-3,...diameter,-3,64,-3])
   });
+  res.pop();
+  res.push(-15);
+  console.log("translation " + getRawTranslation(res))
+  return getRawTranslation(res);
 }
 
 //**************************************************
@@ -638,6 +717,11 @@ window.onload = () => {
 
   // Editor section
 
+  // Set up localstorage for sphereData
+  if (!localStorage.getItem("sphereData")) {
+    localStorage.setItem("sphereData",JSON.stringify([]));
+  }
+
   // Initialise the 3D editor
   const {camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls} = initialiseEditor();
   transformControls = new TransformControls(camera, sceneDiv);
@@ -649,9 +733,13 @@ window.onload = () => {
   transformControls.maxY = 10;
   transformControls.minY = -10;
 
+  // Import locally stored spheres
+  loadLocalStorageSphereData(scene, transformControls, overlayScene);
+
 
   // Set an observer to ensure the editor window is always sized correctly
   const observer = new ResizeObserver(() => {   
+    console.log("observerFired")
     camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
     camera.updateProjectionMatrix();
 
@@ -731,6 +819,7 @@ window.onload = () => {
     sphereData.push(sphereMesh);
     deselectSphere(transformControls, overlayScene);
     selectSphere(sphereMesh, transformControls, overlayScene);
+    localStorage.setItem("sphereData", JSON.stringify(sphereData));
   }
 
   window.deleteMostRecentSphere = () => {
@@ -745,6 +834,7 @@ window.onload = () => {
       sphereMesh.geometry.dispose();
       sphereMesh.material.dispose();
     }
+    localStorage.setItem("sphereData",  JSON.stringify(sphereData));
   }
 
   window.deleteCurrentSphere = () => {
@@ -757,6 +847,7 @@ window.onload = () => {
       currentSphere.material.dispose();
       currentSphere = null;
     }
+    localStorage.setItem("sphereData",  JSON.stringify(sphereData));
   }
 
   const raycaster = new THREE.Raycaster();
