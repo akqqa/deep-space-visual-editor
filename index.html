@@ -38,7 +38,8 @@
       </span>
 
       <div>
-        <button class="do-translate" data-original="[-52, -169]" />
+        <button id="import-button" class="do-translate" data-original="[-52, -169]" />
+        
         <button class="do-translate" data-original="[-52, -170]" />
       </div>
 
@@ -79,6 +80,24 @@
               </div>
             </dialog>
           </p>
+
+          <p id="import-zone">
+
+            <dialog class="import-paste">
+              <div class="dialog-content">
+                <p class="dialog-title">Paste Model String
+                  <button class="close-import-dialog">
+                    X
+                  </button>
+                </p>
+
+                <textarea class="import-paste-contents" autofocus></textarea>
+                <div class="button-row">
+                  <button class="save-import">Import</button>
+                </div>
+              </div>
+            </dialog>
+          </p>
         </div>
         <input type="file" id="dictionary-input" />
       </div>
@@ -88,7 +107,7 @@
       </div>
 
       <button onclick="newSphere()">CREATE</button>
-      <button onclick="deleteMostRecentSphere()">DELETE RECENT</button>
+      <button onclick="deleteCurrentSphere()">DELETE SELECTED</button>
 
 
       

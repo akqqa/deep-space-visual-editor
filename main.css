@@ -100,6 +100,15 @@ main {
     cursor: pointer;
   }
 
+  & #import-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5ch;
+    border-left: 2px solid var(--theme-color-darker);
+    cursor: pointer;
+  }
+
   & #dictionary-click-zone {
     flex: 1;
     display: flex;
@@ -323,6 +332,19 @@ textarea.dict-paste-contents {
   border: none;
   outline: none;
   font-family: 'Hack', 'Courier New', Courier, monospace;
+}
+
+textarea.import-paste-contents {
+  width: 100%;
+  flex-grow: 1;
+  resize: none;
+  background-color: transparent;
+  color: var(--theme-color-darker);
+  padding: 1em;
+  border: none;
+  outline: none;
+  font-family: 'Hack', 'Courier New', Courier, monospace;
+  text-transform: uppercase;
 }
 
 

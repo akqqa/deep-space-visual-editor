@@ -355,25 +355,17 @@ const parseText = (text) => {
 
   // Must be no invalid signals
   if (invalid.length === 0) {
-    // Max length 
-    const maxSignals = 2000;
-    if (signals.length <= 2000) {
-      return signals;
-    }
-    else {
-      renderErrorMessage(`Message too long; maximum number of signals is ${maxSignals} (you have ${signals.length})`);
-    }
+    return signals;
   }
   else {
     let invalidStr = invalid.map(chars => {
       let str = chars.map(ix => text[ix]).join("");
       return `Unknown token ${str} at position ${chars[0]}`;
     }).join("; ");
-    renderErrorMessage(invalidStr);
+    alert(invalidStr);
     return null;
   }
 }
-
 
 // Returns the spheredata in a nicer format for rendering
 const parseSphereData = (message) => {
@@ -480,6 +472,36 @@ const parseSphereData = (message) => {
   } catch (error) {
     return false;
   }
+}
+
+const loadSphereData = (text, scene, transformControls, overlayScene) => {
+  // import is a plain string
+  // first convert to signal array
+  // next pase with parseSphereData
+  // then for each, add to spheredata and add to scene (then deselect current sphere)
+  let signals = parseText(text);
+  let importSphereData = parseSphereData(signals);
+  console.log("sphered" + importSphereData);
+  if (importSphereData == false || importSphereData.length == 0) {
+    return false;
+  }
+  // delete all current spheres
+  sphereData.forEach(element => {
+    scene.remove(element);
+    transformControls.detach();
+    element.geometry.dispose();
+    element.material.dispose();
+    currentSphere = null;
+  });
+  sphereData = [];
+  // for each sphere, add to sphereData and scene
+  importSphereData.forEach(element => {
+    const sphereMesh = createSphere(element[0],element[1],element[2],element[3],element[4],scene);
+    sphereData.push(sphereMesh);
+    deselectSphere(transformControls, overlayScene);
+  });
+
+  return true;
 }
 
 //**************************************************
@@ -601,12 +623,20 @@ window.onload = () => {
 
   });
 
+
   // Editor section
 
   // Initialise the 3D editor
   const {camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls} = initialiseEditor();
   transformControls = new TransformControls(camera, sceneDiv);
   transformControls.translationSnap = 1;
+  transformControls.maxX = 15;
+  transformControls.minX = -15;
+  transformControls.maxZ = 15;
+  transformControls.minZ = -15;
+  transformControls.maxY = 10;
+  transformControls.minY = -10;
+
 
   // Set an observer to ensure the editor window is always sized correctly
   const observer = new ResizeObserver(() => {   
@@ -623,16 +653,51 @@ window.onload = () => {
 
   // Add logic for selecting and translating spheres
 
+  // Setup model import
+
+  $("#import-button").addEventListener("click", () => {
+    const importDialog = $("dialog.import-paste");
+    const importTextArea = $("textarea.import-paste-contents");
+    importTextArea.value = "";
+    importDialog.showModal();
+  });
+
+  $("button.close-import-dialog").addEventListener("click", () => {
+    const importDialog = $("dialog.import-paste");
+    importDialog.close();
+  });
+
+  $("button.save-import").addEventListener("click", () => {
+    const content = $("textarea.import-paste-contents").value;
+    if (!content) {
+      console.warn("Could not retrieve contents from textarea");
+      alert("Invalid import data");
+      return;
+    }
+
+    const res = loadSphereData(content, scene, transformControls, overlayScene); // GET SPHEREDATA HERE
+
+    if (res) {
+      $("textarea.dict-paste-contents").value = "";
+      const importDialog = $("dialog.import-paste");
+      importDialog.close();
+    } else {
+      console.log("res: " + res)
+      alert("Invalid import data");
+    }
+  });
+
   window.newSphere = () => {
     const sphereMesh = createSphere(0,0,0,2,64,scene);
     sphereData.push(sphereMesh);
+    deselectSphere(transformControls, overlayScene);
+    selectSphere(sphereMesh, transformControls, overlayScene);
   }
 
   window.deleteMostRecentSphere = () => {
     const sphereMesh = sphereData.pop();
     if (sphereMesh) {
       if (currentSphere == sphereMesh) {
-        console.log("EEEEEEE")
         // If deletes currently selected, unselect and remove transform controls
         currentSphere = null;
         transformControls.detach();
@@ -640,6 +705,18 @@ window.onload = () => {
       scene.remove(sphereMesh);
       sphereMesh.geometry.dispose();
       sphereMesh.material.dispose();
+    }
+  }
+
+  window.deleteCurrentSphere = () => {
+    if (currentSphere) {
+      sphereData = sphereData.filter(item => item !== currentSphere);
+      console.log(sphereData);
+      transformControls.detach();
+      scene.remove(currentSphere);
+      currentSphere.geometry.dispose();
+      currentSphere.material.dispose();
+      currentSphere = null;
     }
   }
 
@@ -668,15 +745,9 @@ window.onload = () => {
 
     const intersects = raycaster.intersectObjects(sphereData, false);
     if (intersects.length > 0) {
-      currentSphere = intersects[0].object;
-      transformControls.attach(currentSphere);
-      overlayScene.add(transformControls.getHelper());
-      console.log("hit a sphere!");
+      selectSphere(intersects[0].object, transformControls, overlayScene);
     } else {
-      transformControls.detach();
-      overlayScene.remove(transformControls.getHelper());
-      currentSphere = null;
-      console.log("hit nothing");
+      deselectSphere(transformControls, overlayScene);
     }
   });
 
@@ -697,9 +768,19 @@ window.onload = () => {
     if (event.code == "ControlLeft") {
       // If control released, transform scale goes to 1
       transformControls.translationSnap = 1;
-    } 
+    }
   })
+}
 
-  
+const selectSphere = (sphere, transformControls, overlayScene) => {
+    currentSphere = sphere;
+    transformControls.attach(currentSphere);
+    overlayScene.add(transformControls.getHelper());
+}
+
+const deselectSphere = (transformControls, overlayScene) => {
+  transformControls.detach();
+  overlayScene.remove(transformControls.getHelper());
+  currentSphere = null;
 }
 
