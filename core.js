@@ -474,6 +474,7 @@ const parseSphereData = (message) => {
   }
 }
 
+// Loads sphereData (as an array of meshes) into the editor scene
 const loadSphereData = (text, scene, transformControls, overlayScene) => {
   // import is a plain string
   // first convert to signal array
@@ -502,6 +503,17 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
   });
 
   return true;
+}
+
+// cant just use strings must use dict translation :(. and also reverse colour method
+const sphereDataToExportString = () => {
+  if (sphereData.length == 0) {
+    return false;
+  }
+  let res = "RENDER(";
+  sphereData.forEach((element) => {
+
+  });
 }
 
 //**************************************************
@@ -653,7 +665,7 @@ window.onload = () => {
 
   // Add logic for selecting and translating spheres
 
-  // Setup model import
+  // Setup model import and export
 
   $("#import-button").addEventListener("click", () => {
     const importDialog = $("dialog.import-paste");
@@ -665,6 +677,11 @@ window.onload = () => {
   $("button.close-import-dialog").addEventListener("click", () => {
     const importDialog = $("dialog.import-paste");
     importDialog.close();
+  });
+
+  $("textarea.import-paste-contents").addEventListener("input", () => {
+    const importTextArea = $("textarea.import-paste-contents");
+    importTextArea.value = importTextArea.value.replace(/\n/g, "");
   });
 
   $("button.save-import").addEventListener("click", () => {
@@ -685,6 +702,28 @@ window.onload = () => {
       console.log("res: " + res)
       alert("Invalid import data");
     }
+  });
+
+  $("#export-button").addEventListener("click", () => {
+    // Transform the sphereData into the correct test
+    let res = sphereDataToExportString();
+    console.log("res" + res)
+    if (!res) {
+      $("#export-button").textContent = "FAILED";
+    } else {
+      navigator.clipboard.writeText(res).then(
+      () => {
+        $("#export-button").textContent = "COPIED";
+      },
+      () => {
+        $("#export-button").textContent = "FAILED";
+      });
+    }
+    
+    setTimeout(() => {
+      $("#export-button").setAttribute("data-status", "not");
+      doTranslation();
+    }, 1000);
   });
 
   window.newSphere = () => {
