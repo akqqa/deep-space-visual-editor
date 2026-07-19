@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import * as holdEvent from "https://unpkg.com/hold-event@1.1.2/dist/hold-event.module.js";
+
+const cameraMovementSpeed = 0.02;
 
 // Editor / Renderer specific code
 
@@ -87,6 +90,7 @@ const initialiseEditor = () => {
     sceneDiv.classList.add("imageScene");
 
     const scene = new THREE.Scene();
+    const overlayScene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(50, sceneDiv.clientWidth /sceneDiv.clientHeight, 0.1, 2000);
     camera.position.x = -18.5;
     let renderer = new THREE.WebGLRenderer();
@@ -105,13 +109,71 @@ const initialiseEditor = () => {
     scene.add(bottomGrid);
     scene.add(topGrid);
 
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const orbitControls = new OrbitControls(camera, renderer.domElement);
+
+    const direction = new THREE.Vector3();
+    function moveForward(distance) {
+        camera.getWorldDirection(direction);
+        camera.position.addScaledVector(direction, distance);
+        orbitControls.target.addScaledVector(direction, distance);
+    }
+
+    function moveSideways(distance) {
+        const e = camera.matrixWorld.elements;
+        let dx = new THREE.Vector3();
+        dx.set(e[0], e[1], e[2]);
+        dx = dx.normalize();
+        camera.position.addScaledVector(dx, distance);
+        orbitControls.target.addScaledVector(dx, distance);
+    }
+
+    function moveUp(distance) {
+        camera.position.addScaledVector(new THREE.Vector3(0,1,0), distance);
+        orbitControls.target.addScaledVector(new THREE.Vector3(0,1,0), distance);
+    }
+    
+    const wKey = new holdEvent.KeyboardKeyHold( 'KeyW', 16.666 );
+    const aKey = new holdEvent.KeyboardKeyHold( 'KeyA', 16.666 );
+    const sKey = new holdEvent.KeyboardKeyHold( 'KeyS', 16.666 );
+    const dKey = new holdEvent.KeyboardKeyHold( 'KeyD', 16.666 );
+    const shiftKey = new holdEvent.KeyboardKeyHold( 'ShiftLeft', 16.666 );
+    const spacebar = new holdEvent.KeyboardKeyHold( 'Space', 16.666 );
+    aKey.addEventListener(
+        holdEvent.HOLD_EVENT_TYPE.HOLDING,
+        ( event ) => moveSideways(-cameraMovementSpeed * event.deltaTime)
+    );
+    dKey.addEventListener(
+        holdEvent.HOLD_EVENT_TYPE.HOLDING,
+        ( event ) => moveSideways(cameraMovementSpeed * event.deltaTime)
+    );
+    wKey.addEventListener(
+        holdEvent.HOLD_EVENT_TYPE.HOLDING,
+        ( event ) => moveForward(cameraMovementSpeed * event.deltaTime)
+    );
+    sKey.addEventListener(
+        holdEvent.HOLD_EVENT_TYPE.HOLDING,
+        ( event ) => moveForward(-cameraMovementSpeed * event.deltaTime)
+    );
+    spacebar.addEventListener(
+        holdEvent.HOLD_EVENT_TYPE.HOLDING,
+        ( event ) => moveUp(cameraMovementSpeed * event.deltaTime)
+    )
+    shiftKey.addEventListener(
+        holdEvent.HOLD_EVENT_TYPE.HOLDING,
+        ( event ) => moveUp(- cameraMovementSpeed * event.deltaTime)
+    )
+    
 
     function animate(time) {
-        controls.update();
-        composer.render(scene, camera);
+        orbitControls.update();
+        composer.render(scene, camera); // renders composer
+        renderer.autoClear = false; // disables to prevent clearing before next render
+        renderer.render(overlayScene,camera);
+        renderer.autoClear = true; // reenables to clear previous frame for next loop
     }
     renderer.setAnimationLoop(animate);
+
+    console.log("in editor: " + orbitControls)
 
     return {
         camera,
@@ -119,6 +181,8 @@ const initialiseEditor = () => {
         composer,
         sceneDiv,
         scene,
+        overlayScene,
+        orbitControls
     };
 }
 

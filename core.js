@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { initialiseEditor, calculateColor, createSphere  } from "./editor.js";
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
 // Core js code adapted from Dixonary's Deep Space Communication Relay project
 
@@ -15,7 +16,10 @@ let lastLoadedDict = "";
 let typewriters = [];
 let retrying = false;
 
-let sphereData = [];
+let sphereData = []; // For simplicity, sphereData is stored as an array of sphereMesh
+let currentSphere; // The currently selected sphere (as a mesh) for transformation and alteration
+let mouseDownPos = new THREE.Vector2;
+let transformControls;
 
 //**************************************************//
 // THEME
@@ -600,7 +604,8 @@ window.onload = () => {
   // Editor section
 
   // Initialise the 3D editor
-  const {camera, renderer, composer, sceneDiv, scene} = initialiseEditor();
+  const {camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls} = initialiseEditor();
+  console.log("orbit controls bound " + orbitControls)
 
   // Set an observer to ensure the editor window is always sized correctly
   const observer = new ResizeObserver(() => {   
@@ -612,14 +617,63 @@ window.onload = () => {
   })
   observer.observe(sceneDiv);
 
-  // Create listener for adding sphere on button press (new)
   // Create listener for adding sphere on button press (copy)
   // Delete sphere? unsure how. selected then press delete button ig
 
+  // Add logic for selecting and translating spheres
+
   window.newSphere = () => {
-    const sphereMesh = createSphere(0,0,0,10,1,scene);
+    const sphereMesh = createSphere(0,0,0,2,64,scene);
     sphereData.push(sphereMesh);
   }
+
+  window.deleteMostRecentSphere = () => {
+    const sphereMesh = sphereData.pop();
+    if (sphereMesh) {
+      scene.remove(sphereMesh);
+      sphereMesh.geometry.dispose();
+      sphereMesh.material.dispose();
+    }
+  }
+
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  transformControls = new TransformControls(camera, sceneDiv);
+  transformControls.addEventListener("dragging-changed", (event) => { // Disable orbit controls when dragging transformcontrols
+    orbitControls.enabled = !event.value;
+  })
+
+
+  // Sphere selection
+  sceneDiv.addEventListener("mousedown", (event) => {
+    mouseDownPos.set(event.clientX, event.clientY);
+  })
+  sceneDiv.addEventListener("click", (event) => {
+    // CHECK IF MOUSE DIDNT MOVE SINCE MOUSEDOWN, ONLY COUNT AS CLICK THEN
+    let newMousePos = new THREE.Vector2(event.clientX, event.clientY);
+    if (!newMousePos.equals(mouseDownPos)) {
+      return;
+    }
+
+    // Handle the raycasting
+    const rect = sceneDiv.getBoundingClientRect();
+    mouse.set(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(sphereData, false);
+    if (intersects.length > 0) {
+      currentSphere = intersects[0].object;
+      transformControls.attach(currentSphere);
+      overlayScene.add(transformControls.getHelper());
+      console.log("hit a sphere!");
+    } else {
+      transformControls.detach();
+      overlayScene.remove(transformControls.getHelper());
+      currentSphere = null;
+      console.log("hit nothing");
+    }
+  })
+
   
 }
 
