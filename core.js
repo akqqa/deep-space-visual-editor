@@ -605,7 +605,8 @@ window.onload = () => {
 
   // Initialise the 3D editor
   const {camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls} = initialiseEditor();
-  console.log("orbit controls bound " + orbitControls)
+  transformControls = new TransformControls(camera, sceneDiv);
+  transformControls.translationSnap = 1;
 
   // Set an observer to ensure the editor window is always sized correctly
   const observer = new ResizeObserver(() => {   
@@ -630,6 +631,12 @@ window.onload = () => {
   window.deleteMostRecentSphere = () => {
     const sphereMesh = sphereData.pop();
     if (sphereMesh) {
+      if (currentSphere == sphereMesh) {
+        console.log("EEEEEEE")
+        // If deletes currently selected, unselect and remove transform controls
+        currentSphere = null;
+        transformControls.detach();
+      }
       scene.remove(sphereMesh);
       sphereMesh.geometry.dispose();
       sphereMesh.material.dispose();
@@ -638,16 +645,15 @@ window.onload = () => {
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
-  transformControls = new TransformControls(camera, sceneDiv);
   transformControls.addEventListener("dragging-changed", (event) => { // Disable orbit controls when dragging transformcontrols
     orbitControls.enabled = !event.value;
-  })
+  });
 
 
   // Sphere selection
   sceneDiv.addEventListener("mousedown", (event) => {
     mouseDownPos.set(event.clientX, event.clientY);
-  })
+  });
   sceneDiv.addEventListener("click", (event) => {
     // CHECK IF MOUSE DIDNT MOVE SINCE MOUSEDOWN, ONLY COUNT AS CLICK THEN
     let newMousePos = new THREE.Vector2(event.clientX, event.clientY);
@@ -672,6 +678,26 @@ window.onload = () => {
       currentSphere = null;
       console.log("hit nothing");
     }
+  });
+
+  window.addEventListener("keydown", (event) => { // On f click, center camera around currently selected sphere
+    console.log("keypress")
+    if (event.code == "KeyF" && currentSphere) {
+      orbitControls.target.copy(currentSphere.position);
+      // Could improve by making it also rescale to fit object in
+    }
+    if (event.code == "ControlLeft") {
+      console.log("control")
+      // If control held, transform scale goes to 0.1
+      transformControls.translationSnap = 0.1;
+    } 
+  });
+
+  window.addEventListener("keyup", (event) => {
+    if (event.code == "ControlLeft") {
+      // If control released, transform scale goes to 1
+      transformControls.translationSnap = 1;
+    } 
   })
 
   
