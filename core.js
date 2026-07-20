@@ -28,6 +28,9 @@ const minY = -15;
 const maxZ = 10;
 const minZ = -10
 
+let sceneHistory = []
+let sceneFuture = []
+
 //**************************************************//
 // THEME
 
@@ -802,7 +805,7 @@ window.onload = () => {
       return;
     }
 
-    const res = loadSphereData(content, scene, transformControls, overlayScene); // GET SPHEREDATA HERE
+    const res = loadSphereData(content, scene, transformControls, overlayScene); 
 
     if (res) {
       $("textarea.dict-paste-contents").value = "";
@@ -858,7 +861,6 @@ window.onload = () => {
   }
 
   window.deleteMostRecentSphere = () => {
-    const sphere = sphereData.pop();
     if (sphere) {
       removeSphere(sphere.mesh, scene, transformControls, overlayScene);
     }
@@ -883,6 +885,9 @@ window.onload = () => {
   const mouse = new THREE.Vector2();
   transformControls.addEventListener("dragging-changed", (event) => { // Disable orbit controls when dragging transformcontrols
     orbitControls.enabled = !event.value;
+    if (event.value == true) {
+      addToHistory();
+    }
     // Updates localstorage
     setLocalStorageSphereData();
   });
@@ -934,6 +939,12 @@ window.onload = () => {
         removeSphere(currentSphere, scene, transformControls, overlayScene);
       }
     }
+    if (event.code == "KeyZ") {
+      undo(scene, transformControls, overlayScene);
+    }
+    if (event.code == "KeyX") {
+      redo(scene, transformControls, overlayScene);
+    }
   });
 
   window.addEventListener("keyup", (event) => {
@@ -946,23 +957,29 @@ window.onload = () => {
 
 // Event listeners for sphere parameters changing
 $("#posX").addEventListener("change", (event) => {
+  addToHistory();
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minX), maxX);
   event.target.value = num;
   currentSphere.position.x = Number(event.target.value);
 });
 $("#posY").addEventListener("change", (event) => {
+  addToHistory();
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
   event.target.value = num;
   currentSphere.position.z = Number(event.target.value);
 });
 $("#posZ").addEventListener("change", (event) => {
+  addToHistory();
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minZ), maxZ);
   event.target.value = num;
   currentSphere.position.y = Number(event.target.value);
 });
 
 // Helper methods to add and remove a given sphere, handled the spheredata and selection logic
-const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select) => {
+const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select, saveHistory=true) => {
+    if(saveHistory) {
+      addToHistory();
+    }
     const sphereMesh = createSphere(x, z, y, diameter, color, scene);
     sphereData.push({mesh: sphereMesh, color: color});
     if (select) {
@@ -971,7 +988,10 @@ const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, 
     }
     setLocalStorageSphereData();
 }
-const removeSphere = (sphereMesh, scene, transformControls, overlayScene) => {
+const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHistory=true) => {
+  if(saveHistory) {
+    addToHistory();
+  }
   sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
   if (currentSphere == sphereMesh) {
     // If deletes currently selected, unselect and remove transform controls
@@ -982,7 +1002,6 @@ const removeSphere = (sphereMesh, scene, transformControls, overlayScene) => {
   sphereMesh.material.dispose();
   setLocalStorageSphereData();
 }
-
 
 // Add logic for enabling the parameters here
 const selectSphere = (sphere, transformControls, overlayScene) => {
@@ -998,6 +1017,78 @@ const deselectSphere = (transformControls, overlayScene) => {
   currentSphere = null;
   $("#sphere-parameters").setAttribute("data-disabled", "true");
 }
+
+const getSnapshot = () => {
+  const snapshot = sphereData.map(element => ({
+    x: element.mesh.position.x,
+    y: element.mesh.position.y,
+    z: element.mesh.position.z,
+    diameter: element.mesh.geometry.parameters.radius * 2,
+    color: element.color
+  }));
+  return snapshot;
+}
+
+// Should be called any time a change happens to the scene
+const addToHistory = () => {
+  if (sceneHistory.length > 20) {
+    sceneHistory.shift();
+  }
+  const snapshot = getSnapshot();
+  sceneHistory.push(snapshot);
+  sceneFuture = [];
+  console.log("SCENEHISTORY" + sceneHistory)
+}
+
+const undo = (scene, transformControls, overlayScene) => {
+  if (sceneHistory.length > 0) {
+    console.log("UNDO")
+    const snapshot = sceneHistory.pop();
+    
+    // add current state redo
+    if (sceneFuture.length > 20) {
+      sceneFuture.shift();
+    } 
+    sceneFuture.push(getSnapshot());
+
+    sphereData.forEach(element => {
+      removeSphere(element.mesh, scene, transformControls, overlayScene, false);
+    });
+    console.log("spheres removed");
+    sphereData = [];
+    // for each sphere, add to sphereData and scene
+    snapshot.forEach(element => {
+      addSphere(element.x, element.z, element.y, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
+    });
+    setLocalStorageSphereData();
+  }
+}
+
+const redo = (scene, transformControls, overlayScene) => {
+  if (sceneFuture.length > 0) {
+    console.log("REDO")
+    const snapshot = sceneFuture.pop();
+
+    // add to redo
+    if (sceneHistory.length > 20) {
+      sceneHistory.shift();
+    } 
+    sceneHistory.push(getSnapshot())
+
+    sphereData.forEach(element => {
+      removeSphere(element.mesh, scene, transformControls, overlayScene, false);
+    });
+    console.log("spheres removed");
+    sphereData = [];
+    // for each sphere, add to sphereData and scene
+    snapshot.forEach(element => {
+      addSphere(element.x, element.z, element.y, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
+    });
+    setLocalStorageSphereData();
+  }
+}
+
+
 
 
 // plan for sliders:
