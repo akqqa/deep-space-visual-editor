@@ -13,4 +13,4 @@ Thank you to Dixonary for the base website template and logic used for the trans
 
 To use this software, you have to have a dictionary save from the game with at least up to signal -53 defined.
 
-If you have not played the game but still want to try the program, please use DICTIONARY-1.save in this repo. Spoiler Warning!
+If you have not played the game but still want to try the program, please use DICTIONARY-1.save in this repo. Drag the file into the site to start.
