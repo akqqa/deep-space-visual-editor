@@ -603,7 +603,6 @@ div [data-disabled="true"] {
     flex: 1;
 }
 
-
 button {
   background-color: var(--theme-color);
   border: none;
@@ -637,7 +636,6 @@ input[type="number"]::-webkit-outer-spin-button {
   appearance: none;
   margin: 0;
 }
-
 input[type="number"] {
   appearance: textfield;
 }

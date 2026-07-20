@@ -768,11 +768,6 @@ window.onload = () => {
   })
   observer.observe(sceneDiv);
 
-  // Create listener for adding sphere on button press (copy)
-  // Delete sphere? unsure how. selected then press delete button ig
-
-  // Add logic for selecting and translating spheres
-
   // Setup model import and export
 
   $("#import-button").addEventListener("click", () => {
@@ -901,7 +896,6 @@ window.onload = () => {
     $("#posZ").value = currentSphere.position.y.toFixed(1);
     $("#posY").value = currentSphere.position.z.toFixed(1);
   })
-
 
   // Sphere selection
   sceneDiv.addEventListener("mousedown", (event) => {
