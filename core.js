@@ -997,6 +997,27 @@ $("#volumeSlider").addEventListener("input", (event) => {
 $("#volumeSlider").addEventListener("mousedown", (event) => {
   addToHistory(); // Only add to history on start!
 })
+$("#colorAmount").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Math.round(Number(event.target.value)), minColor), maxColor);
+  event.target.value = num;
+  const c = calculateColor(num);
+  currentSphere.material.uniforms.objectColor.value.set(c);
+  // ALSO SET FOR SPHEREDATA COLOR
+  sphereData.find(x => x.mesh == currentSphere).color = num;
+  setLocalStorageSphereData();
+})
+$("#colorSlider").addEventListener("input", (event) => {
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minColor), maxColor);
+  const c = calculateColor(num);
+  currentSphere.material.uniforms.objectColor.value.set(c);
+  sphereData.find(x => x.mesh == currentSphere).color = num;
+  console.log(c)
+  setLocalStorageSphereData();
+})
+$("#colorSlider").addEventListener("mousedown", (event) => {
+  addToHistory(); // Only add to history on start!
+})
 
 // Helper methods to add and remove a given sphere, handled the spheredata and selection logic
 const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select, saveHistory=true) => {
@@ -1036,6 +1057,7 @@ const selectSphere = (sphere, transformControls, overlayScene) => {
     sphere.geometry.computeBoundingSphere();
     const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
     $("#volumeAmount").value = Number(geometryDiameter.toFixed(1));
+    $("#colorAmount").value = sphereData.find(x => x.mesh == currentSphere).color;
 }
 
 const deselectSphere = (transformControls, overlayScene) => {
@@ -1119,13 +1141,3 @@ const redo = (scene, transformControls, overlayScene) => {
     setLocalStorageSphereData();
   }
 }
-
-
-
-
-// plan for sliders:
-// x y and z textbox, colour and volume slider
-// by default disabled
-// if currentSphere is defined, set the values to currentSphere
-// link them so that changing them changes currentsphere.. maybe make helper method to call every transform to update sphereData too - do this for color
-// add selection logic for history
