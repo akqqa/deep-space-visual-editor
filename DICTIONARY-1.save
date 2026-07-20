@@ -1,0 +1,2222 @@
+{
+    "wordDict": {
+        "keys": [
+            -2,
+            -5,
+            -4,
+            -6,
+            -8,
+            -7,
+            -1,
+            -10,
+            -3,
+            -11,
+            -12,
+            -13,
+            -9,
+            -14,
+            -15,
+            -16,
+            -17,
+            -20,
+            -18,
+            -21,
+            -22,
+            -19,
+            -23,
+            -24,
+            -25,
+            -26,
+            -27,
+            -28,
+            -29,
+            -30,
+            -31,
+            -32,
+            -33,
+            -36,
+            -37,
+            -34,
+            -35,
+            -38,
+            -39,
+            -40,
+            -41,
+            -42,
+            -43,
+            -44,
+            -45,
+            -46,
+            -47,
+            -48,
+            -49,
+            -50,
+            -51,
+            -52,
+            -54,
+            -53,
+            -55,
+            -56,
+            -57,
+            -58,
+            -59,
+            -60,
+            -61,
+            -62,
+            -63,
+            -64,
+            -65,
+            -69,
+            -66,
+            -67,
+            -72,
+            -73,
+            -74,
+            -68,
+            -75,
+            -76,
+            -70,
+            -71,
+            -77,
+            -79,
+            -80,
+            -83,
+            -84,
+            -85,
+            -86,
+            -87,
+            -88,
+            -89,
+            -90,
+            -141,
+            -91,
+            -92,
+            -93,
+            -140,
+            -139,
+            -94,
+            -95,
+            -96,
+            -97,
+            -98,
+            -99,
+            -101,
+            -78,
+            -81,
+            -82,
+            -102,
+            -103,
+            -144,
+            -104,
+            -105,
+            -100,
+            -106,
+            -110,
+            -111,
+            -114,
+            -115,
+            -116,
+            -117,
+            -108,
+            -109,
+            -107,
+            -118,
+            -119,
+            -120,
+            -122,
+            -123,
+            -124,
+            -125,
+            -126,
+            -127,
+            -128,
+            -129,
+            -130,
+            -121,
+            -131,
+            -132,
+            -133,
+            -134,
+            -112,
+            -113,
+            -135,
+            -149,
+            -151,
+            -150,
+            -136,
+            -138,
+            -142,
+            -143,
+            -146,
+            -147,
+            -145,
+            -154,
+            -155,
+            -148,
+            -152,
+            -156,
+            -157,
+            -153,
+            -137,
+            -158,
+            -159,
+            -160,
+            -161,
+            -162,
+            -163,
+            -164,
+            -165,
+            -167,
+            -166,
+            -168,
+            -169,
+            -170,
+            -172,
+            -174,
+            -171,
+            -175,
+            -176,
+            -177,
+            -173,
+            -178,
+            -179,
+            -180,
+            -181,
+            -182,
+            -183,
+            -184,
+            -185,
+            -186,
+            -187,
+            -188,
+            -189,
+            -190,
+            -191,
+            -192,
+            -193,
+            -194,
+            -195,
+            -196,
+            -197,
+            -198,
+            -199,
+            -200,
+            -201,
+            -202,
+            -203,
+            -204,
+            -205,
+            -206,
+            -207,
+            -208,
+            -209,
+            -210,
+            -212,
+            -211,
+            -213,
+            -214,
+            -215,
+            -216,
+            -217,
+            -218,
+            -219,
+            -220,
+            -221,
+            -222,
+            -223,
+            -224,
+            -225,
+            -226,
+            -227,
+            -228,
+            -229,
+            -230,
+            -231,
+            -232,
+            -233,
+            -234,
+            -235,
+            -236,
+            -237,
+            -238,
+            -239,
+            -240,
+            -241,
+            -242,
+            -243,
+            -244,
+            -245
+        ],
+        "values": [
+            "_",
+            "+",
+            "=",
+            "*",
+            "/",
+            "-",
+            "NEG",
+            ".",
+            ",",
+            "V",
+            "?",
+            "ENUMERATE",
+            "^",
+            "(",
+            ")",
+            "P",
+            "L",
+            "DISTANCE",
+            "S",
+            "PERIMETER",
+            "VOLUME",
+            "CONSTRUCT",
+            "AMOUNT",
+            "SIGFIG",
+            "...",
+            "PROP",
+            "T",
+            "F",
+            "NOT",
+            "AND",
+            "ORS",
+            ">",
+            "<",
+            "THUS",
+            "IF",
+            "LARGER",
+            "SMALLER",
+            "MAKE",
+            "MOVE",
+            "SOURCE",
+            "DEST",
+            "WORD",
+            "TRANSMISSION",
+            "METEOR",
+            "OCTOIDS",
+            "HUMANITY",
+            "CIRCLE",
+            "SPHERE",
+            "X",
+            "Y",
+            "Z",
+            "SPHEREDATA",
+            "COLOUR",
+            "RENDER",
+            "ELEMENT",
+            "ATOM",
+            "MOLECULE",
+            "REACT",
+            "REACTION",
+            "PROTON",
+            "NEUTRON",
+            "ELECTRON",
+            "ISOTOPE",
+            "DECAY",
+            "TIME",
+            "OCTOSECOND",
+            "SPEED",
+            "C",
+            "LIGHTOCTOSECOND",
+            "OCTOMETER",
+            "MASS",
+            "UNIT",
+            "OCTOGRAM",
+            "OCTOSUPERTON",
+            "OCTOYEAR",
+            "OCTOMONTH",
+            "OR",
+            "NOUN",
+            "VERB",
+            "SUBJECT",
+            "OBJECT",
+            "DO",
+            "TO",
+            "OPPOSITE",
+            "DESTROY",
+            "FUSION",
+            "STAR",
+            "AKERIA",
+            "DELTA",
+            "ROTATE",
+            "PLANET",
+            "AKERTH",
+            "EARTH",
+            "MOON",
+            "WHITEDWARF",
+            "NEUTRONSTAR",
+            "BLACKHOLE",
+            "GALAXY",
+            "MEMBER",
+            "BEING",
+            "WORDCLASS",
+            "ADJECTIVE",
+            "PREPOSITION",
+            "ORGANIC",
+            "HYDROGENIC",
+            "REPRODUCTION",
+            "ABSTRACT",
+            "CONCRETE",
+            "IS",
+            "SUPERLATIVE",
+            "ALL",
+            "NONE",
+            "AVG",
+            "MAJ",
+            "MIN",
+            "ROUGHLY",
+            "LARGE",
+            "SMALL",
+            "VERY",
+            "PREV",
+            "CURRENT",
+            "NEXT",
+            "THEN",
+            "KNOWN",
+            "UNKNOWN",
+            "UNIVERSE",
+            "INFINITY",
+            "WANT",
+            "INDIVIDUAL",
+            "OCTOID",
+            "HUMAN",
+            "WHEN",
+            "SPECIES",
+            "BORN",
+            "DIE",
+            "LIVE",
+            "LEAST",
+            "MOST",
+            "LIFESPAN",
+            "CHILD",
+            "ELDERLY",
+            "ADULT",
+            "NOZOMI",
+            "TRANSLATOR",
+            "OFFSPRING",
+            "PARENT",
+            "LIMB",
+            "BODY",
+            "CAN",
+            "GOOD",
+            "BAD",
+            "CONSUME",
+            "EMOTION",
+            "HAPPY",
+            "SAD",
+            "LOVE",
+            "TETSKI",
+            "COMPONENT",
+            "WHOLE",
+            "ORGAN",
+            "LIGHT",
+            "EYE",
+            "SENSE",
+            "TEMPERATURE",
+            "SOLID",
+            "GAS",
+            "LIQUID",
+            "ORIGINAL",
+            "IN",
+            "OUT",
+            "ATMOSPHERE",
+            "CHANGE",
+            "SIDE",
+            "NEAR",
+            "STARSIDE",
+            "SPACESIDE",
+            "OCEAN",
+            "EVOLVE",
+            "ANIMAL",
+            "PLANT",
+            "HETEROTROPH",
+            "AUTOTROPH",
+            "AQUATIC",
+            "TERRESTRIAL",
+            "AQUATICPLANT",
+            "RECIPROCAL",
+            "POSITIVE",
+            "NEGATIVE",
+            "ATTRACT",
+            "REPEL",
+            "ELECTRICITY",
+            "ELECTROMETER",
+            "BRAIN",
+            "INTELLIGENT",
+            "LANGUAGE",
+            "COMMUNICATE",
+            "SCIENCE",
+            "COLLABORATE",
+            "COLLECTIVE",
+            "FACT",
+            "OPINION",
+            "BELIEVE",
+            "PHILOSOPHY",
+            "LAW",
+            "VIVISM",
+            "NATALISM",
+            "CREATIVISM",
+            "SCIENTISM",
+            "DISSEMINISM",
+            "IDEOLOGY",
+            "SYMMETRISM",
+            "CULTIVISM",
+            "ENJOYABLE",
+            "SOCIALISE",
+            "FRIEND",
+            "CAPABILITY",
+            "PSYCHICBLAST",
+            "GESTURE",
+            "WALK",
+            "SWIM",
+            "FLY",
+            "AGILITY",
+            "DIFFERENT",
+            "ACHIEVEMENT",
+            "RESEARCH",
+            "SKILL",
+            "SPECIALISATION",
+            "IMPROVE",
+            "SYMMETRY",
+            "SUFFERING",
+            "LIMBDEATH",
+            "BODYDEATH",
+            "HATE",
+            "CONCIOUS",
+            "LEGACY",
+            "LIMITING",
+            "INFORMATION",
+            "MASTERED",
+            "DIMENSION",
+            "ENERGY",
+            "COMPUTER",
+            "FUSIONREACTOR",
+            "GOODBYE",
+            "GREET",
+            "PROUD"
+        ]
+    },
+    "descDict": {
+        "keys": [
+            -2,
+            -5,
+            -4,
+            -6,
+            -8,
+            -7,
+            -1,
+            -10,
+            -3,
+            -11,
+            -12,
+            -13,
+            -9,
+            -14,
+            -15,
+            -16,
+            -17,
+            -20,
+            -18,
+            -21,
+            -22,
+            -19,
+            -23,
+            -24,
+            -25,
+            -26,
+            -27,
+            -28,
+            -29,
+            -30,
+            -31,
+            -32,
+            -33,
+            -36,
+            -37,
+            -34,
+            -35,
+            -38,
+            -39,
+            -40,
+            -41,
+            -42,
+            -43,
+            -44,
+            -45,
+            -46,
+            -47,
+            -48,
+            -49,
+            -50,
+            -51,
+            -52,
+            -54,
+            -53,
+            -55,
+            -56,
+            -57,
+            -58,
+            -59,
+            -60,
+            -61,
+            -62,
+            -63,
+            -64,
+            -65,
+            -69,
+            -66,
+            -67,
+            -72,
+            -73,
+            -74,
+            -68,
+            -75,
+            -76,
+            -70,
+            -71,
+            -77,
+            -79,
+            -80,
+            -83,
+            -84,
+            -85,
+            -86,
+            -87,
+            -88,
+            -89,
+            -90,
+            -141,
+            -91,
+            -92,
+            -93,
+            -140,
+            -139,
+            -94,
+            -95,
+            -96,
+            -97,
+            -98,
+            -99,
+            -101,
+            -78,
+            -81,
+            -82,
+            -102,
+            -103,
+            -144,
+            -104,
+            -105,
+            -100,
+            -106,
+            -110,
+            -111,
+            -114,
+            -115,
+            -116,
+            -117,
+            -108,
+            -109,
+            -107,
+            -118,
+            -119,
+            -120,
+            -122,
+            -123,
+            -124,
+            -125,
+            -126,
+            -127,
+            -128,
+            -129,
+            -130,
+            -121,
+            -131,
+            -132,
+            -133,
+            -134,
+            -112,
+            -113,
+            -135,
+            -149,
+            -151,
+            -150,
+            -136,
+            -138,
+            -142,
+            -143,
+            -146,
+            -147,
+            -145,
+            -154,
+            -155,
+            -148,
+            -152,
+            -156,
+            -157,
+            -153,
+            -137,
+            -158,
+            -159,
+            -160,
+            -161,
+            -162,
+            -163,
+            -164,
+            -165,
+            -167,
+            -166,
+            -168,
+            -169,
+            -170,
+            -172,
+            -174,
+            -171,
+            -175,
+            -176,
+            -177,
+            -173,
+            -178,
+            -179,
+            -180,
+            -181,
+            -182,
+            -183,
+            -184,
+            -185,
+            -186,
+            -187,
+            -188,
+            -189,
+            -190,
+            -191,
+            -192,
+            -193,
+            -194,
+            -195,
+            -196,
+            -197,
+            -198,
+            -199,
+            -200,
+            -201,
+            -202,
+            -203,
+            -204,
+            -205,
+            -206,
+            -207,
+            -208,
+            -209,
+            -210,
+            -212,
+            -211,
+            -213,
+            -214,
+            -215,
+            -216,
+            -217,
+            -218,
+            -219,
+            -220,
+            -221,
+            -222,
+            -223,
+            -224,
+            -225,
+            -226,
+            -227,
+            -228,
+            -229,
+            -230,
+            -231,
+            -232,
+            -233,
+            -234,
+            -235,
+            -236,
+            -237,
+            -238,
+            -239,
+            -240,
+            -241,
+            -242,
+            -243,
+            -244,
+            -245
+        ],
+        "values": [
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 2,
+                "breakOnDouble": true
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 0,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 0,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "variables can be opeprators too\n\ncan also mean \"dimension\"",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "the answer should be whatever goes here",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "give all possibilities for all variables, in variable order\n\nupdate: not necessarily give all, just give any that are valid from the function",
+                "formatMode": 2,
+                "formatModeAfter": 2,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "VAR0(x) assigns x to var0",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 0,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "the values for all variables in order\ne.g result0 (1 and 2) if var0 is 1 and var1 is 2\nnumber after is arbitrary next label\n\ncan also be used to get specific vars\neg result0 var0 = 1 in example above\n\nwrong! its a coordinate pair / point\np0 (1,2) defines p0 as that point. and p0 v0 will return 1",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "shape\n",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "either:\n\nnumber of that type of var (p,l,s)\nif p/l/s don't have numbers\n\nor\n\nsize of a list/p/l/s",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "... / infinity",
+                "formatMode": 0,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "translates lines\n\neg (0,2) will move a line up 2\n\nalso, if you have s1(p0,p1,p2) and s2(p3,p4,p5) then p0 addvec will move from s1 to s2??\n\nah, just an abstract move\nnote: it transforms the initial coord",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "circle (x) = a circle of radius x",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "defines a sphere using 5 numbers\nx,y,z of origin\nvolume\nand a number between 0 and 64 (why??)",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "specifically for chemical compounds\n\nnot commutative\nsignifies a chemical transformation",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "isotope x, y\nwhere x is the number of protons, and y is... the isotope name\n\ne.g helium-3",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "for chemical isotopes\ngives breakdown of what makes that isotope",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "one octond = 0.80661 seconds\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "the distance light travels in a vacuum in 1 octond\n\none lightoctond = 0.8066 lightseconds\n\none lightoctond = 0.242 gigameters\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "1 octer = 1.8 meters",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "not volume\namount of subatomic parts?\namount of neutrons/protons? etc\nin a molecule",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "one mass unit = 8^29 * the atomic mass of sodium-56\n\n= 14372.7 grams",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "subject to object verb do = \n\nsubject does verb to object\n/\nsubject verbs object\n\noctoids to meteor 0 make do = \noctoids make meteor 0\nthey \"apply\" make to meteor 0",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "make element\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "change \n\nif go 1 then neg1, delta will be 2 not 0\n\ndelta(circle) means the perimeter of the circle?\nthe distance? idk\n\ncircle delta = orbit?",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "p0 arc time = \nthe time it takes for point p0 to move arc (aka an orbit)\n\nnvm its a verb it means rotate not arc lol\n\nif p0 rotate around p1 then \np0 cicrle(3) delta move do??\nthe orbit of p0 movement is a circle 3?",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "concrete is - exactly the same, one of\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "abstract is - less concrete more abstract\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "can be mean or median or just abstract average",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "aboveaverage noun (s1,s2,s3,v64,s4)\nis s because there are more s's than v's",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "when given a list of values, this is the basis of how close they are - context\n\n0 iss roughly 1 when list0(0,1,80,300)\nbut not when list0(0,0.25,0.5,0.75,1)\n\ncan use values outside of context, but held to same standards as context",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "prev 4 = 4 back",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "octoids dont know if humans ?\noctoids ? that there are more beings in the universe\n\nif humans exist is known therefore aliens are known therefore aliens ? something",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "regarding symmetrism, nozomi is a cultivist\nregarding limbdeath self hate, nozomi is a symmetrist (1 being)\nregarding socialising, nozomi is a cultivist. enjoys socialising and gaining knowledge. 5 laws are what makes you happy",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "meteor made octopeople die in the past\n\nmeteor makes octopeople celebrate their species ? in the future\nlive",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "in regards to symmetrism, a cultivist\nregard to limbdeath self hate a cultivist\nbelieve limbs and body are useless apart\nsocialising, akira is a symmetrist\nthe 5 laws are all socialising?",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "within\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "or photosynthesises\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "a0 consumes original plant units\nwhen original limb move out of original body\nand conssume a0 therefore a0 dont consume original body\n\noh - a0 eats plants instead cause limbs leave body and eat it!",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "being iss good\n\nbeing/life is good",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "reproduction iss good\n\nreproduction is good",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "make do iss good\n\ncreation is good",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "knowledge do iss good\n\nknowledge/learning is good",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "octoperson 0 to knowledge to octoperson 1 communicate do iss good\n\nsharing knowledge is good",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "BELIEVE SYMMETRY IN OCTOPEOPLE IS GOOD\nBELIEVE THAT DIFFERENCE IN ONE IS BAD, SO LIMB IMPROVEMENT IS BAD. 1 BODY CAN IMPROVE BUT NOT 8 LIMB\nlimbdeath: believe self hate in limbdeath is bad. 1 octoperson is 1being\nsocialising: believe all happiness comes from socialising. achievement but no socialising is aad",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "believes specialisation in octopeople good, symmetrical is neutral\nachieving is good. 8 limb improve time takes overlifespan, so must specialise\nlimbdeath: self hate is bad, different capabilities thus live capability different thus must not self hate\nno self hate as without the other useles\nsocialising: socialising and achievement is happy. octoperson is happy when happy",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "/ share\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "specifically electricity\n",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "specifically for limbs",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "imporant: it seems the conciousness is in the body, at least knowledge is\nso smart octopeople are more symmetric, and athletic/physically talented are more specialised",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "the process of dying fully when your limbs die\n\nwhen this happens the body can hate the limbs for dying. maj octoids believe that this self hate is bad\nyet the majority do it.",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "the process of dying fully when your body dies",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "the ability to sense others",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "concrete is short supply\nabstract.. hard to know, not widely known?",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 0,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "*fully* understood\nin regards to scientific theory",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "they put one in the fucking meteor???!?!?!?!!",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            },
+            {
+                "desc": "??? ADD NOTES HERE ???",
+                "formatMode": 1,
+                "formatModeAfter": 1,
+                "breakOnDouble": false
+            }
+        ]
+    },
+    "id": 1,
+    "beforeUserDefaultMode": 1,
+    "afterUserDefaultMode": 1
+}
