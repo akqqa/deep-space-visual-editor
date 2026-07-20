@@ -96,7 +96,9 @@ const updateSidebar = () => {
 
 const initialiseSidebar = () => {
   const os = JSON.parse(localStorage.getItem("sidebar-visible"));
-  sidebar_visible = !!os;
+  if (os !== null) {
+    sidebar_visible = JSON.parse(os);
+  }
   console.log(`Sidebar initialised to ${sidebar_visible ? "visible" : "hidden"}`);
   updateSidebar();
 }
