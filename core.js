@@ -524,20 +524,16 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
   if (importSphereData == false || importSphereData.length == 0) {
     return false;
   }
+
+  addToHistory();
   // delete all current spheres
   sphereData.forEach(element => {
-    scene.remove(element.mesh);
-    transformControls.detach();
-    element.mesh.geometry.dispose();
-    element.mesh.material.dispose();
-    currentSphere = null;
+    removeSphere(element.mesh,scene,transformControls,overlayScene,saveHistory=false);
   });
   sphereData = [];
   // for each sphere, add to sphereData and scene
   importSphereData.forEach(element => {
-    const sphereMesh = createSphere(element[0],element[1],element[2],element[3],element[4],scene);
-    sphereData.push({mesh: sphereMesh, color: element[4]});
-    deselectSphere(transformControls, overlayScene);
+    addSphere(element[0], element[1], element[2], element[3], element[4], scene, transformControls, overlayScene, false, false);
   });
   setLocalStorageSphereData();
 
@@ -874,9 +870,10 @@ window.onload = () => {
 
   window.deleteAllSpheres = () => {
     const res = confirm("Are you sure you want to reset the canvas?");
+    addToHistory();
     if (res) {
       sphereData.forEach(element => {
-        removeSphere(element.mesh, scene, transformControls, overlayScene);
+        removeSphere(element.mesh, scene, transformControls, overlayScene,zfalse);
       });
     }
   }
@@ -1069,7 +1066,7 @@ const redo = (scene, transformControls, overlayScene) => {
     console.log("REDO")
     const snapshot = sceneFuture.pop();
 
-    // add to redo
+    // add current state to redo
     if (sceneHistory.length > 20) {
       sceneHistory.shift();
     } 
