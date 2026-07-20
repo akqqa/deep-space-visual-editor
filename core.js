@@ -28,8 +28,14 @@ const minY = -15;
 const maxZ = 10;
 const minZ = -10
 
+const maxVol = 20;
+const minVol = 0.1;
+const maxColor = 64;
+const minColor = 0;
+
 let sceneHistory = []
 let sceneFuture = []
+const MAX_HISTORY = 20;
 
 //**************************************************//
 // THEME
@@ -528,7 +534,7 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
   addToHistory();
   // delete all current spheres
   sphereData.forEach(element => {
-    removeSphere(element.mesh,scene,transformControls,overlayScene,saveHistory=false);
+    removeSphere(element.mesh,scene,transformControls,overlayScene,false);
   });
   sphereData = [];
   // for each sphere, add to sphereData and scene
@@ -579,7 +585,6 @@ const sphereDataToExportString = () => {
   }
   let res = [-53,-14];
   sphereData.forEach((element) => {
-      console.log("spheredata element" + element.color);
     element.mesh.geometry.computeBoundingSphere();
     const geometryRadius = element.mesh.geometry.boundingSphere.radius;
 
@@ -873,7 +878,7 @@ window.onload = () => {
     addToHistory();
     if (res) {
       sphereData.forEach(element => {
-        removeSphere(element.mesh, scene, transformControls, overlayScene,zfalse);
+        removeSphere(element.mesh, scene, transformControls, overlayScene,false);
       });
     }
   }
@@ -958,19 +963,40 @@ $("#posX").addEventListener("change", (event) => {
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minX), maxX);
   event.target.value = num;
   currentSphere.position.x = Number(event.target.value);
+  setLocalStorageSphereData();
 });
 $("#posY").addEventListener("change", (event) => {
   addToHistory();
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
   event.target.value = num;
   currentSphere.position.z = Number(event.target.value);
+  setLocalStorageSphereData();
 });
 $("#posZ").addEventListener("change", (event) => {
   addToHistory();
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minZ), maxZ);
   event.target.value = num;
   currentSphere.position.y = Number(event.target.value);
+  setLocalStorageSphereData();
 });
+$("#volumeAmount").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
+  event.target.value = num;
+  currentSphere.geometry.dispose();
+  currentSphere.geometry = new THREE.SphereGeometry(num/2);
+  setLocalStorageSphereData();
+})
+$("#volumeSlider").addEventListener("input", (event) => {
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
+  event.target.value = num;
+  currentSphere.geometry.dispose();
+  currentSphere.geometry = new THREE.SphereGeometry(num/2);
+  setLocalStorageSphereData();
+})
+$("#volumeSlider").addEventListener("mousedown", (event) => {
+  addToHistory(); // Only add to history on start!
+})
 
 // Helper methods to add and remove a given sphere, handled the spheredata and selection logic
 const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select, saveHistory=true) => {
@@ -1006,6 +1032,10 @@ const selectSphere = (sphere, transformControls, overlayScene) => {
     transformControls.attach(currentSphere);
     overlayScene.add(transformControls.getHelper());
     $("#sphere-parameters").setAttribute("data-disabled", "false");
+    // Set volume and color parameters to the correct values! (xyz are handled already but i cant remember where?? lol oh well)
+    sphere.geometry.computeBoundingSphere();
+    const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
+    $("#volumeAmount").value = Number(geometryDiameter.toFixed(1));
 }
 
 const deselectSphere = (transformControls, overlayScene) => {
@@ -1016,19 +1046,24 @@ const deselectSphere = (transformControls, overlayScene) => {
 }
 
 const getSnapshot = () => {
-  const snapshot = sphereData.map(element => ({
-    x: element.mesh.position.x,
-    y: element.mesh.position.y,
-    z: element.mesh.position.z,
-    diameter: element.mesh.geometry.parameters.radius * 2,
-    color: element.color
-  }));
+  
+  const snapshot = sphereData.map(element => {
+    element.mesh.geometry.computeBoundingSphere();
+    return {
+      x: element.mesh.position.x,
+      y: element.mesh.position.y,
+      z: element.mesh.position.z,
+      diameter: element.mesh.geometry.boundingSphere.radius * 2,
+      color: element.color
+    }
+  });
+
   return snapshot;
 }
 
 // Should be called any time a change happens to the scene
 const addToHistory = () => {
-  if (sceneHistory.length > 20) {
+  if (sceneHistory.length > MAX_HISTORY) {
     sceneHistory.shift();
   }
   const snapshot = getSnapshot();
@@ -1043,7 +1078,7 @@ const undo = (scene, transformControls, overlayScene) => {
     const snapshot = sceneHistory.pop();
     
     // add current state redo
-    if (sceneFuture.length > 20) {
+    if (sceneFuture.length > MAX_HISTORY) {
       sceneFuture.shift();
     } 
     sceneFuture.push(getSnapshot());
@@ -1093,3 +1128,4 @@ const redo = (scene, transformControls, overlayScene) => {
 // by default disabled
 // if currentSphere is defined, set the values to currentSphere
 // link them so that changing them changes currentsphere.. maybe make helper method to call every transform to update sphereData too - do this for color
+// add selection logic for history
