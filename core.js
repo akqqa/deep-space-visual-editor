@@ -572,7 +572,7 @@ const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
   sphereData = [];
   // for each sphere, add to sphereData and scene
   localStorageSphereData.forEach(element => {
-    addSphere(element[0], element[1], element[2], element[3], element[4], scene, transformControls, overlayScene, false);
+    addSphere(element[0], element[1], element[2], element[3], element[4], scene, transformControls, overlayScene, false, false);
   });
 }
 
