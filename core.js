@@ -937,6 +937,13 @@ window.onload = () => {
         removeSphere(currentSphere, scene, transformControls, overlayScene);
       }
     }
+    if (event.code == "KeyC") {
+      if (currentSphere) {
+        currentSphere.geometry.computeBoundingSphere();
+        const color = sphereData.find(x => x.mesh == currentSphere).color;
+        addSphere(currentSphere.position.x, currentSphere.position.z, currentSphere.position.y, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, true);
+      }
+    }
     if (event.code == "KeyZ") {
       undo(scene, transformControls, overlayScene);
     }
@@ -1052,7 +1059,10 @@ const selectSphere = (sphere, transformControls, overlayScene) => {
     sphere.geometry.computeBoundingSphere();
     const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
     $("#volumeAmount").value = Number(geometryDiameter.toFixed(1));
+    $("#volumeSlider").value = Number(geometryDiameter.toFixed(1));
     $("#colorAmount").value = sphereData.find(x => x.mesh == currentSphere).color;
+    $("#colorSlider").value = sphereData.find(x => x.mesh == currentSphere).color;
+
 }
 
 const deselectSphere = (transformControls, overlayScene) => {
