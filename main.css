@@ -34,7 +34,7 @@ main {
     "sbr vwr vwr"
     "sbr vwr vwr"
     "ftr ftr ftr";
-  grid-template-columns: clamp(18rem, 20vw, 28rem) 1fr;
+  grid-template-columns: clamp(18rem, 18vw, 28rem) 1fr;
   grid-template-rows: auto 1fr 3em 3em;
   background-color: black;
 
