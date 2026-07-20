@@ -1,6 +1,6 @@
 # Deep Space Visual Editor
 
-A 3D Modelling program based on the game "The Message from Deep Space". 
+A 3D Modelling program based on the game "The Message from Deep Space". Try it [here!](https://dsve.akqqa.dev)
 
 Models are made out of a collection of spheres - with transformable radius and colour.
 
