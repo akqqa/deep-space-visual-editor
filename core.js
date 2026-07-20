@@ -476,7 +476,6 @@ const parseSphereData = (message) => {
         // Treat negation and decimals
         if (decimal) {
           currentNumber = parseFloat(`${firstHalf}.${secondHalf}`);
-          console.log("floatparsed " + currentNumber);
         } else {
           currentNumber = firstHalf;
         }
@@ -525,7 +524,6 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
   // then for each, add to spheredata and add to scene (then deselect current sphere)
   let signals = parseText(text);
   let importSphereData = parseSphereData(signals);
-  console.log("sphered" + importSphereData);
   if (importSphereData == false || importSphereData.length == 0) {
     return false;
   }
@@ -566,7 +564,6 @@ const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
     return;
   }
   const localStorageSphereData = JSON.parse(data);
-  console.log("retrieved data: " + data)
   sphereData.forEach(element => {
     removeSphere(element.mesh, scene, transformControls, overlayScene);
   });
@@ -608,7 +605,6 @@ const sphereDataToExportString = () => {
       } else {
         resArray.push(v)
       }
-      console.log(resArray);
       return resArray;
     });
 
@@ -616,7 +612,6 @@ const sphereDataToExportString = () => {
   });
   res.pop();
   res.push(-15);
-  console.log("translation " + getRawTranslation(res))
   return getRawTranslation(res);
 }
 
@@ -812,7 +807,6 @@ window.onload = () => {
       const importDialog = $("dialog.import-paste");
       importDialog.close();
     } else {
-      console.log("res: " + res)
       alert("Invalid import data");
     }
   });
@@ -820,7 +814,6 @@ window.onload = () => {
   $("#export-button").addEventListener("click", () => {
     // Transform the sphereData into the correct test
     let res = sphereDataToExportString();
-    console.log("res" + res)
     if (!res) {
       $("#export-button").textContent = "FAILED";
     } else {
@@ -935,13 +928,11 @@ window.onload = () => {
   });
 
   window.addEventListener("keydown", (event) => { // On f click, center camera around currently selected sphere
-    console.log("keypress")
     if (event.code == "KeyF" && currentSphere) {
       orbitControls.target.copy(currentSphere.position);
       // Could improve by making it also rescale to fit object in
     }
     if (event.code == "ControlLeft") {
-      console.log("control")
       // If control held, transform scale goes to 0.1
       transformControls.translationSnap = 0.1;
     } 
@@ -1021,7 +1012,6 @@ $("#colorSlider").addEventListener("input", (event) => {
   const c = calculateColor(num);
   currentSphere.material.uniforms.objectColor.value.set(c);
   sphereData.find(x => x.mesh == currentSphere).color = num;
-  console.log(c)
   setLocalStorageSphereData();
 })
 $("#colorSlider").addEventListener("mousedown", (event) => {
@@ -1100,12 +1090,10 @@ const addToHistory = () => {
   const snapshot = getSnapshot();
   sceneHistory.push(snapshot);
   sceneFuture = [];
-  console.log("SCENEHISTORY" + sceneHistory)
 }
 
 const undo = (scene, transformControls, overlayScene) => {
   if (sceneHistory.length > 0) {
-    console.log("UNDO")
     const snapshot = sceneHistory.pop();
     
     // add current state redo
@@ -1117,7 +1105,6 @@ const undo = (scene, transformControls, overlayScene) => {
     sphereData.forEach(element => {
       removeSphere(element.mesh, scene, transformControls, overlayScene, false);
     });
-    console.log("spheres removed");
     sphereData = [];
     // for each sphere, add to sphereData and scene
     snapshot.forEach(element => {
@@ -1129,7 +1116,6 @@ const undo = (scene, transformControls, overlayScene) => {
 
 const redo = (scene, transformControls, overlayScene) => {
   if (sceneFuture.length > 0) {
-    console.log("REDO")
     const snapshot = sceneFuture.pop();
 
     // add current state to redo
@@ -1141,7 +1127,6 @@ const redo = (scene, transformControls, overlayScene) => {
     sphereData.forEach(element => {
       removeSphere(element.mesh, scene, transformControls, overlayScene, false);
     });
-    console.log("spheres removed");
     sphereData = [];
     // for each sphere, add to sphereData and scene
     snapshot.forEach(element => {

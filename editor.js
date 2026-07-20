@@ -37,7 +37,6 @@ const calculateColor = (value) => {
     let lo = Math.floor(n);
     let hi = Math.ceil(n);
     let c = getGradientColor(COLORS[lo], COLORS[hi], n % 1)
-    console.log("COLOUR " + c);
     return new THREE.Color(Number(c));
 }
 
@@ -68,10 +67,6 @@ const getGradientColor = function (start_color, end_color, percent) {
     if (diff_red.length == 1) diff_red = '0' + diff_red
     if (diff_green.length == 1) diff_green = '0' + diff_green
     if (diff_blue.length == 1) diff_blue = '0' + diff_blue
-
-    console.log("red diff " + diff_red)
-    console.log("blue diff " + diff_blue)
-    console.log("green diff " + diff_green)
 
     return "0x" + diff_red + diff_green + diff_blue;
 };
@@ -172,8 +167,6 @@ const initialiseEditor = () => {
         renderer.autoClear = true; // reenables to clear previous frame for next loop
     }
     renderer.setAnimationLoop(animate);
-
-    console.log("in editor: " + orbitControls)
 
     return {
         camera,
