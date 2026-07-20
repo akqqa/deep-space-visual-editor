@@ -74,7 +74,7 @@ const initialiseTheme = () => {
 //**************************************************//
 // SIDEBAR
 
-let sidebar_visible = false;
+let sidebar_visible = true;
 
 const toggleSidebar = () => {
   sidebar_visible = !sidebar_visible;
