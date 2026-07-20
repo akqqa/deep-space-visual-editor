@@ -38,12 +38,12 @@
       </span>
 
       <div>
-        <button id="import-button" class="do-translate" data-original="[-52, -169]" />
         
-        <button id="export-button" class="do-translate" data-original="[-52, -170]" />
       </div>
 
       <div class="button-row">
+        <button id="import-button" class="do-translate" data-original="[-52, -169]" style="transform: translateY(-5px);"></button>
+        <button id="export-button" class="do-translate" data-original="[-52, -170]" style="transform: translateY(-5px);"></button>
         <a id="retheme">
           <i class="fa fa-adjust"></i>
         </a>
@@ -102,44 +102,78 @@
         <input type="file" id="dictionary-input" />
       </div>
 
-      <div class="dict-view">
-        <p class="sidebar-header do-translate" data-original="[-52]">
-      </div>
-      <div id="sphere-parameters" data-disabled="true">
-        <input type="number" id="posX" max="15" min="-15" step="0.1">X</input>
-        <input type="number" id="posY" max="15" min="-15" step="0.1">Y</input>
-        <input type="number" id="posZ" max="10" min="-10" step="0.1">Z</input>
-        <div class="range">
-          <p class="do-translate" data-original="[-22]"></p>
-          <input id="volumeSlider" class="range-slider" max="20" min="0.1" type="range" value="2" step="0.1" oninput="volumeAmount.value=volumeSlider.value">
-          <input id="volumeAmount" class="range-amount" type="number" value="2" oninput="volumeSlider.value=volumeAmount.value" step="0.1">
-        </div>
-        <div class="range">
-          <p class="do-translate" data-original="[-54]"></p>
-          <input id="colorSlider" class="range-slider" max="64" min="0" type="range" value="64" step="1" oninput="colorAmount.value=colorSlider.value">
-          <input id="colorAmount" class="range-amount" type="number" value="2" oninput="colorSlider.value=colorAmount.value">
-        </div>
+      <div class="specific-controls-view">
+        <p class="sidebar-header do-translate" data-original="[-52]"></p>
+        <div class="controls" style="padding-bottom: 0;">
+          <div id="sphere-parameters" data-disabled="true">
+            <div id="specific-controls">
+              <div class="position-controls">
+                  <div class="position-input">
+                      <span>X</span>
+                      <input type="number" id="posX" max="15" min="-15" step="0.1">
+                  </div>
 
-        <button id="duplicate-button" onclick="duplicateCurrentSphere()">DUPLICATE</button>
-        <button onclick="deleteCurrentSphere()">DELETE SELECTED OBJECT</button>
+                  <div class="position-input">
+                      <span>Y</span>
+                      <input type="number" id="posY" max="15" min="-15" step="0.1">
+                  </div>
+
+                  <div class="position-input">
+                      <span>Z</span>
+                      <input type="number" id="posZ" max="10" min="-10" step="0.1">
+                  </div>
+              </div>
+              <div class="range">
+                <p class="do-translate" data-original="[-22]"></p>
+                <input id="volumeSlider" class="range-slider" max="20" min="0.1" type="range" value="2" step="0.1" oninput="volumeAmount.value=volumeSlider.value">
+                <input id="volumeAmount" class="range-amount" type="number" value="2" oninput="volumeSlider.value=volumeAmount.value" step="0.1">
+              </div>
+              <div class="range" style="padding-bottom: 0;">
+                <p class="do-translate" data-original="[-54]"></p>
+                <input id="colorSlider" class="range-slider" max="64" min="0" type="range" value="64" step="1" oninput="colorAmount.value=colorSlider.value">
+                <input id="colorAmount" class="range-amount" type="number" value="2" oninput="colorSlider.value=colorAmount.value">
+              </div>
+              </div>
+
+              <div class="controls">
+                <button id="duplicate-button" onclick="duplicateCurrentSphere()" class="do-translate" data-original="[-144]"></button>
+                <button onclick="deleteCurrentSphere()" class="do-translate" data-original="[-88,-52]">DELETE SELECTED OBJECT</button>
+                </div>
+            </div>
+          </div>
       </div>
-      <button onclick="newSphere()">CREATE</button>
-      <button onclick="deleteAllSpheres()">CLEAR ALL</button>
+      <div class="general-controls-view">
+        <p class="sidebar-header do-translate" data-original="[-53]"></p>
+        <div class="controls">
+          <button onclick="newSphere()"  class="do-translate" data-original="[-38]"></button>
+          <button onclick="deleteAllSpheres()" class="do-translate" data-original="[-88,-110]">CLEAR ALL</button>
+          <div class="undo-row">
+            <button id="undoButton" class="do-translate" data-original="[-118,-121]"></button>
+            <button id="redoButton" class="do-translate" data-original="[-120,-121]"></button>
+          </div>
+        </div>
+      </div>
 
       <p class="sidebar-header">CONTROLS</p>
-
-      <p>CAMERA: </p>
-      <p>WASD - Move</p>
-      <p>Space/Left Shift - Move Up / Down</p>
-      <p>Left Click - Orbit</p>
-      <p>Right Click - Pan</p>
-      <p>F - Center on current selection</p>
-      <p></p>
-      <p>TRANSFORM: </p>
-      <p>Drag axes to translate objects</p>
-      <p>Z/X to Undo/Redo</p>
-      <p>Hold CTRL for more fine-grained translation</p>
-
+      <div class="instructions">
+        <p>CAMERA: </p>
+        <p>WASD - Move</p>
+        <p>Space/Left Shift - Move Up / Down</p>
+        <p>Left Click - Orbit</p>
+        <p>Right Click - Pan</p>
+        <p>F - Center on current selection</p>
+        <p></p>
+        <p></p>
+        <p>TRANSFORM: </p>
+        <p>Drag axes to translate objects</p>
+        <p>Hold CTRL for more fine-grained translation</p>
+        <p>Del - Delete</p>
+        <p>Z/X - Undo/Redo</p>
+        <p></p>
+        <p></p>
+        <p>IMPORT/EXPORT: </p>
+        <p>Use the buttons on the top right to Import/Export</p>
+      </div>
 
 
 
@@ -150,7 +184,7 @@
     </div>
     
     <div class="footer">
-      <p class="do-translate" data-original="[-130,1073,-86,-119,-237,-38,-85,-2,-2,-241,-193,-86,-119,-237,-38,-29,-85]">
+      <p class="do-translate" data-original="[-130,1074,-86,-119,-237,-38,-85,-2,-2,-241,-193,-86,-119,-237,-38,-29,-85]">
       </p>
     </div>
   </main>

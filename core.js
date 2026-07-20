@@ -406,7 +406,6 @@ const parseText = (text) => {
       let str = chars.map(ix => text[ix]).join("");
       return `Unknown token ${str} at position ${chars[0]}`;
     }).join("; ");
-    alert(invalidStr);
     return null;
   }
 }
@@ -840,6 +839,15 @@ window.onload = () => {
     }, 1000);
   });
 
+  // Event listeners for undo and redo buttons
+  $("#undoButton").addEventListener("click", (event) => {
+    undo(scene, transformControls, overlayScene);
+  })
+  $("#redoButton").addEventListener("click", (event) => {
+    redo(scene, transformControls, overlayScene);
+  })
+
+
   window.newSphere = () => {
     addSphere(0, 0, 0, 2, 64, scene, transformControls, overlayScene, true);
   }
@@ -856,7 +864,8 @@ window.onload = () => {
       $("#duplicate-button").textContent = "COPIED";
     
       setTimeout(() => {
-        $("#duplicate-button").textContent = "DUPLICATE";
+        $("#duplicate-button").setAttribute("data-status", "not");
+        doTranslation();
       }, 1000);
     }
   }
