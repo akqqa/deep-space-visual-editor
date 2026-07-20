@@ -100,7 +100,7 @@ const updateDict = () => {
   );
 
   // Enable editor
-  if (dict[-53] != "@-53_UNDEF" && !dict[-53]) {
+  if (dict[-53] != "@-53_UNDEF" || !dict[-53]) {
     $(".view").removeAttribute("data-disabled");
   } else {
     $(".view").setAttribute("data-disabled", "true");
@@ -425,7 +425,7 @@ const parseSphereData = (message) => {
     let current = imagePos + 2;
     let allSpheres = [];
     while (check) {
-      let currentSphere = [];
+      let currSphere = [];
       // If not followed by "sphere" then fail
       if (message[current++] != -52) {
         return false;
@@ -465,11 +465,11 @@ const parseSphereData = (message) => {
         } else {
           currentNumber = firstHalf;
         }
-        // Put number into the currentSphere array
+        // Put number into the currSphere array
         if (negated) {
-          currentSphere.push(-currentNumber);
+          currSphere.push(-currentNumber);
         } else {
-          currentSphere.push(currentNumber);
+          currSphere.push(currentNumber);
         }
 
         if (message[current++] != -3) {
@@ -480,9 +480,9 @@ const parseSphereData = (message) => {
       if (message[current] < 0 || message[current] > 64) {
         return false;
       }
-      currentSphere.push(message[current]);
+      currSphere.push(message[current]);
       current++;
-      allSpheres.push(currentSphere);
+      allSpheres.push(currSphere);
       if (message[current] === -3) {
         current++;
         check = true;
@@ -557,11 +557,7 @@ const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
   const localStorageSphereData = JSON.parse(data);
   console.log("retrieved data: " + data)
   sphereData.forEach(element => {
-    scene.remove(element.mesh);
-    transformControls.detach();
-    element.mesh.geometry.dispose();
-    element.mesh.material.dispose();
-    currentSphere = null;
+    removeSphere(element.mesh, scene, transformControls, overlayScene);
   });
   sphereData = [];
   // for each sphere, add to sphereData and scene
@@ -837,16 +833,33 @@ window.onload = () => {
     addSphere(0, 0, 0, 2, 64, scene, transformControls, overlayScene, true);
   }
 
+  window.duplicateCurrentSphere = () => {
+    if (currentSphere) {
+      currentSphere.geometry.computeBoundingSphere();
+      const color = sphereData.find(x => x.mesh == currentSphere).color;
+      // const randX = Number(((Math.random()) * 2 - 1).toFixed(1));
+      // const randZ = Number(((Math.random()) * 2 - 1).toFixed(1));
+      // const randY = Number(((Math.random()) * 2 - 1).toFixed(1));
+      addSphere(currentSphere.position.x, currentSphere.position.z, currentSphere.position.y, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, true);
+
+      $("#duplicate-button").textContent = "COPIED";
+    
+      setTimeout(() => {
+        $("#duplicate-button").textContent = "DUPLICATE";
+      }, 1000);
+    }
+  }
+
   window.deleteMostRecentSphere = () => {
     const sphere = sphereData.pop();
     if (sphere) {
-      removeSphere(sphere.mesh, scene, transformControls);
+      removeSphere(sphere.mesh, scene, transformControls, overlayScene);
     }
   }
 
   window.deleteCurrentSphere = () => {
     if (currentSphere) {
-      removeSphere(currentSphere, scene, transformControls);
+      removeSphere(currentSphere, scene, transformControls, overlayScene);
     }
   }
 
@@ -854,7 +867,7 @@ window.onload = () => {
     const res = confirm("Are you sure you want to reset the canvas?");
     if (res) {
       sphereData.forEach(element => {
-        removeSphere(element.mesh, scene, transformControls);
+        removeSphere(element.mesh, scene, transformControls, overlayScene);
       });
     }
   }
@@ -903,9 +916,6 @@ window.onload = () => {
       // If control held, transform scale goes to 0.1
       transformControls.translationSnap = 0.1;
     } 
-    if (event.code == "KeyX") {
-      orbitControls.dollyIn(1);
-    }
   });
 
   window.addEventListener("keyup", (event) => {
@@ -920,18 +930,17 @@ window.onload = () => {
 const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select) => {
     const sphereMesh = createSphere(x, z, y, diameter, color, scene);
     sphereData.push({mesh: sphereMesh, color: color});
-    deselectSphere(transformControls, overlayScene);
     if (select) {
+      deselectSphere(transformControls, overlayScene);
       selectSphere(sphereMesh, transformControls, overlayScene);
     }
     setLocalStorageSphereData();
 }
-const removeSphere = (sphereMesh, scene, transformControls) => {
+const removeSphere = (sphereMesh, scene, transformControls, overlayScene) => {
   sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
   if (currentSphere == sphereMesh) {
     // If deletes currently selected, unselect and remove transform controls
-    currentSphere = null;
-    transformControls.detach();
+    deselectSphere(transformControls, overlayScene)
   }
   scene.remove(sphereMesh);
   sphereMesh.geometry.dispose();
@@ -939,7 +948,8 @@ const removeSphere = (sphereMesh, scene, transformControls) => {
   setLocalStorageSphereData();
 }
 
-    
+
+// Add logic for enabling the parameters here
 const selectSphere = (sphere, transformControls, overlayScene) => {
     currentSphere = sphere;
     transformControls.attach(currentSphere);
@@ -953,3 +963,8 @@ const deselectSphere = (transformControls, overlayScene) => {
 }
 
 
+// plan for sliders:
+// x y and z textbox, colour and volume slider
+// by default disabled
+// if currentSphere is defined, set the values to currentSphere
+// link them so that changing them changes currentsphere.. maybe make helper method to call every transform to update sphereData too - do this for color

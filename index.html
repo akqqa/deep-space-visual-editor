@@ -104,10 +104,13 @@
 
       <div class="dict-view">
         <p class="sidebar-header do-translate" data-original="[-52]">
-        
+      </div>
+      <div class="parameters" data-disabled="false">
+        <p>hi</p>
       </div>
       <div class="range"><input id="slider" class="range__slider" max="2000" min="0" oninput="amount.value=slider.value" type="range" value="300"><input id="amount" class="range__amount" oninput="slider.value=amount.value" type="text" value="0"></div>
       <button onclick="newSphere()">CREATE</button>
+      <button id="duplicate-button" onclick="duplicateCurrentSphere()">DUPLICATE</button>
         <button onclick="deleteCurrentSphere()">DELETE SELECTED OBJECT</button>
         <button onclick="deleteMostRecentSphere()">DELETE MOST RECENT OBJECT</button>
         <button onclick="deleteAllSpheres()">CLEAR ALL</button>

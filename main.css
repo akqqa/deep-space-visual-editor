@@ -524,7 +524,6 @@ textarea.import-paste-contents {
     & .load-entry {
       display: flex;
     }
-
   }
 }
 
@@ -550,4 +549,8 @@ textarea.import-paste-contents {
   text-overflow: ellipsis;
   white-space: nowrap;
   padding-inline: 0.5em;
+}
+
+div [data-disabled="true"] {
+  display: none;
 }
