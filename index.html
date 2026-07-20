@@ -105,15 +105,20 @@
       <div class="dict-view">
         <p class="sidebar-header do-translate" data-original="[-52]">
       </div>
-      <div class="parameters" data-disabled="false">
-        <p>hi</p>
-      </div>
-      <div class="range"><input id="slider" class="range__slider" max="2000" min="0" oninput="amount.value=slider.value" type="range" value="300"><input id="amount" class="range__amount" oninput="slider.value=amount.value" type="text" value="0"></div>
-      <button onclick="newSphere()">CREATE</button>
-      <button id="duplicate-button" onclick="duplicateCurrentSphere()">DUPLICATE</button>
+      <div id="sphere-parameters" data-disabled="true">
+        <input type="number" id="posX" max="15" min="-15" step="0.1">X</input>
+        <input type="number" id="posY" max="15" min="-15" step="0.1">Y</input>
+        <input type="number" id="posZ" max="10" min="-10" step="0.1">Z</input>
+        <input id="volumeSlider" class="range-slider" max="100" min="0.1" type="range" value="2" step="0.1">VOLUME</input>
+        <input id="colorSlider" class="range-slider" max="64" min="0" type="range" value="2">COLOR</input>
+        <div class="range"><input id="slider" class="range__slider" max="2000" min="0" oninput="amount.value=slider.value" type="range" value="300"><input id="amount" class="range__amount" oninput="slider.value=amount.value" type="text" value="0"></div>
+
+        <button id="duplicate-button" onclick="duplicateCurrentSphere()">DUPLICATE</button>
         <button onclick="deleteCurrentSphere()">DELETE SELECTED OBJECT</button>
-        <button onclick="deleteMostRecentSphere()">DELETE MOST RECENT OBJECT</button>
-        <button onclick="deleteAllSpheres()">CLEAR ALL</button>
+      </div>
+      <button onclick="newSphere()">CREATE</button>
+      <button onclick="deleteMostRecentSphere()">DELETE MOST RECENT OBJECT</button>
+      <button onclick="deleteAllSpheres()">CLEAR ALL</button>
 
       <p class="sidebar-header">CONTROLS</p>
 

@@ -21,6 +21,13 @@ let currentSphere; // The currently selected sphere (as a mesh) for transformati
 let mouseDownPos = new THREE.Vector2;
 let transformControls;
 
+const maxX = 15;
+const minX = -15;
+const maxY = 15;
+const minY = -15;
+const maxZ = 10;
+const minZ = -10
+
 //**************************************************//
 // THEME
 
@@ -741,12 +748,12 @@ window.onload = () => {
   const {camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls} = initialiseEditor();
   transformControls = new TransformControls(camera, sceneDiv);
   transformControls.translationSnap = 1;
-  transformControls.maxX = 15;
-  transformControls.minX = -15;
-  transformControls.maxZ = 15;
-  transformControls.minZ = -15;
-  transformControls.maxY = 10;
-  transformControls.minY = -10;
+  transformControls.maxX = maxX;
+  transformControls.minX = minX;
+  transformControls.maxZ = maxY;
+  transformControls.minZ = minY;
+  transformControls.maxY = maxZ;
+  transformControls.minY = minZ;
 
   // Import locally stored spheres
   loadLocalStorageSphereData(scene, transformControls, overlayScene);
@@ -879,6 +886,12 @@ window.onload = () => {
     // Updates localstorage
     setLocalStorageSphereData();
   });
+  transformControls.addEventListener("change", (event) => {
+    // Update parameters in ui
+    $("#posX").value = currentSphere.position.x.toFixed(1);
+    $("#posZ").value = currentSphere.position.y.toFixed(1);
+    $("#posY").value = currentSphere.position.z.toFixed(1);
+  })
 
 
   // Sphere selection
@@ -916,6 +929,11 @@ window.onload = () => {
       // If control held, transform scale goes to 0.1
       transformControls.translationSnap = 0.1;
     } 
+    if (event.code == "Delete") {
+      if (currentSphere) {
+        removeSphere(currentSphere, scene, transformControls, overlayScene);
+      }
+    }
   });
 
   window.addEventListener("keyup", (event) => {
@@ -925,6 +943,23 @@ window.onload = () => {
     }
   })
 }
+
+// Event listeners for sphere parameters changing
+$("#posX").addEventListener("change", (event) => {
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minX), maxX);
+  event.target.value = num;
+  currentSphere.position.x = Number(event.target.value);
+});
+$("#posY").addEventListener("change", (event) => {
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
+  event.target.value = num;
+  currentSphere.position.z = Number(event.target.value);
+});
+$("#posZ").addEventListener("change", (event) => {
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minZ), maxZ);
+  event.target.value = num;
+  currentSphere.position.y = Number(event.target.value);
+});
 
 // Helper methods to add and remove a given sphere, handled the spheredata and selection logic
 const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select) => {
@@ -954,12 +989,14 @@ const selectSphere = (sphere, transformControls, overlayScene) => {
     currentSphere = sphere;
     transformControls.attach(currentSphere);
     overlayScene.add(transformControls.getHelper());
+    $("#sphere-parameters").setAttribute("data-disabled", "false");
 }
 
 const deselectSphere = (transformControls, overlayScene) => {
   transformControls.detach();
   overlayScene.remove(transformControls.getHelper());
   currentSphere = null;
+  $("#sphere-parameters").setAttribute("data-disabled", "true");
 }
 
 
