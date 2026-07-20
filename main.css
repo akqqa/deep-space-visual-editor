@@ -604,11 +604,11 @@ div [data-disabled="true"] {
 }
 
 button {
-  background-color: var(--theme-color);
+  background-color: var(--theme-color-dark);
   border: none;
   font-family: 'Hack', monospace;
   text-transform: uppercase;
-    border-radius: 999em;
+  border-radius: 999em;
   color: white;
   padding-inline: 0.75rem;
   padding-block: 0.25rem;
