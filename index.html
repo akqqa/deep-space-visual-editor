@@ -17,6 +17,10 @@
   <!-- TypewriterJS -->
   <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
 
+   <!-- Tooltips -->
+  <script src="https://unpkg.com/popper.js@1"></script>
+  <script src="https://unpkg.com/tippy.js@4"></script>
+
   <script type="importmap">
   {
     "imports": {
@@ -42,14 +46,27 @@
       </div>
 
       <div class="button-row">
-        <button id="import-button" class="do-translate" data-original="[-52, -169]" style="transform: translateY(-7px);"></button>
-        <button id="export-button" class="do-translate" data-original="[-52, -170]" style="transform: translateY(-7px);"></button>
+          <a id="import-button" style="transform: translateY(2px);">
+            <i class="fa fa-download"></i>
+          </a>
+          <a id="export-button">
+            <i class="fa fa-upload"></i>
+          </a>
+
+          <span style="flex:1"></span>
+          <span style="flex:1"></span>
+
+        <a id="dscr" href="https://dscr.dixonary.co.uk/" target="_blank" style="color: inherit">
+          <i class="fa fa-comments"></i>
+        </a>
         <a id="retheme">
           <i class="fa fa-adjust"></i>
         </a>
         <a id="toggle-sidebar">
           <i class="fa fa-bars"></i>
         </a>
+
+        
       </div>
     </div>
     <div class="sidebar">
@@ -146,11 +163,11 @@
         <p class="sidebar-header do-translate" data-original="[-53]"></p>
         <div class="controls">
           <button onclick="newSphere()"  class="do-translate" data-original="[-38]"></button>
-          <button onclick="deleteAllSpheres()" class="do-translate" data-original="[-88,-110]">CLEAR ALL</button>
           <div class="undo-row">
             <button id="undoButton" class="do-translate" data-original="[-118,-121]"></button>
             <button id="redoButton" class="do-translate" data-original="[-120,-121]"></button>
           </div>
+          <button onclick="deleteAllSpheres()" class="do-translate" data-original="[-88,-110]">CLEAR ALL</button>
         </div>
       </div>
 

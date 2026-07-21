@@ -562,10 +562,13 @@ const setLocalStorageSphereData = () => {
 
 const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
   const data = localStorage.getItem("sphereData");
-  if (data == "") {
+  const localStorageSphereData = JSON.parse(data);
+  if (localStorageSphereData.length == 0) {
+    addSphere(0, 0, 0, 2, 64, scene, transformControls, overlayScene, false, false);
+    selectSphere(sphereData[0].mesh, transformControls, overlayScene);
     return;
   }
-  const localStorageSphereData = JSON.parse(data);
+  console.log("HITHERE " + data)
   sphereData.forEach(element => {
     removeSphere(element.mesh, scene, transformControls, overlayScene);
   });
@@ -958,6 +961,8 @@ window.onload = () => {
       transformControls.translationSnap = 1;
     }
   })
+
+  addTooltips();
 }
 
 // Event listeners for sphere parameters changing
@@ -1140,4 +1145,19 @@ const redo = (scene, transformControls, overlayScene) => {
     });
     setLocalStorageSphereData();
   }
+}
+
+// Use tippy.js to add tooltips
+const addTooltips = () => {
+  const c = (sel, content) => tippy(sel, {
+    content,
+    animateFill: false,
+    hideOnClick: false,
+    duration: 0
+  })
+  c("#import-button", "Import model");
+  c("#export-button", "Copy model string to clipboard")
+  c("#dscr", "Open Deep Space Communication Relay");
+  c("#retheme", "Change Theme");
+  c("#toggle-sidebar", "Toggle sidebar");
 }
