@@ -815,20 +815,19 @@ window.onload = () => {
     // Transform the sphereData into the correct test
     let res = sphereDataToExportString();
     if (!res) {
-      $("#export-button").textContent = "FAILED";
+      $("#export-button").querySelector("i").className = "fa fa-times";
     } else {
       navigator.clipboard.writeText(res).then(
       () => {
-        $("#export-button").textContent = "COPIED";
+        $("#export-button").querySelector("i").className = "fa fa-check";
       },
       () => {
-        $("#export-button").textContent = "FAILED";
+        $("#export-button").querySelector("i").className = "fa fa-times";
       });
     }
     
     setTimeout(() => {
-      $("#export-button").setAttribute("data-status", "not");
-      doTranslation();
+        $("#export-button").querySelector("i").className = "fa fa-upload";
     }, 1000);
   });
 
