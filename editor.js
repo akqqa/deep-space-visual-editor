@@ -90,7 +90,7 @@ const initialiseEditor = () => {
     const scene = new THREE.Scene();
     const overlayScene = new THREE.Scene();
     let camera = new THREE.PerspectiveCamera(50, sceneDiv.clientWidth /sceneDiv.clientHeight, 0.1, 2000);
-    camera.position.x = -18.5;
+    camera.position.z = 18.5;
     let renderer = new THREE.WebGLRenderer();
     renderer.logarithmicDepthBuffer = true;
     renderer.setSize(sceneDiv.clientWidth , sceneDiv.clientHeight);
@@ -106,6 +106,7 @@ const initialiseEditor = () => {
     topGrid.position.y = 8;
     scene.add(bottomGrid);
     scene.add(topGrid);
+
 
     const orbitControls = new OrbitControls(camera, renderer.domElement);
 
@@ -268,7 +269,8 @@ const createSphere = (x, y, z, radius, color, scene) => {
     });
 
     const mesh = new THREE.Mesh(sphere, mat);
-    mesh.position.set(x, z, y); // Alien coords!
+    const p = (toThree(x,y,z))
+    mesh.position.set(p.x, p.y, p.z); // Alien coords!
     scene.add(mesh);
 
     return mesh;
@@ -282,5 +284,15 @@ const toggleMovementEnabled = () => {
     movementEnabled = !movementEnabled;
 }
 
+// Alien coords to three coords
+function toThree(ax, ay, az) {
+  return { x: ax, y: az, z: -ay };
+}
 
-export {initialiseEditor, getGradientColor, calculateColor, createSphere, getMovementEnabled, toggleMovementEnabled};
+// Three coords to alien coords
+function toAlien(tx, ty, tz) {
+  return { x: tx, y: -tz, z: ty };
+}
+
+
+export {initialiseEditor, getGradientColor, calculateColor, createSphere, getMovementEnabled, toggleMovementEnabled, toThree, toAlien};

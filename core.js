@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { initialiseEditor, calculateColor, createSphere, toggleMovementEnabled  } from "./editor.js";
+import { initialiseEditor, calculateColor, createSphere, toggleMovementEnabled, toThree, toAlien  } from "./editor.js";
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
 // Core js code adapted from Dixonary's Deep Space Communication Relay project
@@ -552,10 +552,11 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
 const setLocalStorageSphereData = () => {
   let data = [];
   sphereData.forEach(element => {
+    let p = toAlien(element.mesh.position.x, element.mesh.position.y, element.mesh.position.z)
     let res = [];
-    res[0] = element.mesh.position.x;
-    res[1] = element.mesh.position.z;
-    res[2] = element.mesh.position.y;
+    res[0] = p.x;
+    res[1] = p.y;
+    res[2] = p.z;
     element.mesh.geometry.computeBoundingSphere();
     res[3] = element.mesh.geometry.boundingSphere.radius * 2;
     res[4] = element.color // set to colour backwards compute method when made
@@ -596,11 +597,12 @@ const getCurrentSignals = () => {
   sphereData.forEach((element) => {
     element.mesh.geometry.computeBoundingSphere();
     const geometryRadius = element.mesh.geometry.boundingSphere.radius;
+    let p = toAlien(element.mesh.position.x, element.mesh.position.y, element.mesh.position.z)
 
     const [posX, posY, posZ, diameter] = [
-      element.mesh.position.x,
-      element.mesh.position.z,
-      element.mesh.position.y,
+      p.x,
+      p.y,
+      p.z,
       geometryRadius*2
     ].map(v => {
       let resArray = []
@@ -767,8 +769,8 @@ window.onload = () => {
   transformControls.translationSnap = 1;
   transformControls.maxX = maxX;
   transformControls.minX = minX;
-  transformControls.maxZ = maxY;
-  transformControls.minZ = minY;
+  transformControls.maxZ = -minY;
+  transformControls.minZ = -maxY;
   transformControls.maxY = maxZ;
   transformControls.minY = minZ;
 
@@ -897,7 +899,8 @@ window.onload = () => {
       // const randX = Number(((Math.random()) * 2 - 1).toFixed(1));
       // const randZ = Number(((Math.random()) * 2 - 1).toFixed(1));
       // const randY = Number(((Math.random()) * 2 - 1).toFixed(1));
-      addSphere(currentSphere.position.x, currentSphere.position.z, currentSphere.position.y, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, false);
+      let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z)
+      addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, false);
 
       $("#duplicate-button").textContent = "COPIED";
     
@@ -943,10 +946,12 @@ window.onload = () => {
     setSignalCounter();
   });
   transformControls.addEventListener("change", (event) => {
+
     // Update parameters in ui
-    $("#posX").value = currentSphere.position.x.toFixed(1);
-    $("#posZ").value = currentSphere.position.y.toFixed(1);
-    $("#posY").value = currentSphere.position.z.toFixed(1);
+    let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z);
+    $("#posX").value = p.x.toFixed(1);
+    $("#posY").value = p.y.toFixed(1);
+    $("#posZ").value = p.z.toFixed(1);
   })
 
   // Sphere selection
@@ -988,7 +993,8 @@ window.onload = () => {
       if (currentSphere) {
         currentSphere.geometry.computeBoundingSphere();
         const color = sphereData.find(x => x.mesh == currentSphere).color;
-        addSphere(currentSphere.position.x, currentSphere.position.z, currentSphere.position.y, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, true);
+        let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z);
+        addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, true);
       }
     }
     if (event.code == "KeyZ") {
@@ -1008,9 +1014,9 @@ window.onload = () => {
     }
     // Reset to initial camera position
     if (event.code == "KeyR") {
-      camera.position.x = -18.5;
+      camera.position.x = 0;
       camera.position.y = 0;
-      camera.position.z = 0;
+      camera.position.z = 18.5;
       orbitControls.target.copy(new THREE.Vector3(0,0,0));
     }
     if (event.code == "KeyQ") {
@@ -1103,7 +1109,7 @@ $("#posY").addEventListener("change", (event) => {
   addToHistory();
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
   event.target.value = num;
-  currentSphere.position.z = Number(event.target.value);
+  currentSphere.position.z = -Number(event.target.value);
   setLocalStorageSphereData();
   setSignalCounter();
 });
@@ -1237,10 +1243,11 @@ const getSnapshot = () => {
   
   const snapshot = sphereData.map(element => {
     element.mesh.geometry.computeBoundingSphere();
+    let p = toAlien(element.mesh.position.x, element.mesh.position.y, element.mesh.position.z);
     return {
-      x: element.mesh.position.x,
-      y: element.mesh.position.y,
-      z: element.mesh.position.z,
+      x: p.x,
+      y: p.y,
+      z: p.z,
       diameter: element.mesh.geometry.boundingSphere.radius * 2,
       color: element.color
     }
@@ -1275,7 +1282,7 @@ const undo = (scene, transformControls, overlayScene) => {
     sphereData = [];
     // for each sphere, add to sphereData and scene
     snapshot.forEach(element => {
-      addSphere(element.x, element.z, element.y, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
+      addSphere(element.x, element.y, element.z, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
     });
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT
@@ -1299,7 +1306,7 @@ const redo = (scene, transformControls, overlayScene) => {
     sphereData = [];
     // for each sphere, add to sphereData and scene
     snapshot.forEach(element => {
-      addSphere(element.x, element.z, element.y, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
+      addSphere(element.x, element.y, element.z, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
     });
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT
