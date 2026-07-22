@@ -1179,19 +1179,35 @@ const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHi
   if(saveHistory) {
     addToHistory();
   }
-  sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
+  let index = undefined;
   if (currentSphere == sphereMesh) {
-    // If deletes currently selected, unselect and remove transform controls
-    deselectSphere(transformControls, overlayScene)
+    // Select previous sphere if deleting current!
+    index = sphereData.findIndex(x => x.mesh == currentSphere);
+        deselectSphere(transformControls, overlayScene);
+
   }
   scene.remove(sphereMesh);
   sphereMesh.geometry.dispose();
   sphereMesh.material.dispose();
   setLocalStorageSphereData();
+      sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
+
+  // Select the previous sphere if deleted a selected sphere
+  if (index !== undefined) {
+    console.log(index);
+    if (index == 0) {
+      if (sphereData.length != 0) {
+        selectSphere(sphereData[sphereData.length-1].mesh, transformControls, overlayScene);
+      }
+    } else {
+      selectSphere(sphereData[index-1].mesh, transformControls, overlayScene);
+    }
+  }
+
   // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
   if (saveHistory) {
-      setSignalCounter();
-    }
+    setSignalCounter();
+  }
 }
 
 // Add logic for enabling the parameters here
