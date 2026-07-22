@@ -69,6 +69,25 @@
         
       </div>
     </div>
+
+        <p id="import-zone">
+      <dialog class="import-paste">
+        <div class="dialog-content">
+          <p class="dialog-title">Paste Model String
+            <button class="close-import-dialog">
+              X
+            </button>
+          </p>
+
+          <textarea class="import-paste-contents" autofocus></textarea>
+          <div class="button-row">
+            <button class="save-import">Import</button>
+          </div>
+        </div>
+      </dialog>
+    </p>
+
+
     <div class="sidebar">
 
       <div class="dictionary">
@@ -98,23 +117,7 @@
             </dialog>
           </p>
 
-          <p id="import-zone">
-
-            <dialog class="import-paste">
-              <div class="dialog-content">
-                <p class="dialog-title">Paste Model String
-                  <button class="close-import-dialog">
-                    X
-                  </button>
-                </p>
-
-                <textarea class="import-paste-contents" autofocus></textarea>
-                <div class="button-row">
-                  <button class="save-import">Import</button>
-                </div>
-              </div>
-            </dialog>
-          </p>
+          
         </div>
         <input type="file" id="dictionary-input" />
       </div>
@@ -162,7 +165,7 @@
       <div class="general-controls-view">
         <p class="sidebar-header do-translate" data-original="[-53]"></p>
         <div class="controls">
-          <button onclick="newSphere()"  class="do-translate" data-original="[-38]"></button>
+          <button onclick="newSphere()"  class="do-translate" data-original="[-38,-52]"></button>
           <div class="undo-row">
             <button id="undoButton" class="do-translate" data-original="[-118,-121]"></button>
             <button id="redoButton" class="do-translate" data-original="[-120,-121]"></button>
@@ -176,14 +179,17 @@
         <p>CAMERA: </p>
         <p>WASD - Move</p>
         <p>Space/Left Shift - Move Up / Down</p>
+        <p>T - Enable/Disable camera movement</p>
         <p>Left Click - Orbit</p>
         <p>Right Click - Pan</p>
         <p>F - Center on current selection</p>
+        <p>Left/Right arrows - Snap to cardinal directions</p>
+        <p>R - Reset Camera</p>
         <p></p>
         <p></p>
         <p>TRANSFORM: </p>
-        <p>Drag axes to translate objects</p>
-        <p>Hold CTRL for more fine-grained translation</p>
+        <p>Drag axes to move objects</p>
+        <p>Hold CTRL to move objects more precisely</p>
         <p>Del - Delete</p>
         <p>C - Duplicate</p>
         <p>Z/X - Undo/Redo</p>
@@ -194,12 +200,13 @@
       </div>
 
 
-
       
     </div>
     <div class="view" id="view" data-disabled="true">
       <div id="all-messages"></div>
     </div>
+
+
     
     <div class="footer">
       <p class="do-translate" data-original="[-130,1074,-86,-119,-237,-38,-85,-2,-2,-241,-193,-86,-119,-237,-38,-29,-85]">

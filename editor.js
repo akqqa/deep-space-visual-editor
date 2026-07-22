@@ -6,6 +6,8 @@ import * as holdEvent from "https://unpkg.com/hold-event@1.1.2/dist/hold-event.m
 
 const cameraMovementSpeed = 0.02;
 
+let movementEnabled = true;
+
 // Editor / Renderer specific code
 
 //**************************************************//
@@ -133,30 +135,36 @@ const initialiseEditor = () => {
     const dKey = new holdEvent.KeyboardKeyHold( 'KeyD', 16.666 );
     const shiftKey = new holdEvent.KeyboardKeyHold( 'ShiftLeft', 16.666 );
     const spacebar = new holdEvent.KeyboardKeyHold( 'Space', 16.666 );
-    aKey.addEventListener(
-        holdEvent.HOLD_EVENT_TYPE.HOLDING,
-        ( event ) => moveSideways(-cameraMovementSpeed * event.deltaTime)
-    );
-    dKey.addEventListener(
-        holdEvent.HOLD_EVENT_TYPE.HOLDING,
-        ( event ) => moveSideways(cameraMovementSpeed * event.deltaTime)
-    );
-    wKey.addEventListener(
-        holdEvent.HOLD_EVENT_TYPE.HOLDING,
-        ( event ) => moveForward(cameraMovementSpeed * event.deltaTime)
-    );
-    sKey.addEventListener(
-        holdEvent.HOLD_EVENT_TYPE.HOLDING,
-        ( event ) => moveForward(-cameraMovementSpeed * event.deltaTime)
-    );
-    spacebar.addEventListener(
-        holdEvent.HOLD_EVENT_TYPE.HOLDING,
-        ( event ) => moveUp(cameraMovementSpeed * event.deltaTime)
-    )
-    shiftKey.addEventListener(
-        holdEvent.HOLD_EVENT_TYPE.HOLDING,
-        ( event ) => moveUp(- cameraMovementSpeed * event.deltaTime)
-    )
+    aKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            moveSideways(-cameraMovementSpeed * event.deltaTime);
+        }
+    });
+    dKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            moveSideways(cameraMovementSpeed * event.deltaTime);
+        }
+    });
+    wKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            moveForward(cameraMovementSpeed * event.deltaTime);
+        }
+    });
+    sKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            moveForward(-cameraMovementSpeed * event.deltaTime);
+        }
+    });
+    spacebar.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            moveUp(cameraMovementSpeed * event.deltaTime);
+        }
+    });
+    shiftKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            moveUp(-cameraMovementSpeed * event.deltaTime);
+        }
+    });
     
 
     function animate(time) {
@@ -240,18 +248,13 @@ const createSphere = (x, y, z, radius, color, scene) => {
     return mesh;
 }
 
+const getMovementEnabled = () => {
+    return movementEnabled;
+}
 
-//  todo - add listener for view size update
-// Add internal store of spheredata
-// add import and export of that internal store
-// add clicking and moving spheres
-// add creating sphere
-// add sidebar controls
+const toggleMovementEnabled = () => {
+    movementEnabled = !movementEnabled;
+}
 
-// Ok im thinking abt spheres wrong
-// Spheredata has to be an array of SphereGeometries!
-// renderSpheres wont exist. it will be addSphere and removeSphere
-// When importing, parse, then turn into spheres to add to the spherelist and add to the scene
-// when exporting, turj spheredata into the output - this part shoudl be simple if a bit long  winded)
 
-export {initialiseEditor, getGradientColor, calculateColor, createSphere};
+export {initialiseEditor, getGradientColor, calculateColor, createSphere, getMovementEnabled, toggleMovementEnabled};

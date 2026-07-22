@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { initialiseEditor, calculateColor, createSphere  } from "./editor.js";
+import { initialiseEditor, calculateColor, createSphere, toggleMovementEnabled  } from "./editor.js";
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
 // Core js code adapted from Dixonary's Deep Space Communication Relay project
@@ -925,11 +925,8 @@ window.onload = () => {
     }
   });
 
-  window.addEventListener("keydown", (event) => { // On f click, center camera around currently selected sphere
-    if (event.code == "KeyF" && currentSphere) {
-      orbitControls.target.copy(currentSphere.position);
-      // Could improve by making it also rescale to fit object in
-    }
+  window.addEventListener("keydown", (event) => { 
+
     if (event.code == "ControlLeft") {
       // If control held, transform scale goes to 0.1
       transformControls.translationSnap = 0.1;
@@ -951,6 +948,66 @@ window.onload = () => {
     }
     if (event.code == "KeyX") {
       redo(scene, transformControls, overlayScene);
+    }
+    if (event.code == "KeyT") {
+      toggleMovementEnabled();
+    }
+
+    // Camera based controls
+    if (event.code == "KeyF" && currentSphere) {
+      orbitControls.target.copy(currentSphere.position);
+      // Could improve by making it also rescale to fit object in
+    }
+    // Reset to initial camera position
+    if (event.code == "KeyR") {
+      camera.position.x = -18.5;
+      camera.position.y = 0;
+      camera.position.z = 0;
+      orbitControls.target.copy(new THREE.Vector3(0,0,0));
+    }
+    if (event.code == "ArrowLeft") {
+      const offset = camera.position.clone().sub(orbitControls.target); // Get vector from target to camera
+
+      const radius = Math.sqrt(offset.x * offset.x + offset.z * offset.z); // Calculate the horziontal distance
+      const currentAngle = Math.atan2(offset.x, offset.z); // Convert offset vector into angle
+
+      // Snap to 90 degrees rotated left
+      let newAngle = (Math.ceil(currentAngle / (Math.PI / 2)) * (Math.PI / 2))  - Math.PI / 2; // Divide the current angle by 90 degrees, and get the ceiling then subtract 90, giving the next increment of 90 degrees left.
+
+      // Normalise angle to prevent wraparound
+      if (newAngle <= -Math.PI) {
+          newAngle += Math.PI * 2;
+      }
+      if (newAngle > Math.PI) {
+          newAngle -= Math.PI * 2;
+      }
+
+      // Set camera to the targets position on the correct side multiplied by the radius to be the correct distance away, keeping y (height) the same
+      camera.position.set(orbitControls.target.x + Math.sin(newAngle) * radius, camera.position.y, orbitControls.target.z + Math.cos(newAngle) * radius);
+      camera.lookAt(orbitControls.target);
+      orbitControls.update();
+    }
+    if (event.code == "ArrowRight" ) {
+      const offset = camera.position.clone().sub(orbitControls.target); // Get vector from target to camera
+
+      const radius = Math.sqrt(offset.x * offset.x + offset.z * offset.z); // Calculate the horziontal distance
+      const currentAngle = Math.atan2(offset.x, offset.z); // Convert offset vector into angle
+
+      // Snap to 90 degrees rotated left
+      let newAngle = (Math.floor(currentAngle / (Math.PI / 2)) * (Math.PI / 2))  + Math.PI / 2; // Divide the current angle by 90 degrees, and get the ceiling then add 90, giving the next increment of 90 degrees left.
+
+      // Normalise angle to prevent wraparound
+      if (newAngle <= -Math.PI) {
+          newAngle += Math.PI * 2;
+      }
+      if (newAngle > Math.PI) {
+          newAngle -= Math.PI * 2;
+      }
+
+      // Set camera to the targets position on the correct side multiplied by the radius to be the correct distance away, keeping y (height) the same
+      camera.position.set(orbitControls.target.x + Math.sin(newAngle) * radius, camera.position.y, orbitControls.target.z + Math.cos(newAngle) * radius);
+      camera.lookAt(orbitControls.target);
+      orbitControls.update();
     }
   });
 
