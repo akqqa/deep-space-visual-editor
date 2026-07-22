@@ -1013,7 +1013,7 @@ window.onload = () => {
       camera.position.z = 0;
       orbitControls.target.copy(new THREE.Vector3(0,0,0));
     }
-    if (event.code == "ArrowLeft") {
+    if (event.code == "KeyQ") {
       const offset = camera.position.clone().sub(orbitControls.target); // Get vector from target to camera
 
       const radius = Math.sqrt(offset.x * offset.x + offset.z * offset.z); // Calculate the horziontal distance
@@ -1035,7 +1035,7 @@ window.onload = () => {
       camera.lookAt(orbitControls.target);
       orbitControls.update();
     }
-    if (event.code == "ArrowRight" ) {
+    if (event.code == "KeyE" ) {
       const offset = camera.position.clone().sub(orbitControls.target); // Get vector from target to camera
 
       const radius = Math.sqrt(offset.x * offset.x + offset.z * offset.z); // Calculate the horziontal distance
