@@ -391,7 +391,7 @@ textarea.import-paste-contents {
 .signal-count {
     font-family: 'Hack', 'Courier New', Courier, monospace;
     font-style: normal;
-    font-size: 0.6em;
+    font-size: 0.55em;
     text-transform: uppercase;
   }
 
