@@ -1057,6 +1057,27 @@ window.onload = () => {
       camera.lookAt(orbitControls.target);
       orbitControls.update();
     }
+
+    if (event.code == "Tab") {
+       event.preventDefault();
+      if (currentSphere) {
+        const index = sphereData.findIndex(x => x.mesh == currentSphere);
+        console.log("index: " + index)
+        if (index >= sphereData.length) {
+          deselectSphere(transformControls, overlayScene);
+        } else {
+          console.log("NEXT");
+          deselectSphere(transformControls, overlayScene);
+          console.log(sphereData[index + 1].mesh);
+          selectSphere(sphereData[index + 1].mesh, transformControls, overlayScene);
+        }
+      }
+      // If no currrentSphere yet spheres exist
+      else if (sphereData.length > 0) {
+        //  Select 1st sphere
+        selectSphere(sphereData[0].mesh, transformControls, overlayScene);
+      }
+    }
   });
 
   window.addEventListener("keyup", (event) => {
