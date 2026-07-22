@@ -1283,6 +1283,7 @@ const addTooltips = () => {
   c("#dscr", "Open Deep Space Communication Relay");
   c("#retheme", "Change Theme");
   c("#toggle-sidebar", "Toggle sidebar");
+  c(".signal-count", "How many signals the model uses. Over 2000 cannot be sent in DSCR.");
   // Credit tooltips not working :(
   c("#importSnowman", "By Dixonary");
   c("#importStarryNight", "By Konstans");
