@@ -28,7 +28,7 @@ const minY = -15;
 const maxZ = 10;
 const minZ = -10
 
-const maxVol = 20;
+const maxVol = 50;
 const minVol = 0.1;
 const maxColor = 64;
 const minColor = 0;

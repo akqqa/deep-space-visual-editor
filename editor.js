@@ -5,6 +5,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import * as holdEvent from "https://unpkg.com/hold-event@1.1.2/dist/hold-event.module.js";
 
 const cameraMovementSpeed = 0.02;
+const cameraRotateSpeed = 0.002;
 
 let movementEnabled = true;
 
@@ -135,6 +136,11 @@ const initialiseEditor = () => {
     const dKey = new holdEvent.KeyboardKeyHold( 'KeyD', 16.666 );
     const shiftKey = new holdEvent.KeyboardKeyHold( 'ShiftLeft', 16.666 );
     const spacebar = new holdEvent.KeyboardKeyHold( 'Space', 16.666 );
+    const leftArrow = new holdEvent.KeyboardKeyHold( 'ArrowLeft', 16.666 );
+    const rightArrow = new holdEvent.KeyboardKeyHold( 'ArrowRight', 16.666 );
+    const upArrow = new holdEvent.KeyboardKeyHold( 'ArrowUp', 16.666 );
+    const downArrow = new holdEvent.KeyboardKeyHold( 'ArrowDown', 16.666 );
+    
     aKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
         if (movementEnabled) {
             moveSideways(-cameraMovementSpeed * event.deltaTime);
@@ -163,6 +169,26 @@ const initialiseEditor = () => {
     shiftKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
         if (movementEnabled) {
             moveUp(-cameraMovementSpeed * event.deltaTime);
+        }
+    });
+    leftArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            orbitControls.rotateLeft(cameraRotateSpeed * event.deltaTime);
+        }
+    });
+    rightArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            orbitControls.rotateLeft(-cameraRotateSpeed * event.deltaTime);
+        }
+    });
+    upArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            orbitControls.rotateUp(cameraRotateSpeed * event.deltaTime);
+        }
+    });
+    downArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+        if (movementEnabled) {
+            orbitControls.rotateUp(-cameraRotateSpeed * event.deltaTime);
         }
     });
     
