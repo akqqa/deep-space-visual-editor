@@ -15,3 +15,7 @@ Models can be imported and exported as strings - which are compatible with the [
 ## Credits:
 
 Thank you to Dixonary for the base website template and logic used for the translation and dictionary!
+
+Thanks to ElNico for loads of help fiddling with the color palette, writing custom code for it and helping me debug my shoddy code.
+
+And thanks to applesinmypants for taking the time to help us get the colours accurate.
