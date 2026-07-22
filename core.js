@@ -37,6 +37,8 @@ let sceneHistory = []
 let sceneFuture = []
 const MAX_HISTORY = 20;
 
+let currentSignalCount = 0;
+
 //**************************************************//
 // THEME
 
@@ -541,6 +543,8 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
     addSphere(element[0], element[1], element[2], element[3], element[4], scene, transformControls, overlayScene, false, false);
   });
   setLocalStorageSphereData();
+  // UPDATE SIGNAL COUNT
+  setSignalCounter();
 
   return true;
 }
@@ -565,6 +569,8 @@ const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
   const localStorageSphereData = JSON.parse(data);
   if (localStorageSphereData.length == 0) {
     addSphere(0, 0, 0, 2, 64, scene, transformControls, overlayScene, false, false);
+    // UPDATE SIGNAL COUNT
+    setSignalCounter();
     selectSphere(sphereData[0].mesh, transformControls, overlayScene);
     return;
   }
@@ -577,10 +583,12 @@ const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
   localStorageSphereData.forEach(element => {
     addSphere(element[0], element[1], element[2], element[3], element[4], scene, transformControls, overlayScene, false, false);
   });
+  // UPDATE SIGNAL COUNT
+  setSignalCounter();
 }
 
-// Takes the mesh spheredata and transforms it into a valid render string
-const sphereDataToExportString = () => {
+// Takes the mesh spheredata and transforms it into a valid render array
+const getCurrentSignals = () => {
   if (sphereData.length == 0) {
     return false;
   }
@@ -617,6 +625,12 @@ const sphereDataToExportString = () => {
   });
   res.pop();
   res.push(-15);
+  return res;
+}
+
+// Takes the mesh spheredata and transforms it into a valid render string
+const sphereDataToExportString = () => {
+  const res = getCurrentSignals();
   return getRawTranslation(res);
 }
 
@@ -787,6 +801,38 @@ window.onload = () => {
     importDialog.close();
   });
 
+  $("#importSolarSystem").addEventListener("click", () => {
+    const importTextArea = $("textarea.import-paste-contents");
+    fetch("solar-system.model")
+      .then(r => r.text())
+      .then(r => importTextArea.value = r);
+  })
+
+  $("#importSnowman").addEventListener("click", () => {
+    const importTextArea = $("textarea.import-paste-contents");
+    fetch("snowman.model")
+      .then(r => r.text())
+      .then(r => importTextArea.value = r);
+  })
+
+  $("#importStarryNight").addEventListener("click", () => {
+    const importTextArea = $("textarea.import-paste-contents");
+    fetch("starry-night.model")
+      .then(r => r.text())
+      .then(r => importTextArea.value = r);
+  })
+
+  $("#importAmogus").addEventListener("click", () => {
+    let answer = confirm("Are you certain you want to proceed?");
+    if (!answer) {
+      return;
+    }
+    const importTextArea = $("textarea.import-paste-contents");
+    fetch("amogus.model")
+      .then(r => r.text())
+      .then(r => importTextArea.value = r);
+  })
+
   $("textarea.import-paste-contents").addEventListener("input", () => {
     const importTextArea = $("textarea.import-paste-contents");
     importTextArea.value = importTextArea.value.replace(/\n/g, "");
@@ -881,6 +927,7 @@ window.onload = () => {
       sphereData.forEach(element => {
         removeSphere(element.mesh, scene, transformControls, overlayScene,false);
       });
+      setSignalCounter();
     }
   }
 
@@ -893,6 +940,7 @@ window.onload = () => {
     }
     // Updates localstorage
     setLocalStorageSphereData();
+    setSignalCounter();
   });
   transformControls.addEventListener("change", (event) => {
     // Update parameters in ui
@@ -1028,6 +1076,7 @@ $("#posX").addEventListener("change", (event) => {
   event.target.value = num;
   currentSphere.position.x = Number(event.target.value);
   setLocalStorageSphereData();
+  setSignalCounter();
 });
 $("#posY").addEventListener("change", (event) => {
   addToHistory();
@@ -1035,6 +1084,7 @@ $("#posY").addEventListener("change", (event) => {
   event.target.value = num;
   currentSphere.position.z = Number(event.target.value);
   setLocalStorageSphereData();
+  setSignalCounter();
 });
 $("#posZ").addEventListener("change", (event) => {
   addToHistory();
@@ -1042,6 +1092,7 @@ $("#posZ").addEventListener("change", (event) => {
   event.target.value = num;
   currentSphere.position.y = Number(event.target.value);
   setLocalStorageSphereData();
+  setSignalCounter();
 });
 $("#volumeAmount").addEventListener("change", (event) => {
   addToHistory();
@@ -1050,6 +1101,7 @@ $("#volumeAmount").addEventListener("change", (event) => {
   currentSphere.geometry.dispose();
   currentSphere.geometry = new THREE.SphereGeometry(num/2);
   setLocalStorageSphereData();
+  setSignalCounter();
 })
 $("#volumeSlider").addEventListener("input", (event) => {
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
@@ -1057,6 +1109,7 @@ $("#volumeSlider").addEventListener("input", (event) => {
   currentSphere.geometry.dispose();
   currentSphere.geometry = new THREE.SphereGeometry(num/2);
   setLocalStorageSphereData();
+  setSignalCounter();
 })
 $("#volumeSlider").addEventListener("mousedown", (event) => {
   addToHistory(); // Only add to history on start!
@@ -1070,6 +1123,7 @@ $("#colorAmount").addEventListener("change", (event) => {
   // ALSO SET FOR SPHEREDATA COLOR
   sphereData.find(x => x.mesh == currentSphere).color = num;
   setLocalStorageSphereData();
+  setSignalCounter();
 })
 $("#colorSlider").addEventListener("input", (event) => {
   const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minColor), maxColor);
@@ -1077,6 +1131,7 @@ $("#colorSlider").addEventListener("input", (event) => {
   currentSphere.material.uniforms.objectColor.value.set(c);
   sphereData.find(x => x.mesh == currentSphere).color = num;
   setLocalStorageSphereData();
+  setSignalCounter();
 })
 $("#colorSlider").addEventListener("mousedown", (event) => {
   addToHistory(); // Only add to history on start!
@@ -1094,6 +1149,10 @@ const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, 
       selectSphere(sphereMesh, transformControls, overlayScene);
     }
     setLocalStorageSphereData();
+    // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
+    if (saveHistory) {
+      setSignalCounter();
+    }
 }
 const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHistory=true) => {
   if(saveHistory) {
@@ -1108,6 +1167,10 @@ const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHi
   sphereMesh.geometry.dispose();
   sphereMesh.material.dispose();
   setLocalStorageSphereData();
+  // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
+  if (saveHistory) {
+      setSignalCounter();
+    }
 }
 
 // Add logic for enabling the parameters here
@@ -1178,6 +1241,8 @@ const undo = (scene, transformControls, overlayScene) => {
       addSphere(element.x, element.z, element.y, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
     });
     setLocalStorageSphereData();
+    // UPDATE SIGNAL COUNT
+    setSignalCounter();
   }
 }
 
@@ -1200,6 +1265,8 @@ const redo = (scene, transformControls, overlayScene) => {
       addSphere(element.x, element.z, element.y, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
     });
     setLocalStorageSphereData();
+    // UPDATE SIGNAL COUNT
+    setSignalCounter();
   }
 }
 
@@ -1216,4 +1283,18 @@ const addTooltips = () => {
   c("#dscr", "Open Deep Space Communication Relay");
   c("#retheme", "Change Theme");
   c("#toggle-sidebar", "Toggle sidebar");
+  // Credit tooltips not working :(
+  c("#importSnowman", "By Dixonary");
+  c("#importStarryNight", "By Konstans");
+}
+
+// Called after every operation (excluding adds/removes where history isnt saved, the responsibility is for whatever bulk calls them)
+const setSignalCounter = () => {
+  const count = getCurrentSignals();
+  const newSignalCount = count ? count.length : 0;
+  $("#signalAmount").innerHTML = newSignalCount;
+  if (currentSignalCount <= 2000 && newSignalCount > 2000) {
+    alert("Warning: You are over the 2000 signal limit. You can still edit the model, but the model cannot be sent in the DSCR unless the signal count is 2000 or below." )
+  }
+  currentSignalCount = newSignalCount;
 }

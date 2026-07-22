@@ -284,6 +284,31 @@ dialog {
 
   }
 
+  & p.dialog-sub {
+    color: var(--theme-color);
+    border-bottom: 2px solid var(--theme-color-darker);
+    padding: 1ch;
+    padding-left: 1em;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    & button {
+      border-radius: 0;
+      background-color: black;
+      color: var(--theme-color);
+      font-family: 'Hack', 'Courier New', Courier, monospace;
+      outline: 2px solid var(--theme-color);
+      text-transform: uppercase;
+      padding: 0.25ch 0.75ch;
+      padding-bottom: 0.125ch;
+      font-size: 1em;
+      border-radius: 999em;
+    }
+
+  }
+
 
   & div.button-row {
     display: flex;
@@ -362,6 +387,13 @@ textarea.import-paste-contents {
   }
 
 }
+
+.signal-count {
+    font-family: 'Hack', 'Courier New', Courier, monospace;
+    font-style: normal;
+    font-size: 0.6em;
+    text-transform: uppercase;
+  }
 
 .view {
   grid-area: vwr;

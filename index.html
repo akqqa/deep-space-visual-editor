@@ -41,9 +41,9 @@
         VISUAL EDITOR
       </span>
 
-      <div>
-        
-      </div>
+
+      <span class="signal-count">Signals used: <span id="signalAmount">0</span> / 2000</span>
+
 
       <div class="button-row">
           <a id="import-button" style="transform: translateY(2px);">
@@ -78,12 +78,21 @@
               X
             </button>
           </p>
+          <p class="dialog-sub">Or choose an example: 
+            <button id="importSolarSystem">Solar System</button>
+            <button id="importSnowman">Snowman</button>
+            <button id="importStarryNight">Starry Night</button>
+            <button  id="importAmogus">do not press</button>
+          </p>
+
+          
 
           <textarea class="import-paste-contents" autofocus></textarea>
           <div class="button-row">
             <button class="save-import">Import</button>
           </div>
         </div>
+
       </dialog>
     </p>
 
