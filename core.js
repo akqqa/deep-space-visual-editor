@@ -1183,23 +1183,23 @@ const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHi
   if (currentSphere == sphereMesh) {
     // Select previous sphere if deleting current!
     index = sphereData.findIndex(x => x.mesh == currentSphere);
-        deselectSphere(transformControls, overlayScene);
-
+    deselectSphere(transformControls, overlayScene);
   }
   scene.remove(sphereMesh);
   sphereMesh.geometry.dispose();
   sphereMesh.material.dispose();
   setLocalStorageSphereData();
-      sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
+  sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
 
   // Select the previous sphere if deleted a selected sphere
   if (index !== undefined) {
     console.log(index);
     if (index == 0) {
       if (sphereData.length != 0) {
-        selectSphere(sphereData[sphereData.length-1].mesh, transformControls, overlayScene);
+        electSphere(sphereData[sphereData.length-1].mesh, transformControls, overlayScene);
       }
     } else {
+      // Even though spheredata was filtered, we can access this fine as the index before hasnt been effected
       selectSphere(sphereData[index-1].mesh, transformControls, overlayScene);
     }
   }
