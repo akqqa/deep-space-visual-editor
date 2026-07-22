@@ -900,7 +900,9 @@ window.onload = () => {
       // const randZ = Number(((Math.random()) * 2 - 1).toFixed(1));
       // const randY = Number(((Math.random()) * 2 - 1).toFixed(1));
       let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z)
-      addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, false);
+      // HMM. if this is true at the end, its better for deletes, but worse for tab select... Select the new one as logically that makes more sense?
+      // maybe change behaviour of both, so tab selects next and delete deletes nearby..
+      addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, true);
 
       $("#duplicate-button").textContent = "COPIED";
     
@@ -1229,6 +1231,9 @@ const selectSphere = (sphere, transformControls, overlayScene) => {
     $("#volumeSlider").value = Number(geometryDiameter.toFixed(1));
     $("#colorAmount").value = sphereData.find(x => x.mesh == currentSphere).color;
     $("#colorSlider").value = sphereData.find(x => x.mesh == currentSphere).color;
+    // Update the number of the sphere!
+    let index = sphereData.findIndex(x => x.mesh == currentSphere);
+    $("#sphereNumber").innerHTML = index;
 
 }
 
@@ -1237,6 +1242,7 @@ const deselectSphere = (transformControls, overlayScene) => {
   overlayScene.remove(transformControls.getHelper());
   currentSphere = null;
   $("#sphere-parameters").setAttribute("data-disabled", "true");
+  $("#sphereNumber").innerHTML = "";
 }
 
 const getSnapshot = () => {
