@@ -40,7 +40,7 @@ const calculateColor = (value) => {
     let lo = Math.floor(n);
     let hi = Math.ceil(n);
     let c = getGradientColor(COLORS[lo], COLORS[hi], n % 1)
-    return new THREE.Color(Number(c));
+    return new THREE.Color().setRGB(c.r, c.g, c.b);
 }
 
 // Source - https://stackoverflow.com/a/27709336
@@ -48,30 +48,29 @@ const calculateColor = (value) => {
 // Retrieved 2026-07-15, License - CC BY-SA 4.0
 const getGradientColor = function (start_color, end_color, percent) {
 
+    let gammaFactor = 1/1; // Some magic happened and this works. i think cause we are omputing it as rbg with 0-1 range?? but idk how thats different to hex
+
     // get colors
-    let start_red = parseInt(start_color.substr(0, 2), 16),
-        start_green = parseInt(start_color.substr(2, 2), 16),
-        start_blue = parseInt(start_color.substr(4, 2), 16);
+    let start_red = Math.pow(parseInt(start_color.substr(0, 2), 16)/255, gammaFactor),
+        start_green = Math.pow(parseInt(start_color.substr(2, 2), 16)/255, gammaFactor),
+        start_blue = Math.pow(parseInt(start_color.substr(4, 2), 16)/255, gammaFactor);
 
-    let end_red = parseInt(end_color.substr(0, 2), 16),
-        end_green = parseInt(end_color.substr(2, 2), 16),
-        end_blue = parseInt(end_color.substr(4, 2), 16);
+    let end_red = Math.pow(parseInt(end_color.substr(0, 2), 16)/255, gammaFactor),
+        end_green = Math.pow(parseInt(end_color.substr(2, 2), 16)/255, gammaFactor),
+        end_blue = Math.pow(parseInt(end_color.substr(4, 2), 16)/255, gammaFactor);
 
+    
     // calculate new color
     let diff_red = end_red - start_red;
     let diff_green = end_green - start_green;
     let diff_blue = end_blue - start_blue;
 
-    diff_red = ((diff_red * percent) + start_red).toString(16).split('.')[0];
-    diff_green = ((diff_green * percent) + start_green).toString(16).split('.')[0];
-    diff_blue = ((diff_blue * percent) + start_blue).toString(16).split('.')[0];
+    // Converts each component to 0-1 for rgb
+    diff_red = ((diff_red * percent) + start_red);
+    diff_green = ((diff_green * percent) + start_green);
+    diff_blue = ((diff_blue * percent) + start_blue);
 
-    // ensure 2 digits by color
-    if (diff_red.length == 1) diff_red = '0' + diff_red
-    if (diff_green.length == 1) diff_green = '0' + diff_green
-    if (diff_blue.length == 1) diff_blue = '0' + diff_blue
-
-    return "0x" + diff_red + diff_green + diff_blue;
+    return { r: diff_red, g: diff_green, b: diff_blue};
 };
 
 //***************************************************************
