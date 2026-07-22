@@ -1196,7 +1196,7 @@ const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHi
     console.log(index);
     if (index == 0) {
       if (sphereData.length != 0) {
-        electSphere(sphereData[sphereData.length-1].mesh, transformControls, overlayScene);
+        selectSphere(sphereData[sphereData.length-1].mesh, transformControls, overlayScene);
       }
     } else {
       // Even though spheredata was filtered, we can access this fine as the index before hasnt been effected
