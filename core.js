@@ -897,7 +897,7 @@ window.onload = () => {
       // const randX = Number(((Math.random()) * 2 - 1).toFixed(1));
       // const randZ = Number(((Math.random()) * 2 - 1).toFixed(1));
       // const randY = Number(((Math.random()) * 2 - 1).toFixed(1));
-      addSphere(currentSphere.position.x, currentSphere.position.z, currentSphere.position.y, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, true);
+      addSphere(currentSphere.position.x, currentSphere.position.z, currentSphere.position.y, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, false);
 
       $("#duplicate-button").textContent = "COPIED";
     
