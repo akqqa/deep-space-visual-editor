@@ -35,7 +35,7 @@ const minColor = 0;
 
 let sceneHistory = []
 let sceneFuture = []
-const MAX_HISTORY = 20;
+const MAX_HISTORY = 200;
 
 let currentSignalCount = 0;
 
