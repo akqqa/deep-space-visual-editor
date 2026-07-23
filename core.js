@@ -546,6 +546,7 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
   // UPDATE SIGNAL COUNT
   setSignalCounter();
 
+  console.log(JSON.stringify(getCurrentSignals()));
   return true;
 }
 
