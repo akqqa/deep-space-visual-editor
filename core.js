@@ -39,6 +39,15 @@ const MAX_HISTORY = 200;
 
 let currentSignalCount = 0;
 
+// Initialise editor globals
+let camera;
+let renderer;
+let composer;
+let sceneDiv;
+let scene;
+let overlayScene;
+let orbitControls;
+
 //**************************************************//
 // THEME
 
@@ -521,7 +530,7 @@ const parseSphereData = (message) => {
 }
 
 // Loads sphereData (as an array of meshes) into the editor scene
-const loadSphereData = (text, scene, transformControls, overlayScene) => {
+const loadSphereData = (text) => {
   // import is a plain string
   // first convert to signal array
   // next pase with parseSphereData
@@ -535,12 +544,12 @@ const loadSphereData = (text, scene, transformControls, overlayScene) => {
   addToHistory();
   // delete all current spheres
   sphereData.forEach(element => {
-    removeSphere(element.mesh,scene,transformControls,overlayScene,false);
+    removeSphere(element.mesh,false);
   });
   sphereData = [];
   // for each sphere, add to sphereData and scene
   importSphereData.forEach(element => {
-    addSphere(element[0], element[1], element[2], element[3], element[4], scene, transformControls, overlayScene, false, false);
+    addSphere(element[0], element[1], element[2], element[3], element[4], false, false);
   });
   setLocalStorageSphereData();
   // UPDATE SIGNAL COUNT
@@ -566,24 +575,24 @@ const setLocalStorageSphereData = () => {
   localStorage.setItem("sphereData", JSON.stringify(data));
 }
 
-const loadLocalStorageSphereData = (scene, transformControls, overlayScene) => {
+const loadLocalStorageSphereData = () => {
   const data = localStorage.getItem("sphereData");
   const localStorageSphereData = JSON.parse(data);
   if (localStorageSphereData.length == 0) {
-    addSphere(0, 0, 0, 2, 64, scene, transformControls, overlayScene, false, false);
+    addSphere(0, 0, 0, 2, 64, false, false);
     // UPDATE SIGNAL COUNT
     setSignalCounter();
-    selectSphere(sphereData[0].mesh, transformControls, overlayScene);
+    selectSphere(sphereData[0].mesh);
     return;
   }
   console.log("HITHERE " + data)
   sphereData.forEach(element => {
-    removeSphere(element.mesh, scene, transformControls, overlayScene);
+    removeSphere(element.mesh);
   });
   sphereData = [];
   // for each sphere, add to sphereData and scene
   localStorageSphereData.forEach(element => {
-    addSphere(element[0], element[1], element[2], element[3], element[4], scene, transformControls, overlayScene, false, false);
+    addSphere(element[0], element[1], element[2], element[3], element[4], false, false);
   });
   // UPDATE SIGNAL COUNT
   setSignalCounter();
@@ -639,7 +648,6 @@ const sphereDataToExportString = () => {
 
 //************ 
 // 3D METHODS AND CONTROLS
-
 
 // Event listeners for sphere parameters changing
 $("#posX").addEventListener("change", (event) => {
@@ -710,15 +718,15 @@ $("#colorSlider").addEventListener("mousedown", (event) => {
 })
 
 // Helper methods to add and remove a given sphere, handled the spheredata and selection logic
-const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select, saveHistory=true) => {
+const addSphere = (x,z,y,diameter,color, select, saveHistory=true) => {
     if(saveHistory) {
       addToHistory();
     }
     const sphereMesh = createSphere(x, z, y, diameter, color, scene);
     sphereData.push({mesh: sphereMesh, color: color});
     if (select) {
-      deselectSphere(transformControls, overlayScene);
-      selectSphere(sphereMesh, transformControls, overlayScene);
+      deselectSphere();
+      selectSphere(sphereMesh);
     }
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
@@ -726,7 +734,7 @@ const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, 
       setSignalCounter();
     }
 }
-const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHistory=true) => {
+const removeSphere = (sphereMesh, saveHistory=true) => {
   if(saveHistory) {
     addToHistory();
   }
@@ -734,7 +742,7 @@ const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHi
   if (currentSphere == sphereMesh) {
     // Select previous sphere if deleting current!
     index = sphereData.findIndex(x => x.mesh == currentSphere);
-    deselectSphere(transformControls, overlayScene);
+    deselectSphere();
   }
   scene.remove(sphereMesh);
   sphereMesh.geometry.dispose();
@@ -747,11 +755,11 @@ const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHi
     console.log(index);
     if (index == 0) {
       if (sphereData.length != 0) {
-        selectSphere(sphereData[sphereData.length-1].mesh, transformControls, overlayScene);
+        selectSphere(sphereData[sphereData.length-1].mesh,);
       }
     } else {
       // Even though spheredata was filtered, we can access this fine as the index before hasnt been effected
-      selectSphere(sphereData[index-1].mesh, transformControls, overlayScene);
+      selectSphere(sphereData[index-1].mesh);
     }
   }
 
@@ -762,7 +770,7 @@ const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHi
 }
 
 // Add logic for enabling the parameters here
-const selectSphere = (sphere, transformControls, overlayScene) => {
+const selectSphere = (sphere) => {
     currentSphere = sphere;
     transformControls.attach(currentSphere);
     overlayScene.add(transformControls.getHelper());
@@ -780,7 +788,7 @@ const selectSphere = (sphere, transformControls, overlayScene) => {
 
 }
 
-const deselectSphere = (transformControls, overlayScene) => {
+const deselectSphere = () => {
   transformControls.detach();
   overlayScene.remove(transformControls.getHelper());
   currentSphere = null;
@@ -815,7 +823,7 @@ const addToHistory = () => {
   sceneFuture = [];
 }
 
-const undo = (scene, transformControls, overlayScene) => {
+const undo = () => {
   if (sceneHistory.length > 0) {
     const snapshot = sceneHistory.pop();
     
@@ -826,12 +834,12 @@ const undo = (scene, transformControls, overlayScene) => {
     sceneFuture.push(getSnapshot());
 
     sphereData.forEach(element => {
-      removeSphere(element.mesh, scene, transformControls, overlayScene, false);
+      removeSphere(element.mesh, false);
     });
     sphereData = [];
     // for each sphere, add to sphereData and scene
     snapshot.forEach(element => {
-      addSphere(element.x, element.y, element.z, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
+      addSphere(element.x, element.y, element.z, element.diameter,element.color,false, false)
     });
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT
@@ -839,7 +847,7 @@ const undo = (scene, transformControls, overlayScene) => {
   }
 }
 
-const redo = (scene, transformControls, overlayScene) => {
+const redo = () => {
   if (sceneFuture.length > 0) {
     const snapshot = sceneFuture.pop();
 
@@ -850,12 +858,12 @@ const redo = (scene, transformControls, overlayScene) => {
     sceneHistory.push(getSnapshot())
 
     sphereData.forEach(element => {
-      removeSphere(element.mesh, scene, transformControls, overlayScene, false);
+      removeSphere(element.mesh, false);
     });
     sphereData = [];
     // for each sphere, add to sphereData and scene
     snapshot.forEach(element => {
-      addSphere(element.x, element.y, element.z, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
+      addSphere(element.x, element.y, element.z, element.diameter,element.color,false, false)
     });
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT
@@ -1002,7 +1010,7 @@ window.onload = () => {
   }
 
   // Initialise the 3D editor
-  const {camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls} = initialiseEditor();
+  ({camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls} = initialiseEditor());
   transformControls = new TransformControls(camera, sceneDiv);
   transformControls.translationSnap = 1;
   transformControls.maxX = maxX;
@@ -1013,7 +1021,7 @@ window.onload = () => {
   transformControls.minY = minZ;
 
   // Import locally stored spheres
-  loadLocalStorageSphereData(scene, transformControls, overlayScene);
+  loadLocalStorageSphereData();
 
 
   // Set an observer to ensure the editor window is always sized correctly
@@ -1086,7 +1094,7 @@ window.onload = () => {
       return;
     }
 
-    const res = loadSphereData(content, scene, transformControls, overlayScene); 
+    const res = loadSphereData(content); 
 
     if (res) {
       $("textarea.dict-paste-contents").value = "";
@@ -1119,15 +1127,15 @@ window.onload = () => {
 
   // Event listeners for undo and redo buttons
   $("#undoButton").addEventListener("click", (event) => {
-    undo(scene, transformControls, overlayScene);
+    undo();
   })
   $("#redoButton").addEventListener("click", (event) => {
-    redo(scene, transformControls, overlayScene);
+    redo();
   })
 
 
   window.newSphere = () => {
-    addSphere(0, 0, 0, 2, 64, scene, transformControls, overlayScene, true);
+    addSphere(0, 0, 0, 2, 64, true);
   }
 
   window.duplicateCurrentSphere = () => {
@@ -1140,7 +1148,7 @@ window.onload = () => {
       let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z)
       // HMM. if this is true at the end, its better for deletes, but worse for tab select... Select the new one as logically that makes more sense?
       // maybe change behaviour of both, so tab selects next and delete deletes nearby..
-      addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, true);
+      addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, true);
 
       $("#duplicate-button").textContent = "COPIED";
     
@@ -1153,13 +1161,13 @@ window.onload = () => {
 
   window.deleteMostRecentSphere = () => {
     if (sphere) {
-      removeSphere(sphere.mesh, scene, transformControls, overlayScene);
+      removeSphere(sphere.mesh);
     }
   }
 
   window.deleteCurrentSphere = () => {
     if (currentSphere) {
-      removeSphere(currentSphere, scene, transformControls, overlayScene);
+      removeSphere(currentSphere);
     }
   }
 
@@ -1168,7 +1176,7 @@ window.onload = () => {
     addToHistory();
     if (res) {
       sphereData.forEach(element => {
-        removeSphere(element.mesh, scene, transformControls, overlayScene,false);
+        removeSphere(element.mesh,false);
       });
       setSignalCounter();
     }
@@ -1212,9 +1220,9 @@ window.onload = () => {
 
     const intersects = raycaster.intersectObjects(sphereData.map(sphere => sphere.mesh), false);
     if (intersects.length > 0) {
-      selectSphere(intersects[0].object, transformControls, overlayScene);
+      selectSphere(intersects[0].object);
     } else {
-      deselectSphere(transformControls, overlayScene);
+      deselectSphere();
     }
   });
 
@@ -1226,7 +1234,7 @@ window.onload = () => {
     } 
     if (event.code == "Delete") {
       if (currentSphere) {
-        removeSphere(currentSphere, scene, transformControls, overlayScene);
+        removeSphere(currentSphere);
       }
     }
     if (event.code == "KeyC") {
@@ -1234,14 +1242,14 @@ window.onload = () => {
         currentSphere.geometry.computeBoundingSphere();
         const color = sphereData.find(x => x.mesh == currentSphere).color;
         let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z);
-        addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, scene, transformControls, overlayScene, true);
+        addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, true);
       }
     }
     if (event.code == "KeyZ") {
-      undo(scene, transformControls, overlayScene);
+      undo();
     }
     if (event.code == "KeyX") {
-      redo(scene, transformControls, overlayScene);
+      redo();
     }
     if (event.code == "KeyT") {
       toggleMovementEnabled();
@@ -1310,18 +1318,18 @@ window.onload = () => {
         const index = sphereData.findIndex(x => x.mesh == currentSphere);
         console.log("index: " + index)
         if (index >= sphereData.length) {
-          deselectSphere(transformControls, overlayScene);
+          deselectSphere();
         } else {
           console.log("NEXT");
-          deselectSphere(transformControls, overlayScene);
+          deselectSphere();
           console.log(sphereData[index + 1].mesh);
-          selectSphere(sphereData[index + 1].mesh, transformControls, overlayScene);
+          selectSphere(sphereData[index + 1].mesh);
         }
       }
       // If no currrentSphere yet spheres exist
       else if (sphereData.length > 0) {
         //  Select 1st sphere
-        selectSphere(sphereData[0].mesh, transformControls, overlayScene);
+        selectSphere(sphereData[0].mesh);
       }
     }
   });
@@ -1354,3 +1362,8 @@ const addTooltips = () => {
   c("#importSnowman", "By Dixonary");
   c("#importStarryNight", "By Konstans");
 }
+
+
+// For multiselect have to replace currentSphere with an array, then rework the functions that use it to take both cases..
+// if currentsphere && currentsphere.length == 1: do what it currently does
+// if currentsphere && currentsphere.length > 1: do the group logic!
