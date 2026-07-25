@@ -637,6 +637,243 @@ const sphereDataToExportString = () => {
   return getRawTranslation(res);
 }
 
+//************ 
+// 3D METHODS AND CONTROLS
+
+
+// Event listeners for sphere parameters changing
+$("#posX").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minX), maxX);
+  event.target.value = num;
+  currentSphere.position.x = Number(event.target.value);
+  setLocalStorageSphereData();
+  setSignalCounter();
+});
+$("#posY").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
+  event.target.value = num;
+  currentSphere.position.z = -Number(event.target.value);
+  setLocalStorageSphereData();
+  setSignalCounter();
+});
+$("#posZ").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minZ), maxZ);
+  event.target.value = num;
+  currentSphere.position.y = Number(event.target.value);
+  setLocalStorageSphereData();
+  setSignalCounter();
+});
+$("#volumeAmount").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
+  event.target.value = num;
+  currentSphere.geometry.dispose();
+  currentSphere.geometry = new THREE.SphereGeometry(num/2);
+  setLocalStorageSphereData();
+  setSignalCounter();
+})
+$("#volumeSlider").addEventListener("input", (event) => {
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
+  event.target.value = num;
+  currentSphere.geometry.dispose();
+  currentSphere.geometry = new THREE.SphereGeometry(num/2);
+  setLocalStorageSphereData();
+  setSignalCounter();
+})
+$("#volumeSlider").addEventListener("mousedown", (event) => {
+  addToHistory(); // Only add to history on start!
+})
+$("#colorAmount").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Math.round(Number(event.target.value)), minColor), maxColor);
+  event.target.value = num;
+  const c = calculateColor(num);
+  currentSphere.material.uniforms.objectColor.value.set(c);
+  // ALSO SET FOR SPHEREDATA COLOR
+  sphereData.find(x => x.mesh == currentSphere).color = num;
+  setLocalStorageSphereData();
+  setSignalCounter();
+})
+$("#colorSlider").addEventListener("input", (event) => {
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minColor), maxColor);
+  const c = calculateColor(num);
+  currentSphere.material.uniforms.objectColor.value.set(c);
+  sphereData.find(x => x.mesh == currentSphere).color = num;
+  setLocalStorageSphereData();
+  setSignalCounter();
+})
+$("#colorSlider").addEventListener("mousedown", (event) => {
+  addToHistory(); // Only add to history on start!
+})
+
+// Helper methods to add and remove a given sphere, handled the spheredata and selection logic
+const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select, saveHistory=true) => {
+    if(saveHistory) {
+      addToHistory();
+    }
+    const sphereMesh = createSphere(x, z, y, diameter, color, scene);
+    sphereData.push({mesh: sphereMesh, color: color});
+    if (select) {
+      deselectSphere(transformControls, overlayScene);
+      selectSphere(sphereMesh, transformControls, overlayScene);
+    }
+    setLocalStorageSphereData();
+    // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
+    if (saveHistory) {
+      setSignalCounter();
+    }
+}
+const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHistory=true) => {
+  if(saveHistory) {
+    addToHistory();
+  }
+  let index = undefined;
+  if (currentSphere == sphereMesh) {
+    // Select previous sphere if deleting current!
+    index = sphereData.findIndex(x => x.mesh == currentSphere);
+    deselectSphere(transformControls, overlayScene);
+  }
+  scene.remove(sphereMesh);
+  sphereMesh.geometry.dispose();
+  sphereMesh.material.dispose();
+  setLocalStorageSphereData();
+  sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
+
+  // Select the previous sphere if deleted a selected sphere
+  if (index !== undefined) {
+    console.log(index);
+    if (index == 0) {
+      if (sphereData.length != 0) {
+        selectSphere(sphereData[sphereData.length-1].mesh, transformControls, overlayScene);
+      }
+    } else {
+      // Even though spheredata was filtered, we can access this fine as the index before hasnt been effected
+      selectSphere(sphereData[index-1].mesh, transformControls, overlayScene);
+    }
+  }
+
+  // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
+  if (saveHistory) {
+    setSignalCounter();
+  }
+}
+
+// Add logic for enabling the parameters here
+const selectSphere = (sphere, transformControls, overlayScene) => {
+    currentSphere = sphere;
+    transformControls.attach(currentSphere);
+    overlayScene.add(transformControls.getHelper());
+    $("#sphere-parameters").setAttribute("data-disabled", "false");
+    // Set volume and color parameters to the correct values! (xyz are handled already but i cant remember where?? lol oh well)
+    sphere.geometry.computeBoundingSphere();
+    const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
+    $("#volumeAmount").value = Number(geometryDiameter.toFixed(1));
+    $("#volumeSlider").value = Number(geometryDiameter.toFixed(1));
+    $("#colorAmount").value = sphereData.find(x => x.mesh == currentSphere).color;
+    $("#colorSlider").value = sphereData.find(x => x.mesh == currentSphere).color;
+    // Update the number of the sphere!
+    let index = sphereData.findIndex(x => x.mesh == currentSphere);
+    $("#sphereNumber").innerHTML = index;
+
+}
+
+const deselectSphere = (transformControls, overlayScene) => {
+  transformControls.detach();
+  overlayScene.remove(transformControls.getHelper());
+  currentSphere = null;
+  $("#sphere-parameters").setAttribute("data-disabled", "true");
+  $("#sphereNumber").innerHTML = "";
+}
+
+const getSnapshot = () => {
+  
+  const snapshot = sphereData.map(element => {
+    element.mesh.geometry.computeBoundingSphere();
+    let p = toAlien(element.mesh.position.x, element.mesh.position.y, element.mesh.position.z);
+    return {
+      x: p.x,
+      y: p.y,
+      z: p.z,
+      diameter: element.mesh.geometry.boundingSphere.radius * 2,
+      color: element.color
+    }
+  });
+
+  return snapshot;
+}
+
+// Should be called any time a change happens to the scene
+const addToHistory = () => {
+  if (sceneHistory.length > MAX_HISTORY) {
+    sceneHistory.shift();
+  }
+  const snapshot = getSnapshot();
+  sceneHistory.push(snapshot);
+  sceneFuture = [];
+}
+
+const undo = (scene, transformControls, overlayScene) => {
+  if (sceneHistory.length > 0) {
+    const snapshot = sceneHistory.pop();
+    
+    // add current state redo
+    if (sceneFuture.length > MAX_HISTORY) {
+      sceneFuture.shift();
+    } 
+    sceneFuture.push(getSnapshot());
+
+    sphereData.forEach(element => {
+      removeSphere(element.mesh, scene, transformControls, overlayScene, false);
+    });
+    sphereData = [];
+    // for each sphere, add to sphereData and scene
+    snapshot.forEach(element => {
+      addSphere(element.x, element.y, element.z, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
+    });
+    setLocalStorageSphereData();
+    // UPDATE SIGNAL COUNT
+    setSignalCounter();
+  }
+}
+
+const redo = (scene, transformControls, overlayScene) => {
+  if (sceneFuture.length > 0) {
+    const snapshot = sceneFuture.pop();
+
+    // add current state to redo
+    if (sceneHistory.length > 20) {
+      sceneHistory.shift();
+    } 
+    sceneHistory.push(getSnapshot())
+
+    sphereData.forEach(element => {
+      removeSphere(element.mesh, scene, transformControls, overlayScene, false);
+    });
+    sphereData = [];
+    // for each sphere, add to sphereData and scene
+    snapshot.forEach(element => {
+      addSphere(element.x, element.y, element.z, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
+    });
+    setLocalStorageSphereData();
+    // UPDATE SIGNAL COUNT
+    setSignalCounter();
+  }
+}
+
+// Called after every operation (excluding adds/removes where history isnt saved, the responsibility is for whatever bulk calls them)
+const setSignalCounter = () => {
+  const count = getCurrentSignals();
+  const newSignalCount = count ? count.length : 0;
+  $("#signalAmount").innerHTML = newSignalCount;
+  if (currentSignalCount <= 2000 && newSignalCount > 2000) {
+    alert("Warning: You are over the 2000 signal limit. You can still edit the model, but the model cannot be sent in the DSCR unless the signal count is 2000 or below." )
+  }
+  currentSignalCount = newSignalCount;
+}
+
 //**************************************************
 // SETUP AND LISTENERS
 
@@ -1099,228 +1336,6 @@ window.onload = () => {
   addTooltips();
 }
 
-// Event listeners for sphere parameters changing
-$("#posX").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minX), maxX);
-  event.target.value = num;
-  currentSphere.position.x = Number(event.target.value);
-  setLocalStorageSphereData();
-  setSignalCounter();
-});
-$("#posY").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
-  event.target.value = num;
-  currentSphere.position.z = -Number(event.target.value);
-  setLocalStorageSphereData();
-  setSignalCounter();
-});
-$("#posZ").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minZ), maxZ);
-  event.target.value = num;
-  currentSphere.position.y = Number(event.target.value);
-  setLocalStorageSphereData();
-  setSignalCounter();
-});
-$("#volumeAmount").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
-  event.target.value = num;
-  currentSphere.geometry.dispose();
-  currentSphere.geometry = new THREE.SphereGeometry(num/2);
-  setLocalStorageSphereData();
-  setSignalCounter();
-})
-$("#volumeSlider").addEventListener("input", (event) => {
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
-  event.target.value = num;
-  currentSphere.geometry.dispose();
-  currentSphere.geometry = new THREE.SphereGeometry(num/2);
-  setLocalStorageSphereData();
-  setSignalCounter();
-})
-$("#volumeSlider").addEventListener("mousedown", (event) => {
-  addToHistory(); // Only add to history on start!
-})
-$("#colorAmount").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Math.round(Number(event.target.value)), minColor), maxColor);
-  event.target.value = num;
-  const c = calculateColor(num);
-  currentSphere.material.uniforms.objectColor.value.set(c);
-  // ALSO SET FOR SPHEREDATA COLOR
-  sphereData.find(x => x.mesh == currentSphere).color = num;
-  setLocalStorageSphereData();
-  setSignalCounter();
-})
-$("#colorSlider").addEventListener("input", (event) => {
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minColor), maxColor);
-  const c = calculateColor(num);
-  currentSphere.material.uniforms.objectColor.value.set(c);
-  sphereData.find(x => x.mesh == currentSphere).color = num;
-  setLocalStorageSphereData();
-  setSignalCounter();
-})
-$("#colorSlider").addEventListener("mousedown", (event) => {
-  addToHistory(); // Only add to history on start!
-})
-
-// Helper methods to add and remove a given sphere, handled the spheredata and selection logic
-const addSphere = (x,z,y,diameter,color,scene, transformControls, overlayScene, select, saveHistory=true) => {
-    if(saveHistory) {
-      addToHistory();
-    }
-    const sphereMesh = createSphere(x, z, y, diameter, color, scene);
-    sphereData.push({mesh: sphereMesh, color: color});
-    if (select) {
-      deselectSphere(transformControls, overlayScene);
-      selectSphere(sphereMesh, transformControls, overlayScene);
-    }
-    setLocalStorageSphereData();
-    // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
-    if (saveHistory) {
-      setSignalCounter();
-    }
-}
-const removeSphere = (sphereMesh, scene, transformControls, overlayScene, saveHistory=true) => {
-  if(saveHistory) {
-    addToHistory();
-  }
-  let index = undefined;
-  if (currentSphere == sphereMesh) {
-    // Select previous sphere if deleting current!
-    index = sphereData.findIndex(x => x.mesh == currentSphere);
-    deselectSphere(transformControls, overlayScene);
-  }
-  scene.remove(sphereMesh);
-  sphereMesh.geometry.dispose();
-  sphereMesh.material.dispose();
-  setLocalStorageSphereData();
-  sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
-
-  // Select the previous sphere if deleted a selected sphere
-  if (index !== undefined) {
-    console.log(index);
-    if (index == 0) {
-      if (sphereData.length != 0) {
-        selectSphere(sphereData[sphereData.length-1].mesh, transformControls, overlayScene);
-      }
-    } else {
-      // Even though spheredata was filtered, we can access this fine as the index before hasnt been effected
-      selectSphere(sphereData[index-1].mesh, transformControls, overlayScene);
-    }
-  }
-
-  // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
-  if (saveHistory) {
-    setSignalCounter();
-  }
-}
-
-// Add logic for enabling the parameters here
-const selectSphere = (sphere, transformControls, overlayScene) => {
-    currentSphere = sphere;
-    transformControls.attach(currentSphere);
-    overlayScene.add(transformControls.getHelper());
-    $("#sphere-parameters").setAttribute("data-disabled", "false");
-    // Set volume and color parameters to the correct values! (xyz are handled already but i cant remember where?? lol oh well)
-    sphere.geometry.computeBoundingSphere();
-    const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
-    $("#volumeAmount").value = Number(geometryDiameter.toFixed(1));
-    $("#volumeSlider").value = Number(geometryDiameter.toFixed(1));
-    $("#colorAmount").value = sphereData.find(x => x.mesh == currentSphere).color;
-    $("#colorSlider").value = sphereData.find(x => x.mesh == currentSphere).color;
-    // Update the number of the sphere!
-    let index = sphereData.findIndex(x => x.mesh == currentSphere);
-    $("#sphereNumber").innerHTML = index;
-
-}
-
-const deselectSphere = (transformControls, overlayScene) => {
-  transformControls.detach();
-  overlayScene.remove(transformControls.getHelper());
-  currentSphere = null;
-  $("#sphere-parameters").setAttribute("data-disabled", "true");
-  $("#sphereNumber").innerHTML = "";
-}
-
-const getSnapshot = () => {
-  
-  const snapshot = sphereData.map(element => {
-    element.mesh.geometry.computeBoundingSphere();
-    let p = toAlien(element.mesh.position.x, element.mesh.position.y, element.mesh.position.z);
-    return {
-      x: p.x,
-      y: p.y,
-      z: p.z,
-      diameter: element.mesh.geometry.boundingSphere.radius * 2,
-      color: element.color
-    }
-  });
-
-  return snapshot;
-}
-
-// Should be called any time a change happens to the scene
-const addToHistory = () => {
-  if (sceneHistory.length > MAX_HISTORY) {
-    sceneHistory.shift();
-  }
-  const snapshot = getSnapshot();
-  sceneHistory.push(snapshot);
-  sceneFuture = [];
-}
-
-const undo = (scene, transformControls, overlayScene) => {
-  if (sceneHistory.length > 0) {
-    const snapshot = sceneHistory.pop();
-    
-    // add current state redo
-    if (sceneFuture.length > MAX_HISTORY) {
-      sceneFuture.shift();
-    } 
-    sceneFuture.push(getSnapshot());
-
-    sphereData.forEach(element => {
-      removeSphere(element.mesh, scene, transformControls, overlayScene, false);
-    });
-    sphereData = [];
-    // for each sphere, add to sphereData and scene
-    snapshot.forEach(element => {
-      addSphere(element.x, element.y, element.z, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
-    });
-    setLocalStorageSphereData();
-    // UPDATE SIGNAL COUNT
-    setSignalCounter();
-  }
-}
-
-const redo = (scene, transformControls, overlayScene) => {
-  if (sceneFuture.length > 0) {
-    const snapshot = sceneFuture.pop();
-
-    // add current state to redo
-    if (sceneHistory.length > 20) {
-      sceneHistory.shift();
-    } 
-    sceneHistory.push(getSnapshot())
-
-    sphereData.forEach(element => {
-      removeSphere(element.mesh, scene, transformControls, overlayScene, false);
-    });
-    sphereData = [];
-    // for each sphere, add to sphereData and scene
-    snapshot.forEach(element => {
-      addSphere(element.x, element.y, element.z, element.diameter,element.color, scene, transformControls, overlayScene,false, false)
-    });
-    setLocalStorageSphereData();
-    // UPDATE SIGNAL COUNT
-    setSignalCounter();
-  }
-}
-
 // Use tippy.js to add tooltips
 const addTooltips = () => {
   const c = (sel, content) => tippy(sel, {
@@ -1338,15 +1353,4 @@ const addTooltips = () => {
   // Credit tooltips not working :(
   c("#importSnowman", "By Dixonary");
   c("#importStarryNight", "By Konstans");
-}
-
-// Called after every operation (excluding adds/removes where history isnt saved, the responsibility is for whatever bulk calls them)
-const setSignalCounter = () => {
-  const count = getCurrentSignals();
-  const newSignalCount = count ? count.length : 0;
-  $("#signalAmount").innerHTML = newSignalCount;
-  if (currentSignalCount <= 2000 && newSignalCount > 2000) {
-    alert("Warning: You are over the 2000 signal limit. You can still edit the model, but the model cannot be sent in the DSCR unless the signal count is 2000 or below." )
-  }
-  currentSignalCount = newSignalCount;
 }
