@@ -2,6 +2,10 @@
 
 A 3D Modelling program based on the game "The Message from Deep Space". Try it [here!](https://dsve.akqqa.dev)
 
+<img width="2560" height="1274" alt="DSVEExample" src="https://github.com/user-attachments/assets/ea61920e-a8e0-4e89-8a23-ebfbdabd5341" />
+
+*Solar System model made by Konstans*
+
 ## Instructions:
 
 To use this software, you have to have a dictionary save from the game with at least up to signal -53 defined.
