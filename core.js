@@ -1385,28 +1385,36 @@ $("#sphereNumber").addEventListener("change", validateSphereNumber);
 $("#sphereNumber").addEventListener("blur", validateSphereNumber);
 
 $("#sphereNumber").addEventListener("keydown", (event) => {
-  if (event.key === "ArrowUp" && event.target.value === "") {
-    event.preventDefault(event);
-    event.target.value = 0;
-    validateSphereNumber(event);
-    return;
-  }
-  if (event.key === "ArrowDown" && event.target.value === "") {
-    event.preventDefault(event);
-    if (sphereData.length > 0) {
-      console.log("exists")
-      event.target.value = sphereData.length - 1;
-    } else {
+  if (event.key === "ArrowUp") {
+    if (event.target.value === "") {
+      event.preventDefault(event);
+      event.target.value = 0;
+      validateSphereNumber(event);
+      return;
+    } else if (event.target.value >= sphereData.length - 1) {
+      event.preventDefault(event);
       event.target.value = "";
+      validateSphereNumber(event);
+      return;
     }
-    validateSphereNumber(event);
-    return;
   }
-  if (event.key === "ArrowDown" && event.target.value === "0") {
-    event.preventDefault(event);
-    event.target.value = "";
-    validateSphereNumber(event);
-    return;
+  if (event.key === "ArrowDown") {
+    if (event.target.value === "") {
+      event.preventDefault(event);
+      if (sphereData.length > 0) {
+        console.log("exists")
+        event.target.value = sphereData.length - 1;
+      } else {
+        event.target.value = "";
+      }
+      validateSphereNumber(event);
+      return;
+    } else if (event.target.value === "0") {
+      event.preventDefault(event);
+      event.target.value = "";
+      validateSphereNumber(event);
+      return;
+    }
   }
 });
 
