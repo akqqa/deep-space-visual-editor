@@ -1317,10 +1317,9 @@ window.onload = () => {
       if (currentSphere) {
         const index = sphereData.findIndex(x => x.mesh == currentSphere);
         console.log("index: " + index)
-        if (index >= sphereData.length) {
+        if (index >= sphereData.length - 1) {
           deselectSphere();
         } else {
-          console.log("NEXT");
           deselectSphere();
           console.log(sphereData[index + 1].mesh);
           selectSphere(sphereData[index + 1].mesh);
