@@ -706,3 +706,16 @@ input[type="number"] {
   border: 2px solid var(--theme-color-darker);
   border-radius: 0;
 }
+
+#sphereHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#sphereNumber {
+  font-weight: bold;
+  width: 4.4ch;
+  text-align: center;
+}
+

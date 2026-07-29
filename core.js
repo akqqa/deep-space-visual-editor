@@ -747,8 +747,8 @@ const removeSphere = (sphereMesh, saveHistory=true) => {
   scene.remove(sphereMesh);
   sphereMesh.geometry.dispose();
   sphereMesh.material.dispose();
-  setLocalStorageSphereData();
   sphereData = sphereData.filter(item => item.mesh !== sphereMesh);
+  setLocalStorageSphereData();
 
   // Select the previous sphere if deleted a selected sphere
   if (index !== undefined) {
@@ -784,7 +784,7 @@ const selectSphere = (sphere) => {
     $("#colorSlider").value = sphereData.find(x => x.mesh == currentSphere).color;
     // Update the number of the sphere!
     let index = sphereData.findIndex(x => x.mesh == currentSphere);
-    $("#sphereNumber").innerHTML = index;
+    $("#sphereNumber").value = index;
 
 }
 
@@ -793,7 +793,7 @@ const deselectSphere = () => {
   overlayScene.remove(transformControls.getHelper());
   currentSphere = null;
   $("#sphere-parameters").setAttribute("data-disabled", "true");
-  $("#sphereNumber").innerHTML = "";
+  $("#sphereNumber").value = null;
 }
 
 const getSnapshot = () => {
@@ -1362,6 +1362,54 @@ const addTooltips = () => {
   c("#importSnowman", "By Dixonary");
   c("#importStarryNight", "By Konstans");
 }
+
+// Sphere ui input logic
+
+const validateSphereNumber = (event) => {
+  // Get value entered and select that sphere. if no value / incorrect, set to blank and deselect
+  let sphereNumber = event.target.valueAsNumber;
+
+  if (!Number.isInteger(sphereNumber) || sphereNumber < 0 || sphereData.length == 0) {
+    event.target.value = "";
+    deselectSphere();
+    return;
+  }
+
+  if (sphereNumber >= sphereData.length) {
+    sphereNumber = sphereData.length - 1;
+  }
+
+  selectSphere(sphereData[sphereNumber].mesh);
+}
+
+$("#sphereNumber").addEventListener("change", validateSphereNumber);
+$("#sphereNumber").addEventListener("blur", validateSphereNumber);
+
+$("#sphereNumber").addEventListener("keydown", (event) => {
+  if (event.key === "ArrowUp" && event.target.value === "") {
+    event.preventDefault(event);
+    event.target.value = 0;
+    validateSphereNumber(event);
+    return;
+  }
+  if (event.key === "ArrowDown" && event.target.value === "") {
+    event.preventDefault(event);
+    if (sphereData.length > 0) {
+      console.log("exists")
+      event.target.value = sphereData.length - 1;
+    } else {
+      event.target.value = "";
+    }
+    validateSphereNumber(event);
+    return;
+  }
+  if (event.key === "ArrowDown" && event.target.value === "0") {
+    event.preventDefault(event);
+    event.target.value = "";
+    validateSphereNumber(event);
+    return;
+  }
+});
 
 
 // For multiselect have to replace currentSphere with an array, then rework the functions that use it to take both cases..
