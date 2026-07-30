@@ -852,7 +852,7 @@ const redo = () => {
     const snapshot = sceneFuture.pop();
 
     // add current state to redo
-    if (sceneHistory.length > 20) {
+    if (sceneHistory.length > MAX_HISTORY) {
       sceneHistory.shift();
     } 
     sceneHistory.push(getSnapshot())
