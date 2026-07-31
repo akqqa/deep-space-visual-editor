@@ -47,9 +47,12 @@ let sceneDiv;
 let scene;
 let overlayScene;
 let orbitControls;
+let outlinePass;
 
 let globalSelection = false;
 let globalObject;
+
+let outlinesEnabled = true;
 
 //**************************************************//
 // THEME
@@ -795,6 +798,10 @@ const selectSphere = (sphere) => {
     // Update the number of the sphere!
     let index = sphereData.findIndex(x => x.mesh == currentSphere);
     $("#sphereNumber").value = index;
+    //  Add to outline pass
+    if (outlinesEnabled) {
+      outlinePass.selectedObjects = [sphere];
+    }
 
 }
 
@@ -804,6 +811,10 @@ const deselectSphere = () => {
   currentSphere = null;
   $("#sphere-parameters").setAttribute("data-disabled", "true");
   $("#sphereNumber").value = null;
+  // Remove from outline pass
+  if (outlinesEnabled) {
+    outlinePass.selectedObjects = [];
+  }
 }
 
 const getSnapshot = () => {
@@ -1028,7 +1039,7 @@ window.onload = () => {
   }
 
   // Initialise the 3D editor
-  ({camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls} = initialiseEditor());
+  ({camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls, outlinePass} = initialiseEditor());
   transformControls = new TransformControls(camera, sceneDiv);
   transformControls.translationSnap = 1;
   transformControls.maxX = maxX;
@@ -1364,6 +1375,10 @@ window.onload = () => {
     if (event.code == "KeyG") { // Move into global select mode (for global translations)
       toggleGlobalSelection();
     }
+
+    if (event.code == "KeyO") {
+      toggleOutlines();
+    }
   });
 
   window.addEventListener("keyup", (event) => {
@@ -1472,6 +1487,9 @@ const toggleGlobalSelection = () => {
     sphereData.forEach((sphere) => {
       globalObject.attach(sphere.mesh);
     });
+    if (outlinesEnabled) {
+      outlinePass.selectedObjects = sphereData.map(sphere => sphere.mesh);
+    }
   } else {
     transformControls.detach();
     overlayScene.remove(transformControls.getHelper());
@@ -1480,6 +1498,27 @@ const toggleGlobalSelection = () => {
     sphereData.forEach((sphere) => {
       scene.attach(sphere.mesh);
     });
+    if (outlinesEnabled) {
+      outlinePass.selectedObjects = [];
+    }
+  }
+}
+
+const toggleOutlines =() => {
+  outlinesEnabled = !outlinesEnabled;
+
+  if (outlinesEnabled) { // If just reenabled, make current selection outlined
+    if (!globalSelection) {
+      if (currentSphere) {
+        outlinePass.selectedObjects = [currentSphere];
+      } else {
+        outlinePass.selectedObjects = [];
+      }
+    } else {
+      outlinePass.selectedObjects = sphereData.map(sphere => sphere.mesh);
+    }
+  } else { // Disable all outlines
+    outlinePass.selectedObjects = [];
   }
 }
 

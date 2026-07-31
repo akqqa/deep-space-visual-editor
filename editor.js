@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import * as holdEvent from "https://unpkg.com/hold-event@1.1.2/dist/hold-event.module.js";
 
 const cameraMovementSpeed = 0.02;
@@ -97,6 +98,11 @@ const initialiseEditor = () => {
     let composer = new EffectComposer(renderer);
     const renderPixelatedPass = new RenderPixelatedPass(4, scene, camera);
     composer.addPass(renderPixelatedPass);
+    const resolution = new THREE.Vector2(sceneDiv.clientWidth, sceneDiv.clientHeight);
+    const outlinePass = new OutlinePass(resolution, scene, camera);
+    composer.addPass(outlinePass);
+    outlinePass.hiddenEdgeColor.set('0xFFFFFF');
+    outlinePass.edgeStrength = 5;
 
     const bottomGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
     bottomGrid.position.y = -8;
@@ -209,7 +215,8 @@ const initialiseEditor = () => {
         sceneDiv,
         scene,
         overlayScene,
-        orbitControls
+        orbitControls,
+        outlinePass
     };
 }
 
