@@ -1487,15 +1487,18 @@ const getAveragePosition = () => {
   let ax = 0;
   let ay = 0;
   let az = 0;
+  let weightSum = 0
   sphereData.forEach(sphere => {
-    ax += sphere.mesh.position.x;
-    ay += sphere.mesh.position.y;
-    az += sphere.mesh.position.z;
+    const radius = sphere.mesh.geometry.boundingSphere.radius;
+    weightSum += radius;
+    ax += sphere.mesh.position.x * radius;
+    ay += sphere.mesh.position.y * radius;
+    az += sphere.mesh.position.z * radius;
   });
 
-  ax = ax / sphereData.length;
-  ay = ay / sphereData.length;
-  az = az / sphereData.length;
+  ax = ax / weightSum;
+  ay = ay / weightSum;
+  az = az / weightSum;
 
   return [ax,ay,az];
 }
