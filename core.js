@@ -534,6 +534,9 @@ const parseSphereData = (message) => {
 
 // Loads sphereData (as an array of meshes) into the editor scene
 const loadSphereData = (text) => {
+  if (globalSelection) {
+    toggleGlobalSelection();
+  }
   // import is a plain string
   // first convert to signal array
   // next pase with parseSphereData
@@ -1186,6 +1189,9 @@ window.onload = () => {
 
   window.deleteAllSpheres = () => {
     const res = confirm("Are you sure you want to reset the canvas?");
+    if (globalSelection) {
+      toggleGlobalSelection();
+    }
     addToHistory();
     if (res) {
       sphereData.forEach(element => {
@@ -1456,8 +1462,8 @@ const toggleGlobalSelection = () => {
     // Start global selection logic. bind an invisible object to the center of the screen, bind the movement logic to moving every sphere if globalselection is toggled, disable clicking anything else or the screen excet the translation controls, disable the spheredata to the side, basically disable everyhting if this is true
     deselectSphere();
     globalObject = new THREE.Object3D();
-    const p = (toThree(0,0,0))
-    globalObject.position.set(p.x, p.y, p.z); // Alien coords!
+    const [ax,ay,az] = getAveragePosition();
+    globalObject.position.set(ax, ay, az); // Alien coords!
     scene.add(globalObject);
     transformControls.attach(globalObject);
     overlayScene.add(transformControls.getHelper());
@@ -1473,4 +1479,21 @@ const toggleGlobalSelection = () => {
       scene.attach(sphere.mesh);
     });
   }
+}
+
+const getAveragePosition = () => {
+  let ax = 0;
+  let ay = 0;
+  let az = 0;
+  sphereData.forEach(sphere => {
+    ax += sphere.mesh.position.x;
+    ay += sphere.mesh.position.y;
+    az += sphere.mesh.position.z;
+  });
+
+  ax = ax / sphereData.length;
+  ay = ay / sphereData.length;
+  az = az / sphereData.length;
+
+  return [ax,ay,az];
 }
