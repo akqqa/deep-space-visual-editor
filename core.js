@@ -615,7 +615,9 @@ const getCurrentSignals = () => {
   sphereData.forEach((element) => {
     element.mesh.geometry.computeBoundingSphere();
     const geometryRadius = element.mesh.geometry.boundingSphere.radius;
-    let p = toAlien(element.mesh.position.x, element.mesh.position.y, element.mesh.position.z)
+    const worldPos = new THREE.Vector3();
+    element.mesh.getWorldPosition(worldPos);
+    let p = toAlien(worldPos.x, worldPos.y, worldPos.z);
 
     const [posX, posY, posZ, diameter] = [
       p.x,
