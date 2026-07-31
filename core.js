@@ -88,6 +88,13 @@ const initialiseTheme = () => {
   }
 }
 
+const initialiseOutlines = () => {
+  const outlines = localStorage.getItem("outlines");
+  if (outlines === "false") {
+    toggleOutlines();
+  }
+}
+
 //**************************************************//
 // SIDEBAR
 
@@ -1052,6 +1059,9 @@ window.onload = () => {
   // Import locally stored spheres
   loadLocalStorageSphereData();
 
+  // toggle outlines based on localstorage
+  initialiseOutlines();
+
 
   // Set an observer to ensure the editor window is always sized correctly
   const observer = new ResizeObserver(() => {   
@@ -1506,6 +1516,8 @@ const toggleGlobalSelection = () => {
 
 const toggleOutlines =() => {
   outlinesEnabled = !outlinesEnabled;
+
+  localStorage.setItem("outlines", outlinesEnabled);
 
   if (outlinesEnabled) { // If just reenabled, make current selection outlined
     if (!globalSelection) {
