@@ -1476,12 +1476,6 @@ $("#sphereNumber").addEventListener("keydown", (event) => {
   }
 });
 
-
-// For multiselect have to replace currentSphere with an array, then rework the functions that use it to take both cases..
-// if currentsphere && currentsphere.length == 1: do what it currently does
-// if currentsphere && currentsphere.length > 1: do the group logic!
-
-
 const toggleGlobalSelection = () => {
   globalSelection = !globalSelection;
 
@@ -1547,9 +1541,9 @@ const getAveragePosition = () => {
     az += sphere.mesh.position.z * radius;
   });
 
-  ax = ax / weightSum;
-  ay = ay / weightSum;
-  az = az / weightSum;
+  ax = Math.round((ax / weightSum) * 10) / 10;
+  ay = Math.round((ay / weightSum) * 10) / 10;
+  az = Math.round((az / weightSum) * 10) / 10;
 
   return [ax,ay,az];
 }
