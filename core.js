@@ -48,6 +48,9 @@ let scene;
 let overlayScene;
 let orbitControls;
 
+let globalSelection = false;
+let globalObject;
+
 //**************************************************//
 // THEME
 
@@ -562,7 +565,9 @@ const loadSphereData = (text) => {
 const setLocalStorageSphereData = () => {
   let data = [];
   sphereData.forEach(element => {
-    let p = toAlien(element.mesh.position.x, element.mesh.position.y, element.mesh.position.z)
+    const worldPos = new THREE.Vector3();
+    element.mesh.getWorldPosition(worldPos);
+    let p = toAlien(worldPos.x, worldPos.y, worldPos.z);
     let res = [];
     res[0] = p.x;
     res[1] = p.y;
@@ -800,7 +805,9 @@ const getSnapshot = () => {
   
   const snapshot = sphereData.map(element => {
     element.mesh.geometry.computeBoundingSphere();
-    let p = toAlien(element.mesh.position.x, element.mesh.position.y, element.mesh.position.z);
+    const worldPos = new THREE.Vector3();
+    element.mesh.getWorldPosition(worldPos);
+    let p = toAlien(worldPos.x, worldPos.y, worldPos.z);
     return {
       x: p.x,
       y: p.y,
@@ -824,6 +831,9 @@ const addToHistory = () => {
 }
 
 const undo = () => {
+  if (globalSelection) {
+    toggleGlobalSelection();
+  }
   if (sceneHistory.length > 0) {
     const snapshot = sceneHistory.pop();
     
@@ -848,6 +858,9 @@ const undo = () => {
 }
 
 const redo = () => {
+  if (globalSelection) {
+    toggleGlobalSelection();
+  }
   if (sceneFuture.length > 0) {
     const snapshot = sceneFuture.pop();
 
@@ -1194,7 +1207,9 @@ window.onload = () => {
     setSignalCounter();
   });
   transformControls.addEventListener("change", (event) => {
-
+    if (globalSelection || !currentSphere) {
+      return;
+    }
     // Update parameters in ui
     let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z);
     $("#posX").value = p.x.toFixed(1);
@@ -1211,6 +1226,9 @@ window.onload = () => {
     let newMousePos = new THREE.Vector2(event.clientX, event.clientY);
     if (!newMousePos.equals(mouseDownPos)) {
       return;
+    }
+    if (globalSelection) {
+      toggleGlobalSelection();
     }
 
     // Handle the raycasting
@@ -1233,11 +1251,13 @@ window.onload = () => {
       transformControls.translationSnap = 0.1;
     } 
     if (event.code == "Delete") {
+      if (globalSelection) return;
       if (currentSphere) {
         removeSphere(currentSphere);
       }
     }
     if (event.code == "KeyC") {
+      if (globalSelection) return;
       if (currentSphere) {
         currentSphere.geometry.computeBoundingSphere();
         const color = sphereData.find(x => x.mesh == currentSphere).color;
@@ -1313,7 +1333,8 @@ window.onload = () => {
     }
 
     if (event.code == "Tab") {
-       event.preventDefault();
+      if (globalSelection) return;
+      event.preventDefault();
       if (currentSphere) {
         const index = sphereData.findIndex(x => x.mesh == currentSphere);
         console.log("index: " + index)
@@ -1330,6 +1351,10 @@ window.onload = () => {
         //  Select 1st sphere
         selectSphere(sphereData[0].mesh);
       }
+    }
+
+    if (event.code == "KeyG") { // Move into global select mode (for global translations)
+      toggleGlobalSelection();
     }
   });
 
@@ -1422,3 +1447,30 @@ $("#sphereNumber").addEventListener("keydown", (event) => {
 // For multiselect have to replace currentSphere with an array, then rework the functions that use it to take both cases..
 // if currentsphere && currentsphere.length == 1: do what it currently does
 // if currentsphere && currentsphere.length > 1: do the group logic!
+
+
+const toggleGlobalSelection = () => {
+  globalSelection = !globalSelection;
+
+  if (globalSelection) {
+    // Start global selection logic. bind an invisible object to the center of the screen, bind the movement logic to moving every sphere if globalselection is toggled, disable clicking anything else or the screen excet the translation controls, disable the spheredata to the side, basically disable everyhting if this is true
+    deselectSphere();
+    globalObject = new THREE.Object3D();
+    const p = (toThree(0,0,0))
+    globalObject.position.set(p.x, p.y, p.z); // Alien coords!
+    scene.add(globalObject);
+    transformControls.attach(globalObject);
+    overlayScene.add(transformControls.getHelper());
+    sphereData.forEach((sphere) => {
+      globalObject.attach(sphere.mesh);
+    });
+  } else {
+    transformControls.detach();
+    overlayScene.remove(transformControls.getHelper());
+    scene.remove(globalObject);
+    globalObject = null;
+    sphereData.forEach((sphere) => {
+      scene.attach(sphere.mesh);
+    });
+  }
+}
