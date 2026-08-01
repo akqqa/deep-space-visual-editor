@@ -641,6 +641,7 @@ const getCurrentSignals = () => {
         resArray.push(-1)
       }
       v = Math.abs(v);
+      v = Number(v.toFixed(1));  // REQUIRED OR THE EXPORTS TRUNCATE WHEN GLOBAL SELECT AND IT MESSES EVERYTHING UP
       const stringV = v.toString();
       if (stringV.includes(".")) {
         const decimalIndex = stringV.indexOf(".");
