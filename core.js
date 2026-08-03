@@ -754,6 +754,9 @@ const addSphere = (x,z,y,diameter,color, select, saveHistory=true) => {
     if (saveHistory) {
       setSignalCounter();
     }
+
+    // Return the mesh
+    return sphereMesh;
 }
 const removeSphere = (sphereMesh, saveHistory=true) => {
   if(saveHistory) {
@@ -837,7 +840,9 @@ const getSnapshot = () => {
       y: p.y,
       z: p.z,
       diameter: element.mesh.geometry.boundingSphere.radius * 2,
-      color: element.color
+      color: element.color,
+      selected: element.mesh === currentSphere ? true : false,
+      global: globalSelection
     }
   });
 
@@ -855,9 +860,6 @@ const addToHistory = () => {
 }
 
 const undo = () => {
-  if (globalSelection) {
-    toggleGlobalSelection();
-  }
   if (sceneHistory.length > 0) {
     const snapshot = sceneHistory.pop();
     
@@ -867,14 +869,28 @@ const undo = () => {
     } 
     sceneFuture.push(getSnapshot());
 
+    if (globalSelection) {
+      toggleGlobalSelection();
+    }
+
     sphereData.forEach(element => {
       removeSphere(element.mesh, false);
     });
     sphereData = [];
     // for each sphere, add to sphereData and scene
+    let toggleGlobal = false;
     snapshot.forEach(element => {
-      addSphere(element.x, element.y, element.z, element.diameter,element.color,false, false)
+      const mesh = addSphere(element.x, element.y, element.z, element.diameter,element.color,false, false);
+      if (element.selected) {
+        selectSphere(mesh);
+      }
+      if (element.global) {
+        toggleGlobal = true;
+      }
     });
+    if (toggleGlobal) {
+      toggleGlobalSelection();
+    }
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT
     setSignalCounter();
@@ -882,9 +898,6 @@ const undo = () => {
 }
 
 const redo = () => {
-  if (globalSelection) {
-    toggleGlobalSelection();
-  }
   if (sceneFuture.length > 0) {
     const snapshot = sceneFuture.pop();
 
@@ -892,16 +905,30 @@ const redo = () => {
     if (sceneHistory.length > MAX_HISTORY) {
       sceneHistory.shift();
     } 
-    sceneHistory.push(getSnapshot())
+    sceneHistory.push(getSnapshot());
+
+    if (globalSelection) {
+      toggleGlobalSelection();
+    }
 
     sphereData.forEach(element => {
       removeSphere(element.mesh, false);
     });
     sphereData = [];
     // for each sphere, add to sphereData and scene
+    let toggleGlobal = false;
     snapshot.forEach(element => {
-      addSphere(element.x, element.y, element.z, element.diameter,element.color,false, false)
+      const mesh = addSphere(element.x, element.y, element.z, element.diameter,element.color,false, false);
+      if (element.selected) {
+        selectSphere(mesh);
+      }
+      if (element.global) {
+        toggleGlobal = true;
+      }
     });
+    if (toggleGlobal) {
+      toggleGlobalSelection();
+    }
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT
     setSignalCounter();
