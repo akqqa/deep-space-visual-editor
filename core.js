@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { initialiseEditor, calculateColor, createSphere, toggleMovementEnabled, toThree, toAlien  } from "./editor.js";
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 
 // Core js code adapted from Dixonary's Deep Space Communication Relay project
 
@@ -667,6 +668,49 @@ const sphereDataToExportString = () => {
   return getRawTranslation(res);
 }
 
+const sphereDataToExportSignals = () => {
+  const res = getCurrentSignals();
+  let signals = "";
+  res.forEach(element => {
+    if (element < 0) {
+      signals += "|" + element.toString() + " ";
+    } else {
+      signals += element.toString() + " ";
+    }
+  }); 
+  console.log(signals)
+  return signals;
+}
+
+const sphereDataToGltf = () => {
+  const exportGroup = new THREE.Group();
+  sphereData.forEach(({ mesh, color }) => {
+    console.log(mesh.material.color);
+    const clone = mesh.clone();
+    clone.material = new THREE.MeshStandardMaterial({ // Have to add material cause custom shader wont work
+      color: calculateColor(color),
+      metalness: 0,
+      roughness: 0.5,
+    });
+    exportGroup.add(clone);
+  });
+
+  const exporter = new GLTFExporter();
+  exporter.parse(
+    exportGroup,
+    (result) => {
+      const blob = new Blob([result], { type: 'application/octet-stream' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'visual.glb';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    },
+    console.error,
+    { binary: true }
+  );
+}
+
 //************ 
 // 3D METHODS AND CONTROLS
 
@@ -1172,25 +1216,56 @@ window.onload = () => {
     }
   });
 
-  $("#export-button").addEventListener("click", () => {
+  // Export logic
+  $("#copy-message-signals").addEventListener("click", () => {
     // Transform the sphereData into the correct test
-    let res = sphereDataToExportString();
+    let res = sphereDataToExportSignals();
     if (!res) {
-      $("#export-button").querySelector("i").className = "fa fa-times";
+      $("#copy-message-signals").querySelector("i").className = "fa fa-times";
     } else {
       navigator.clipboard.writeText(res).then(
       () => {
-        $("#export-button").querySelector("i").className = "fa fa-check";
+        $("#copy-message-signals").querySelector("i").className = "fa fa-check";
       },
       () => {
-        $("#export-button").querySelector("i").className = "fa fa-times";
+        $("#copy-message-signals").querySelector("i").className = "fa fa-times";
       });
     }
     
     setTimeout(() => {
-        $("#export-button").querySelector("i").className = "fa fa-upload";
+        $("#copy-message-signals").querySelector("i").className = "fa fa-copy";
     }, 1000);
   });
+  $("#copy-message-text").addEventListener("click", () => {
+    // Transform the sphereData into the correct test
+    let res = sphereDataToExportString();
+    if (!res) {
+      $("#copy-message-text").querySelector("i").className = "fa fa-times";
+    } else {
+      navigator.clipboard.writeText(res).then(
+      () => {
+        $("#copy-message-text").querySelector("i").className = "fa fa-check";
+      },
+      () => {
+        $("#copy-message-text").querySelector("i").className = "fa fa-times";
+      });
+    }
+    
+    setTimeout(() => {
+        $("#copy-message-text").querySelector("i").className = "fa fa-copy";
+    }, 1000);
+  });
+  $("#download-gltf-file").addEventListener("click", () => {
+    // Transform the sphereData into the correct test
+    sphereDataToGltf();
+  
+    $("#download-gltf-file").querySelector("i").className = "fa fa-check";
+    
+    setTimeout(() => {
+        $("#download-gltf-file").querySelector("i").className = "fa fa-upload";
+    }, 1000);
+  });
+
 
   // Event listeners for undo and redo buttons
   $("#undoButton").addEventListener("click", (event) => {
@@ -1433,12 +1508,16 @@ window.onload = () => {
 const addTooltips = () => {
   const c = (sel, content) => tippy(sel, {
     content,
-    animateFill: false,
+    duration: 0,
     hideOnClick: false,
-    duration: 0
+    arrow: false,
+    placement: "bottom"
   })
   c("#import-button", "Import model");
-  c("#export-button", "Copy model string to clipboard")
+  c("#export-button", "Export model");
+  c("#copy-message-signals", "Copy Signals");
+  c("#copy-message-text", "Copy Text");
+  c("#download-gltf-file", "Download .GLB");
   c("#dscr", "Open Deep Space Communication Relay");
   c("#retheme", "Change Theme");
   c("#toggle-sidebar", "Toggle sidebar");
@@ -1575,3 +1654,11 @@ const getAveragePosition = () => {
 
   return [ax,ay,az];
 }
+
+// TO CONSIDER:
+// the issue of selection and history. toggling global select when in history will alter that part of history. do we want this? how will it affect if multiselect is added instead? should each selection event create a new history?
+// wait its not just global select its normal select too. makes things a bit more simple. it will be changed in history without undoing redo. but tbf is that so bad?? its such a rare and unnoticed use case and not even technically wrong?
+
+// TODO:
+// MULTISELECT. 
+// REFACTOR CODE INTO MORE FILES FOR MORE MANAGABLILITY

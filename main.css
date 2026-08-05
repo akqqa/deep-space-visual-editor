@@ -384,6 +384,16 @@ textarea.import-paste-contents {
       cursor: pointer;
       width: 1em;
     }
+
+    & button {
+      all: unset;
+
+      display: inline-block;
+      width: 1em;
+      cursor: pointer;
+      color: inherit;
+      font: inherit;
+    }
   }
 
 }
@@ -658,12 +668,6 @@ button {
   font-size: 0.9em;
 }
 
-.header button {
-    background-color: var(--theme-color-dark);
-  font-size: 0.5em;
-  transform: translateY(-6px);
-}
-
 .range-slider {
   appearance: none;
   height: 0.8ch;
@@ -701,7 +705,7 @@ input[type="number"] {
 
 /* TOOLTIPS */
 
-.tippy-tooltip {
+.tippy-box {
   background-color: black;
   border: 2px solid var(--theme-color-darker);
   border-radius: 0;
@@ -719,3 +723,41 @@ input[type="number"] {
   text-align: center;
 }
 
+& #export-actions {
+
+  &:popover-open {
+    display: flex;
+  }
+
+  gap: 0.5ch;
+  align-items: stretch;
+
+  position: absolute;
+  position-area: bottom;
+  top: 1ch;
+
+  main.aux-left & {
+    position-area: right;
+    left: 0.5ch;
+  }
+
+  background-color: black;
+  border: 2px solid var(--theme-color-darker);
+  border-radius: 0;
+  padding: 0.5ch;
+
+  & button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5ch;
+    cursor: pointer;
+
+    font-size: 1em;
+    min-width: 1.5em;
+    background: transparent;
+    border-radius: 999;
+    background-color: var(--theme-color-dark);
+    font-family: 'Hack', 'Courier New', Courier, monospace;
+  }
+}

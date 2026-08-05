@@ -18,8 +18,8 @@
   <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
 
    <!-- Tooltips -->
-  <script src="https://unpkg.com/popper.js@1"></script>
-  <script src="https://unpkg.com/tippy.js@4"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
 
   <script type="importmap">
   {
@@ -34,6 +34,17 @@
 </head>
 
 <body>
+  <div id="export-actions" popover>
+    <button id="copy-message-signals">
+      <i class="fa fa-copy"></i><span>|-123</span>
+    </button>
+    <button id="copy-message-text">
+      <i class="fa fa-copy"></i><span>ABC</span>
+    </button>
+    <button id="download-gltf-file">
+      <i class="fa fa-download"></i><span>OBJ</span>
+    </button>
+  </div>
   <main>
     <div class="header">
       <span>
@@ -46,12 +57,13 @@
 
 
       <div class="button-row">
+
           <a id="import-button" style="transform: translateY(2px);">
             <i class="fa fa-download"></i>
           </a>
-          <a id="export-button">
+          <button id="export-button" popovertarget="export-actions">
             <i class="fa fa-upload"></i>
-          </a>
+          </button>
 
           <span style="flex:1"></span>
           <span style="flex:1"></span>
