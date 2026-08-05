@@ -688,9 +688,7 @@ const sphereDataToGltf = () => {
     console.log(mesh.material.color);
     const clone = mesh.clone();
     clone.material = new THREE.MeshStandardMaterial({ // Have to add material cause custom shader wont work
-      color: calculateColor(color),
-      metalness: 0,
-      roughness: 0.5,
+      color: calculateColor(color)
     });
     exportGroup.add(clone);
   });
