@@ -16,6 +16,26 @@ Models are made out of a collection of spheres - with transformable radius and c
 
 Models can be imported and exported as strings - which are compatible with the [Deep Space Transmission Relay](https://github.com/dixonary/mfds-server).
 
+## Current Features
+
+- Creation and deletion of spheres
+- Movement up to a resolution of 0.1 units
+- Changing volume and colour
+- Duplication
+- Undo/Redo change history
+- Tab selection
+- Global selection
+- Full camera movement
+- Importing/Exporting as raw signal or dictionary defined strings
+- Signal counter to keep track of message length
+- Download as a .GLB file
+
+## Planned Features
+
+- True multi-selection with movement, rotation and duplication
+- Even more game-accurate fresnel shading
+- A curated gallery to share models that can be viewed by other users
+
 ## Credits:
 
 Thank you to Dixonary for the base website template and logic used for the translation and dictionary!
