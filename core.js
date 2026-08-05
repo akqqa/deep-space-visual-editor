@@ -1260,7 +1260,7 @@ window.onload = () => {
     $("#download-gltf-file").querySelector("i").className = "fa fa-check";
     
     setTimeout(() => {
-        $("#download-gltf-file").querySelector("i").className = "fa fa-upload";
+        $("#download-gltf-file").querySelector("i").className = "fa fa-download";
     }, 1000);
   });
 
