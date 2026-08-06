@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
+import { ViewHelper } from 'three/addons/helpers/ViewHelper.js';
 import * as holdEvent from "https://unpkg.com/hold-event@1.1.2/dist/hold-event.module.js";
 
 const cameraMovementSpeed = 0.02;
@@ -112,6 +113,9 @@ const initialiseEditor = () => {
     scene.add(bottomGrid);
     scene.add(topGrid);
 
+    // viewhelper
+    const viewHelper = new ViewHelper(camera, renderer.domElement);
+    // viewHelper.location = {top: true, right: true, bottom: null, left: null}
 
     const orbitControls = new OrbitControls(camera, renderer.domElement);
 
@@ -204,6 +208,10 @@ const initialiseEditor = () => {
         composer.render(scene, camera); // renders composer
         renderer.autoClear = false; // disables to prevent clearing before next render
         renderer.render(overlayScene,camera);
+        if (viewHelper.animating) {
+            viewHelper.update(delta);
+        }
+        viewHelper.render(renderer);
         renderer.autoClear = true; // reenables to clear previous frame for next loop
     }
     renderer.setAnimationLoop(animate);
