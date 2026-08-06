@@ -1325,6 +1325,10 @@ window.onload = () => {
     }
   }
 
+  window.selectAll = () => {
+    toggleGlobalSelection();
+  }
+
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   transformControls.addEventListener("dragging-changed", (event) => { // Disable orbit controls when dragging transformcontrols
@@ -1381,8 +1385,14 @@ window.onload = () => {
       transformControls.translationSnap = 0.1;
     } 
     if (event.code == "Delete") {
-      if (globalSelection) return;
-      if (currentSphere) {
+      if (globalSelection) {
+        addToHistory();
+        toggleGlobalSelection();
+        sphereData.forEach(element => {
+          removeSphere(element.mesh,false);
+        });
+        setSignalCounter();
+      } else if (currentSphere) {
         removeSphere(currentSphere);
       }
     }
