@@ -1,4 +1,4 @@
-import { $, $$ } from "./query.js"
+import { $ } from "./query.js"
 
 let theme = 0;
 const themeColors = ["#66aa00", "#b6a8e5", "#c49b9b", "#b1d6e9", "#ccc", "#fffb00", "#4f4f85", "#ff9538"];

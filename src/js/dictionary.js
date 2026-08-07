@@ -50,13 +50,12 @@ export const loadDictionary = (text) => {
     lastLoadedDict = text;
 
     updateDict();
-    location.reload(); // Reloads window to initialise editor properly
+    window.location.reload(); // Reloads window to initialise editor properly
     return true;
   }
 
-  catch (e) {
+  catch {
     console.error("Could not read dictionary");
-    renderErrorMessage("Could not read dictionary: " + e.message);
     return false;
   }
 }

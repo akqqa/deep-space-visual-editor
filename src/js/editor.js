@@ -6,6 +6,8 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { ViewHelper } from 'three/addons/helpers/ViewHelper.js';
 import * as holdEvent from "https://unpkg.com/hold-event@1.1.2/dist/hold-event.module.js";
 
+import { setEditorState } from './state.js';
+
 const cameraMovementSpeed = 0.02;
 const cameraRotateSpeed = 0.002;
 
@@ -13,8 +15,23 @@ let movementEnabled = true;
 
 // Editor / Renderer specific code
 
-//**************************************************//
-// RENDERING IMAGES
+const getMovementEnabled = () => {
+    return movementEnabled;
+}
+
+export const toggleMovementEnabled = () => {
+    movementEnabled = !movementEnabled;
+}
+
+// Alien coords to three coords
+export const toThree = (ax, ay, az) => {
+  return { x: ax, y: az, z: -ay };
+}
+
+// Three coords to alien coords
+export const toAlien = (tx, ty, tz) => {
+  return { x: tx, y: -tz, z: ty };
+}
 
 // Helper method for calculating the sphere colors
 // Visual Object colors are evaluated on a gradient [0, 64] to get RGB values. The full gradient linearly blends between keys. In the game, the keys are: 
@@ -37,7 +54,7 @@ const COLORS = [
   "636363", "FFFFFF"
 ];
 
-const calculateColor = (value) => {
+export const calculateColor = (value) => {
     let n = value / 64 * (COLORS.length - 1);
     let lo = Math.floor(n);
     let hi = Math.ceil(n);
@@ -76,9 +93,9 @@ const getGradientColor = function (start_color, end_color, percent) {
 };
 
 //***************************************************************
-// VISUAL EDITOR
+// SPHERE MANIPULATION
 
-const initialiseEditor = () => {
+export const initialiseEditor = () => {
     // Create the scene
     let sceneDiv = document.getElementById("view");
 
@@ -216,97 +233,5 @@ const initialiseEditor = () => {
     }
     renderer.setAnimationLoop(animate);
 
-    return {
-        camera,
-        renderer,
-        composer,
-        sceneDiv,
-        scene,
-        overlayScene,
-        orbitControls,
-        outlinePass
-    };
+    setEditorState({ camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls, outlinePass });
 }
-
-const createSphere = (x, y, z, radius, color, scene) => {
-    const sphere = new THREE.SphereGeometry(radius / 2);
-    // map the color - using the key levels apples described to match the game and interpolatee between
-    let c = calculateColor(color);
-    // https://medium.com/@aurelienagtn/introduction-to-shaders-with-three-js-create-an-animated-sphere-d4920fbab126
-    // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/2.2.basic_lighting.fs
-    const mat = new THREE.ShaderMaterial({
-    vertexShader: `
-        varying vec3 Normal;
-        varying vec3 camDir;
-        
-        void main() {
-        Normal = normalize(normal);
-
-        vec3 sphereCenter = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-        camDir = normalize(cameraPosition - sphereCenter);
-
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    `,
-    fragmentShader: `
-        varying vec3 Normal;  
-        varying vec3 camDir;
-        
-        uniform vec3 lightPos; 
-        uniform vec3 lightColor;
-        uniform vec3 objectColor;
-        
-        void main()
-        {
-            // diffuse 
-            float diffuseStrength = 0.93;
-            vec3 norm = normalize(Normal);
-            vec3 lightDir = camDir;
-            float diff = max(dot(norm, lightDir), 0.0);
-            vec3 diffuse = diff * lightColor * diffuseStrength;
-
-            // specular
-            float specularStrength = 0.2;
-            vec3 viewDir = camDir;
-            vec3 reflectDir = reflect(-lightDir, norm);  
-            float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0);
-            vec3 specular = specularStrength * spec * lightColor;  
-                
-            vec3 result = ( specular + diffuse) * objectColor;
-            gl_FragColor  = vec4(result, 1.0);
-        } 
-    `,
-    uniforms: {
-        lightColor: { value: new THREE.Color(0xffffff) },
-        objectColor: { value: c },
-    }
-    });
-
-    const mesh = new THREE.Mesh(sphere, mat);
-    const p = (toThree(x,y,z))
-    mesh.position.set(p.x, p.y, p.z); // Alien coords!
-    scene.add(mesh);
-
-    return mesh;
-}
-
-const getMovementEnabled = () => {
-    return movementEnabled;
-}
-
-const toggleMovementEnabled = () => {
-    movementEnabled = !movementEnabled;
-}
-
-// Alien coords to three coords
-function toThree(ax, ay, az) {
-  return { x: ax, y: az, z: -ay };
-}
-
-// Three coords to alien coords
-function toAlien(tx, ty, tz) {
-  return { x: tx, y: -tz, z: ty };
-}
-
-
-export {initialiseEditor, getGradientColor, calculateColor, createSphere, getMovementEnabled, toggleMovementEnabled, toThree, toAlien};

@@ -51,7 +51,7 @@ export const getTranslation = (str) => {
 // Copy of above, but returns raw string instead of html formatted one
 export const getRawTranslation = (str) => {
   let newText = str
-    .map((x, i) => {
+    .map((x) => {
       if (x < 0) {
         let entry = dict[x];
         if (entry) {
