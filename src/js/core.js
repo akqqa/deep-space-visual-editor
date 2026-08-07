@@ -1160,21 +1160,21 @@ window.onload = () => {
 
   $("#importSolarSystem").addEventListener("click", () => {
     const importTextArea = $("textarea.import-paste-contents");
-    fetch("./models/solar-system.model")
+    fetch("./assets/models/solar-system.model")
       .then(r => r.text())
       .then(r => importTextArea.value = r);
   })
 
   $("#importSnowman").addEventListener("click", () => {
     const importTextArea = $("textarea.import-paste-contents");
-    fetch("./models/snowman.model")
+    fetch("./assets/models/snowman.model")
       .then(r => r.text())
       .then(r => importTextArea.value = r);
   })
 
   $("#importStarryNight").addEventListener("click", () => {
     const importTextArea = $("textarea.import-paste-contents");
-    fetch("./models/starry-night.model")
+    fetch("./assets/models/starry-night.model")
       .then(r => r.text())
       .then(r => importTextArea.value = r);
   })
@@ -1185,7 +1185,7 @@ window.onload = () => {
       return;
     }
     const importTextArea = $("textarea.import-paste-contents");
-    fetch("./models/amogus.model")
+    fetch("./assets/models/amogus.model")
       .then(r => r.text())
       .then(r => importTextArea.value = r);
   })
