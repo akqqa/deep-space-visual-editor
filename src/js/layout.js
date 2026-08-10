@@ -32,6 +32,9 @@ export const initialiseTheme = () => {
     console.log("THEME", ot, oldTheme);
     setTheme(oldTheme);
   }
+  $("#retheme").addEventListener("click", () => {
+    changeTheme();
+  });
 }
 
 //**************************************************//
@@ -62,6 +65,10 @@ export const initialiseSidebar = () => {
   }
   console.log(`Sidebar initialised to ${sidebar_visible ? "visible" : "hidden"}`);
   updateSidebar();
+
+  $("#toggle-sidebar").addEventListener("click", () => {
+    toggleSidebar();
+  })
 }
 
 // give each file an initialise function that does all the stuff we should put in the window onload in main

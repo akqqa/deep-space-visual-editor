@@ -61,6 +61,45 @@ export const loadDictionary = (text) => {
 }
 
 export const initialiseDict = () => {
+  const consumeDictionary = (file) => {
+    console.log("Consuming dictionary")
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      loadDictionary(reader.result);
+    });
+    reader.readAsText(file);
+  }
+
+  $("#dictionary-input").addEventListener("change", (ev) => {
+    const file = ev.target.files[0];
+    consumeDictionary(file);
+  });
+  const dropHandler = (ev) => {
+    const files = [...ev.dataTransfer.items];
+    if (files.length === 0) {
+      console.warn("No files");
+      return;
+    }
+    consumeDictionary(files[0].getAsFile());
+  }
+  window.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+  window.addEventListener("drop", (e) => {
+    e.preventDefault();
+  });
+  
+  window.addEventListener("drop", dropHandler);
+  window.addEventListener("dragover", (e) => {
+    const fileItems = [...e.dataTransfer.items].filter(
+      (item) => item.kind === "file",
+    );
+    if (fileItems.length > 0) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+    }
+  });
+  
   let dict = localStorage.getItem("dict");
   let dictRaw = localStorage.getItem("dict-raw");
   if (!dict) {

@@ -130,3 +130,10 @@ export const doTranslation = () => {
     return el;
   })
 }
+
+export const initialiseTranslation = () => {
+  // Auto-translate anything with the "do-translate" class
+  window.setInterval(() => {
+    doTranslation();
+  }, 100);
+}

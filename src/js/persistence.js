@@ -1,5 +1,5 @@
 import { $ } from "./query.js";
-import { sphereData, setSphereData, scene, currentSignalCount, setCurrentSignalCount, globalSelection } from "./state.js";
+import { sphereData, setSphereData, currentSignalCount, setCurrentSignalCount, globalSelection } from "./state.js";
 import { addSphere, removeSphere, selectSphere } from "./spheres.js";
 import { toAlien, calculateColor } from "./editor.js";
 import { parseText, parseSphereData } from "./parsing.js";
@@ -185,4 +185,13 @@ export const setSignalCounter = () => {
     alert("Warning: You are over the 2000 signal limit. You can still edit the model, but the model cannot be sent in the DSCR unless the signal count is 2000 or below." )
   }
   setCurrentSignalCount(newSignalCount);
+}
+
+export const initialisePersistence = () => {
+  if (!localStorage.getItem("sphereData")) {
+    setLocalStorageSphereData();
+  }
+
+  // Import locally stored spheres
+  loadLocalStorageSphereData();
 }
