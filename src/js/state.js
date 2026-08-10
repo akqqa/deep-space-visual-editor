@@ -35,29 +35,29 @@ export const setEditorState = (s) => {
 };
 
 export const setTransformControls = (tc) => {
-    transformControls = tc; 
+  transformControls = tc;
 };
 
 export const setSphereData = (sd) => {
-    sphereData = sd;
+  sphereData = sd;
 }
 
 export const setCurrentSignalCount = (sc) => {
-    currentSignalCount = sc;
+  currentSignalCount = sc;
 }
 
 export const setCurrentSphere = (cs) => {
-    currentSphere = cs;
+  currentSphere = cs;
 }
 
 export const setGlobalSelection = (gs) => {
-    globalSelection = gs;
+  globalSelection = gs;
 }
 
 export const setGlobalObject = (go) => {
-    globalObject = go;
+  globalObject = go;
 }
 
 export const setOutlinesEnabled = (oe) => {
-    outlinesEnabled = oe;
+  outlinesEnabled = oe;
 }

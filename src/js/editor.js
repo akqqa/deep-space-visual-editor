@@ -33,12 +33,12 @@ export const toggleMovementEnabled = () => {
 
 // Alien coords to three coords
 export const toThree = (ax, ay, az) => {
-  return { x: ax, y: az, z: -ay };
+    return { x: ax, y: az, z: -ay };
 }
 
 // Three coords to alien coords
 export const toAlien = (tx, ty, tz) => {
-  return { x: tx, y: -tz, z: ty };
+    return { x: tx, y: -tz, z: ty };
 }
 
 // Helper method for calculating the sphere colors
@@ -55,11 +55,11 @@ export const toAlien = (tx, ty, tz) => {
 // 9 - #FFFFFF
 // Code thanks to @elnico56 in discord!!!!
 const COLORS = [
-  "FF5800", "BBFF00",
-  "00CDFF", "0084FF",
-  "4D00FF", "FB39FF",
-  "FF0FD7", "484848",
-  "636363", "FFFFFF"
+    "FF5800", "BBFF00",
+    "00CDFF", "0084FF",
+    "4D00FF", "FB39FF",
+    "FF0FD7", "484848",
+    "636363", "FFFFFF"
 ];
 
 export const calculateColor = (value) => {
@@ -75,18 +75,18 @@ export const calculateColor = (value) => {
 // Retrieved 2026-07-15, License - CC BY-SA 4.0
 const getGradientColor = function (start_color, end_color, percent) {
 
-    let gammaFactor = 1/1; // Some magic happened and this works. i think cause we are omputing it as rbg with 0-1 range?? but idk how thats different to hex
+    let gammaFactor = 1 / 1; // Some magic happened and this works. i think cause we are omputing it as rbg with 0-1 range?? but idk how thats different to hex
 
     // get colors
-    let start_red = Math.pow(parseInt(start_color.substr(0, 2), 16)/255, gammaFactor),
-        start_green = Math.pow(parseInt(start_color.substr(2, 2), 16)/255, gammaFactor),
-        start_blue = Math.pow(parseInt(start_color.substr(4, 2), 16)/255, gammaFactor);
+    let start_red = Math.pow(parseInt(start_color.substr(0, 2), 16) / 255, gammaFactor),
+        start_green = Math.pow(parseInt(start_color.substr(2, 2), 16) / 255, gammaFactor),
+        start_blue = Math.pow(parseInt(start_color.substr(4, 2), 16) / 255, gammaFactor);
 
-    let end_red = Math.pow(parseInt(end_color.substr(0, 2), 16)/255, gammaFactor),
-        end_green = Math.pow(parseInt(end_color.substr(2, 2), 16)/255, gammaFactor),
-        end_blue = Math.pow(parseInt(end_color.substr(4, 2), 16)/255, gammaFactor);
+    let end_red = Math.pow(parseInt(end_color.substr(0, 2), 16) / 255, gammaFactor),
+        end_green = Math.pow(parseInt(end_color.substr(2, 2), 16) / 255, gammaFactor),
+        end_blue = Math.pow(parseInt(end_color.substr(4, 2), 16) / 255, gammaFactor);
 
-    
+
     // calculate new color
     let diff_red = end_red - start_red;
     let diff_green = end_green - start_green;
@@ -97,75 +97,75 @@ const getGradientColor = function (start_color, end_color, percent) {
     diff_green = ((diff_green * percent) + start_green);
     diff_blue = ((diff_blue * percent) + start_blue);
 
-    return { r: diff_red, g: diff_green, b: diff_blue};
+    return { r: diff_red, g: diff_green, b: diff_blue };
 };
 
 // Event listeners for sphere parameters changing
 $("#posX").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minX), maxX);
-  event.target.value = num;
-  currentSphere.position.x = Number(event.target.value);
-  setLocalStorageSphereData();
-  setSignalCounter();
+    addToHistory();
+    const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minX), maxX);
+    event.target.value = num;
+    currentSphere.position.x = Number(event.target.value);
+    setLocalStorageSphereData();
+    setSignalCounter();
 });
 $("#posY").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
-  event.target.value = num;
-  currentSphere.position.z = -Number(event.target.value);
-  setLocalStorageSphereData();
-  setSignalCounter();
+    addToHistory();
+    const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
+    event.target.value = num;
+    currentSphere.position.z = -Number(event.target.value);
+    setLocalStorageSphereData();
+    setSignalCounter();
 });
 $("#posZ").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minZ), maxZ);
-  event.target.value = num;
-  currentSphere.position.y = Number(event.target.value);
-  setLocalStorageSphereData();
-  setSignalCounter();
+    addToHistory();
+    const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minZ), maxZ);
+    event.target.value = num;
+    currentSphere.position.y = Number(event.target.value);
+    setLocalStorageSphereData();
+    setSignalCounter();
 });
 $("#volumeAmount").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
-  event.target.value = num;
-  currentSphere.geometry.dispose();
-  currentSphere.geometry = new THREE.SphereGeometry(num/2);
-  setLocalStorageSphereData();
-  setSignalCounter();
+    addToHistory();
+    const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
+    event.target.value = num;
+    currentSphere.geometry.dispose();
+    currentSphere.geometry = new THREE.SphereGeometry(num / 2);
+    setLocalStorageSphereData();
+    setSignalCounter();
 })
 $("#volumeSlider").addEventListener("input", (event) => {
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
-  event.target.value = num;
-  currentSphere.geometry.dispose();
-  currentSphere.geometry = new THREE.SphereGeometry(num/2);
-  setLocalStorageSphereData();
-  setSignalCounter();
+    const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minVol), maxVol);
+    event.target.value = num;
+    currentSphere.geometry.dispose();
+    currentSphere.geometry = new THREE.SphereGeometry(num / 2);
+    setLocalStorageSphereData();
+    setSignalCounter();
 })
 $("#volumeSlider").addEventListener("mousedown", () => {
-  addToHistory(); // Only add to history on start!
+    addToHistory(); // Only add to history on start!
 })
 $("#colorAmount").addEventListener("change", (event) => {
-  addToHistory();
-  const num = Math.min(Math.max(Math.round(Number(event.target.value)), minColor), maxColor);
-  event.target.value = num;
-  const c = calculateColor(num);
-  currentSphere.material.uniforms.objectColor.value.set(c);
-  // ALSO SET FOR SPHEREDATA COLOR
-  sphereData.find(x => x.mesh == currentSphere).color = num;
-  setLocalStorageSphereData();
-  setSignalCounter();
+    addToHistory();
+    const num = Math.min(Math.max(Math.round(Number(event.target.value)), minColor), maxColor);
+    event.target.value = num;
+    const c = calculateColor(num);
+    currentSphere.material.uniforms.objectColor.value.set(c);
+    // ALSO SET FOR SPHEREDATA COLOR
+    sphereData.find(x => x.mesh == currentSphere).color = num;
+    setLocalStorageSphereData();
+    setSignalCounter();
 })
 $("#colorSlider").addEventListener("input", (event) => {
-  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minColor), maxColor);
-  const c = calculateColor(num);
-  currentSphere.material.uniforms.objectColor.value.set(c);
-  sphereData.find(x => x.mesh == currentSphere).color = num;
-  setLocalStorageSphereData();
-  setSignalCounter();
+    const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minColor), maxColor);
+    const c = calculateColor(num);
+    currentSphere.material.uniforms.objectColor.value.set(c);
+    sphereData.find(x => x.mesh == currentSphere).color = num;
+    setLocalStorageSphereData();
+    setSignalCounter();
 })
 $("#colorSlider").addEventListener("mousedown", () => {
-  addToHistory(); // Only add to history on start!
+    addToHistory(); // Only add to history on start!
 })
 
 export const initialiseEditor = () => {
@@ -180,11 +180,11 @@ export const initialiseEditor = () => {
 
     const scene = new THREE.Scene();
     const overlayScene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(50, sceneDiv.clientWidth /sceneDiv.clientHeight, 0.1, 2000);
+    let camera = new THREE.PerspectiveCamera(50, sceneDiv.clientWidth / sceneDiv.clientHeight, 0.1, 2000);
     camera.position.z = 18.5;
     let renderer = new THREE.WebGLRenderer();
     renderer.logarithmicDepthBuffer = true;
-    renderer.setSize(sceneDiv.clientWidth , sceneDiv.clientHeight);
+    renderer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
     sceneDiv.appendChild(renderer.domElement);
     let composer = new EffectComposer(renderer);
     const renderPixelatedPass = new RenderPixelatedPass(4, scene, camera);
@@ -220,7 +220,7 @@ export const initialiseEditor = () => {
     setTransformControls(tc);
 
     // Set an observer to ensure the editor window is always sized correctly
-    const observer = new ResizeObserver(() => {   
+    const observer = new ResizeObserver(() => {
         console.log("observerFired")
         camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
         camera.updateProjectionMatrix();
@@ -249,61 +249,61 @@ export const initialiseEditor = () => {
     }
 
     function moveUp(distance) {
-        camera.position.addScaledVector(new THREE.Vector3(0,1,0), distance);
-        orbitControls.target.addScaledVector(new THREE.Vector3(0,1,0), distance);
+        camera.position.addScaledVector(new THREE.Vector3(0, 1, 0), distance);
+        orbitControls.target.addScaledVector(new THREE.Vector3(0, 1, 0), distance);
     }
-    
-    const wKey = new holdEvent.KeyboardKeyHold( 'KeyW', 16.666 );
-    const aKey = new holdEvent.KeyboardKeyHold( 'KeyA', 16.666 );
-    const sKey = new holdEvent.KeyboardKeyHold( 'KeyS', 16.666 );
-    const dKey = new holdEvent.KeyboardKeyHold( 'KeyD', 16.666 );
-    const shiftKey = new holdEvent.KeyboardKeyHold( 'ShiftLeft', 16.666 );
-    const spacebar = new holdEvent.KeyboardKeyHold( 'Space', 16.666 );
-    const leftArrow = new holdEvent.KeyboardKeyHold( 'ArrowLeft', 16.666 );
-    const rightArrow = new holdEvent.KeyboardKeyHold( 'ArrowRight', 16.666 );
-    const upArrow = new holdEvent.KeyboardKeyHold( 'ArrowUp', 16.666 );
-    const downArrow = new holdEvent.KeyboardKeyHold( 'ArrowDown', 16.666 );
-    
-    aKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+
+    const wKey = new holdEvent.KeyboardKeyHold('KeyW', 16.666);
+    const aKey = new holdEvent.KeyboardKeyHold('KeyA', 16.666);
+    const sKey = new holdEvent.KeyboardKeyHold('KeyS', 16.666);
+    const dKey = new holdEvent.KeyboardKeyHold('KeyD', 16.666);
+    const shiftKey = new holdEvent.KeyboardKeyHold('ShiftLeft', 16.666);
+    const spacebar = new holdEvent.KeyboardKeyHold('Space', 16.666);
+    const leftArrow = new holdEvent.KeyboardKeyHold('ArrowLeft', 16.666);
+    const rightArrow = new holdEvent.KeyboardKeyHold('ArrowRight', 16.666);
+    const upArrow = new holdEvent.KeyboardKeyHold('ArrowUp', 16.666);
+    const downArrow = new holdEvent.KeyboardKeyHold('ArrowDown', 16.666);
+
+    aKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         if (movementEnabled) {
             moveSideways(-cameraMovementSpeed * event.deltaTime);
         }
     });
-    dKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    dKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         if (movementEnabled) {
             moveSideways(cameraMovementSpeed * event.deltaTime);
         }
     });
-    wKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    wKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         if (movementEnabled) {
             moveForward(cameraMovementSpeed * event.deltaTime);
         }
     });
-    sKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    sKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         if (movementEnabled) {
             moveForward(-cameraMovementSpeed * event.deltaTime);
         }
     });
-    spacebar.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    spacebar.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         if (movementEnabled) {
             moveUp(cameraMovementSpeed * event.deltaTime);
         }
     });
-    shiftKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    shiftKey.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         if (movementEnabled) {
             moveUp(-cameraMovementSpeed * event.deltaTime);
         }
     });
-    leftArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    leftArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         orbitControls.rotateLeft(cameraRotateSpeed * event.deltaTime);
     });
-    rightArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    rightArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         orbitControls.rotateLeft(-cameraRotateSpeed * event.deltaTime);
     });
-    upArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    upArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         orbitControls.rotateUp(cameraRotateSpeed * event.deltaTime);
     });
-    downArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, ( event ) => {
+    downArrow.addEventListener(holdEvent.HOLD_EVENT_TYPE.HOLDING, (event) => {
         orbitControls.rotateUp(-cameraRotateSpeed * event.deltaTime);
     });
 
@@ -358,17 +358,17 @@ export const initialiseEditor = () => {
         }
     });
 
-    window.addEventListener("keydown", (event) => { 
+    window.addEventListener("keydown", (event) => {
         if (event.code == "ControlLeft") {
             // If control held, transform scale goes to 0.1
             transformControls.translationSnap = 0.1;
-        } 
+        }
         if (event.code == "Delete") {
             if (globalSelection) {
                 addToHistory();
                 toggleGlobalSelection();
                 sphereData.forEach(element => {
-                removeSphere(element.mesh,false);
+                    removeSphere(element.mesh, false);
                 });
                 setSignalCounter();
             } else if (currentSphere) {
@@ -404,7 +404,7 @@ export const initialiseEditor = () => {
             camera.position.x = 0;
             camera.position.y = 0;
             camera.position.z = 18.5;
-            orbitControls.target.copy(new THREE.Vector3(0,0,0));
+            orbitControls.target.copy(new THREE.Vector3(0, 0, 0));
         }
         if (event.code == "KeyQ") {
             const offset = camera.position.clone().sub(orbitControls.target); // Get vector from target to camera
@@ -413,7 +413,7 @@ export const initialiseEditor = () => {
             const currentAngle = Math.atan2(offset.x, offset.z); // Convert offset vector into angle
 
             // Snap to 90 degrees rotated left
-            let newAngle = (Math.ceil(currentAngle / (Math.PI / 2)) * (Math.PI / 2))  - Math.PI / 2; // Divide the current angle by 90 degrees, and get the ceiling then subtract 90, giving the next increment of 90 degrees left.
+            let newAngle = (Math.ceil(currentAngle / (Math.PI / 2)) * (Math.PI / 2)) - Math.PI / 2; // Divide the current angle by 90 degrees, and get the ceiling then subtract 90, giving the next increment of 90 degrees left.
 
             // Normalise angle to prevent wraparound
             if (newAngle <= -Math.PI) {
@@ -428,14 +428,14 @@ export const initialiseEditor = () => {
             camera.lookAt(orbitControls.target);
             orbitControls.update();
         }
-        if (event.code == "KeyE" ) {
+        if (event.code == "KeyE") {
             const offset = camera.position.clone().sub(orbitControls.target); // Get vector from target to camera
 
             const radius = Math.sqrt(offset.x * offset.x + offset.z * offset.z); // Calculate the horziontal distance
             const currentAngle = Math.atan2(offset.x, offset.z); // Convert offset vector into angle
 
             // Snap to 90 degrees rotated left
-            let newAngle = (Math.floor(currentAngle / (Math.PI / 2)) * (Math.PI / 2))  + Math.PI / 2; // Divide the current angle by 90 degrees, and get the ceiling then add 90, giving the next increment of 90 degrees left.
+            let newAngle = (Math.floor(currentAngle / (Math.PI / 2)) * (Math.PI / 2)) + Math.PI / 2; // Divide the current angle by 90 degrees, and get the ceiling then add 90, giving the next increment of 90 degrees left.
 
             // Normalise angle to prevent wraparound
             if (newAngle <= -Math.PI) {
@@ -458,11 +458,11 @@ export const initialiseEditor = () => {
                 const index = sphereData.findIndex(x => x.mesh == currentSphere);
                 console.log("index: " + index)
                 if (index >= sphereData.length - 1) {
-                deselectSphere();
+                    deselectSphere();
                 } else {
-                deselectSphere();
-                console.log(sphereData[index + 1].mesh);
-                selectSphere(sphereData[index + 1].mesh);
+                    deselectSphere();
+                    console.log(sphereData[index + 1].mesh);
+                    selectSphere(sphereData[index + 1].mesh);
                 }
             }
             // If no currrentSphere yet spheres exist
@@ -483,8 +483,8 @@ export const initialiseEditor = () => {
 
     window.addEventListener("keyup", (event) => {
         if (event.code == "ControlLeft") {
-        // If control released, transform scale goes to 1
-        transformControls.translationSnap = 1;
+            // If control released, transform scale goes to 1
+            transformControls.translationSnap = 1;
         }
     })
 
@@ -492,7 +492,7 @@ export const initialiseEditor = () => {
         orbitControls.update();
         composer.render(scene, camera); // renders composer
         renderer.autoClear = false; // disables to prevent clearing before next render
-        renderer.render(overlayScene,camera);
+        renderer.render(overlayScene, camera);
         if (viewHelper.animating) {
             // eslint-disable-next-line no-undef
             viewHelper.update(delta);

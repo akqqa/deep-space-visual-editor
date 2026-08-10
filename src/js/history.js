@@ -43,11 +43,11 @@ export const addToHistory = () => {
 export const undo = () => {
   if (sceneHistory.length > 0) {
     const snapshot = sceneHistory.pop();
-    
+
     // add current state redo
     if (sceneFuture.length > MAX_HISTORY) {
       sceneFuture.shift();
-    } 
+    }
     sceneFuture.push(getSnapshot());
 
     if (globalSelection) {
@@ -61,7 +61,7 @@ export const undo = () => {
     // for each sphere, add to sphereData and scene
     let toggleGlobal = false;
     snapshot.forEach(element => {
-      const mesh = addSphere(element.x, element.y, element.z, element.diameter,element.color,false, false);
+      const mesh = addSphere(element.x, element.y, element.z, element.diameter, element.color, false, false);
       if (element.selected) {
         selectSphere(mesh);
       }
@@ -85,7 +85,7 @@ export const redo = () => {
     // add current state to redo
     if (sceneHistory.length > MAX_HISTORY) {
       sceneHistory.shift();
-    } 
+    }
     sceneHistory.push(getSnapshot());
 
     if (globalSelection) {
@@ -99,7 +99,7 @@ export const redo = () => {
     // for each sphere, add to sphereData and scene
     let toggleGlobal = false;
     snapshot.forEach(element => {
-      const mesh = addSphere(element.x, element.y, element.z, element.diameter,element.color,false, false);
+      const mesh = addSphere(element.x, element.y, element.z, element.diameter, element.color, false, false);
       if (element.selected) {
         selectSphere(mesh);
       }

@@ -7,12 +7,12 @@ import { addToHistory } from "./history.js";
 import * as THREE from 'three';
 
 export const createSphere = (x, y, z, radius, color, scene) => {
-    const sphere = new THREE.SphereGeometry(radius / 2);
-    // map the color - using the key levels apples described to match the game and interpolatee between
-    let c = calculateColor(color);
-    // https://medium.com/@aurelienagtn/introduction-to-shaders-with-three-js-create-an-animated-sphere-d4920fbab126
-    // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/2.2.basic_lighting.fs
-    const mat = new THREE.ShaderMaterial({
+  const sphere = new THREE.SphereGeometry(radius / 2);
+  // map the color - using the key levels apples described to match the game and interpolatee between
+  let c = calculateColor(color);
+  // https://medium.com/@aurelienagtn/introduction-to-shaders-with-three-js-create-an-animated-sphere-d4920fbab126
+  // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/2.2.basic_lighting.fs
+  const mat = new THREE.ShaderMaterial({
     vertexShader: `
         varying vec3 Normal;
         varying vec3 camDir;
@@ -55,42 +55,42 @@ export const createSphere = (x, y, z, radius, color, scene) => {
         } 
     `,
     uniforms: {
-        lightColor: { value: new THREE.Color(0xffffff) },
-        objectColor: { value: c },
+      lightColor: { value: new THREE.Color(0xffffff) },
+      objectColor: { value: c },
     }
-    });
+  });
 
-    const mesh = new THREE.Mesh(sphere, mat);
-    const p = (toThree(x,y,z))
-    mesh.position.set(p.x, p.y, p.z); // Alien coords!
-    scene.add(mesh);
+  const mesh = new THREE.Mesh(sphere, mat);
+  const p = (toThree(x, y, z))
+  mesh.position.set(p.x, p.y, p.z); // Alien coords!
+  scene.add(mesh);
 
-    return mesh;
+  return mesh;
 }
 
 // Helper methods to add and remove a given sphere, handled the spheredata and selection logic
-export const addSphere = (x,z,y,diameter,color, select, saveHistory=true) => {
-    if(saveHistory) {
-      addToHistory();
-    }
-    const sphereMesh = createSphere(x, z, y, diameter, color, scene);
-    sphereData.push({mesh: sphereMesh, color: color});
-    if (select) {
-      deselectSphere();
-      selectSphere(sphereMesh);
-    }
-    setLocalStorageSphereData();
-    // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
-    if (saveHistory) {
-      setSignalCounter();
-    }
+export const addSphere = (x, z, y, diameter, color, select, saveHistory = true) => {
+  if (saveHistory) {
+    addToHistory();
+  }
+  const sphereMesh = createSphere(x, z, y, diameter, color, scene);
+  sphereData.push({ mesh: sphereMesh, color: color });
+  if (select) {
+    deselectSphere();
+    selectSphere(sphereMesh);
+  }
+  setLocalStorageSphereData();
+  // UPDATE SIGNAL COUNT only if history is also saved (aka not bulk to reduce lag)
+  if (saveHistory) {
+    setSignalCounter();
+  }
 
-    // Return the mesh
-    return sphereMesh;
+  // Return the mesh
+  return sphereMesh;
 }
 
-export const removeSphere = (sphereMesh, saveHistory=true) => {
-  if(saveHistory) {
+export const removeSphere = (sphereMesh, saveHistory = true) => {
+  if (saveHistory) {
     addToHistory();
   }
   let index = undefined;
@@ -110,11 +110,11 @@ export const removeSphere = (sphereMesh, saveHistory=true) => {
     console.log(index);
     if (index == 0) {
       if (sphereData.length != 0) {
-        selectSphere(sphereData[sphereData.length-1].mesh,);
+        selectSphere(sphereData[sphereData.length - 1].mesh,);
       }
     } else {
       // Even though spheredata was filtered, we can access this fine as the index before hasnt been effected
-      selectSphere(sphereData[index-1].mesh);
+      selectSphere(sphereData[index - 1].mesh);
     }
   }
 
@@ -126,24 +126,24 @@ export const removeSphere = (sphereMesh, saveHistory=true) => {
 
 // Add logic for enabling the parameters here
 export const selectSphere = (sphere) => {
-    setCurrentSphere(sphere);
-    transformControls.attach(currentSphere);
-    overlayScene.add(transformControls.getHelper());
-    $("#sphere-parameters").setAttribute("data-disabled", "false");
-    // Set volume and color parameters to the correct values! (xyz are handled already but i cant remember where?? lol oh well)
-    sphere.geometry.computeBoundingSphere();
-    const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
-    $("#volumeAmount").value = Number(geometryDiameter.toFixed(1));
-    $("#volumeSlider").value = Number(geometryDiameter.toFixed(1));
-    $("#colorAmount").value = sphereData.find(x => x.mesh == currentSphere).color;
-    $("#colorSlider").value = sphereData.find(x => x.mesh == currentSphere).color;
-    // Update the number of the sphere!
-    let index = sphereData.findIndex(x => x.mesh == currentSphere);
-    $("#sphereNumber").value = index;
-    //  Add to outline pass
-    if (outlinesEnabled) {
-      outlinePass.selectedObjects = [sphere];
-    }
+  setCurrentSphere(sphere);
+  transformControls.attach(currentSphere);
+  overlayScene.add(transformControls.getHelper());
+  $("#sphere-parameters").setAttribute("data-disabled", "false");
+  // Set volume and color parameters to the correct values! (xyz are handled already but i cant remember where?? lol oh well)
+  sphere.geometry.computeBoundingSphere();
+  const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
+  $("#volumeAmount").value = Number(geometryDiameter.toFixed(1));
+  $("#volumeSlider").value = Number(geometryDiameter.toFixed(1));
+  $("#colorAmount").value = sphereData.find(x => x.mesh == currentSphere).color;
+  $("#colorSlider").value = sphereData.find(x => x.mesh == currentSphere).color;
+  // Update the number of the sphere!
+  let index = sphereData.findIndex(x => x.mesh == currentSphere);
+  $("#sphereNumber").value = index;
+  //  Add to outline pass
+  if (outlinesEnabled) {
+    outlinePass.selectedObjects = [sphere];
+  }
 
 }
 

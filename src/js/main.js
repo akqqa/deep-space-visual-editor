@@ -1,9 +1,8 @@
 import { initialiseDict } from './dictionary.js';
-import { initialiseTranslation  } from './translation.js';
+import { initialiseTranslation } from './translation.js';
 import { initialiseEditor } from "./editor.js";
 import { initialisePersistence } from "./persistence.js";
 import { initialiseUI } from "./ui.js";
-
 
 window.onload = () => {
   initialiseDict();

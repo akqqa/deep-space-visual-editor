@@ -1,5 +1,5 @@
 import { $ } from "./query.js";
-import { scene, transformControls, overlayScene, sphereData, globalSelection,  setGlobalSelection, globalObject, setGlobalObject, outlinesEnabled, outlinePass, currentSphere, setOutlinesEnabled } from "./state.js";
+import { scene, transformControls, overlayScene, sphereData, globalSelection, setGlobalSelection, globalObject, setGlobalObject, outlinesEnabled, outlinePass, currentSphere, setOutlinesEnabled } from "./state.js";
 import { selectSphere, deselectSphere, addSphere, removeSphere } from "./spheres.js";
 import { lastLoadedDict, loadDictionary } from "./dictionary.js";
 import { undo, redo, addToHistory } from "./history.js";
@@ -170,7 +170,7 @@ export const toggleGlobalSelection = () => {
     // Start global selection logic. bind an invisible object to the center of the screen, bind the movement logic to moving every sphere if globalselection is toggled, disable clicking anything else or the screen excet the translation controls, disable the spheredata to the side, basically disable everyhting if this is true
     deselectSphere();
     setGlobalObject(new THREE.Object3D());
-    const [ax,ay,az] = getAveragePosition();
+    const [ax, ay, az] = getAveragePosition();
     globalObject.position.set(ax, ay, az); // Alien coords!
     scene.add(globalObject);
     transformControls.attach(globalObject);
@@ -195,7 +195,7 @@ export const toggleGlobalSelection = () => {
   }
 }
 
-export const toggleOutlines =() => {
+export const toggleOutlines = () => {
   setOutlinesEnabled(!outlinesEnabled);
 
   localStorage.setItem("outlines", outlinesEnabled);
@@ -232,7 +232,7 @@ export const getAveragePosition = () => {
   ay = Math.round((ay / weightSum) * 10) / 10;
   az = Math.round((az / weightSum) * 10) / 10;
 
-  return [ax,ay,az];
+  return [ax, ay, az];
 }
 
 const initialiseOutlines = () => {
@@ -278,7 +278,7 @@ export const initialiseUI = () => {
     clipboardDialog.close();
   });
 
-  
+
   $("#import-button").addEventListener("click", () => {
     const importDialog = $("dialog.import-paste");
     const importTextArea = $("textarea.import-paste-contents");
@@ -336,7 +336,7 @@ export const initialiseUI = () => {
       return;
     }
 
-    const res = loadSphereData(content); 
+    const res = loadSphereData(content);
 
     if (res) {
       $("textarea.dict-paste-contents").value = "";
@@ -355,16 +355,16 @@ export const initialiseUI = () => {
       $("#copy-message-signals").querySelector("i").className = "fa fa-times";
     } else {
       navigator.clipboard.writeText(res).then(
-      () => {
-        $("#copy-message-signals").querySelector("i").className = "fa fa-check";
-      },
-      () => {
-        $("#copy-message-signals").querySelector("i").className = "fa fa-times";
-      });
+        () => {
+          $("#copy-message-signals").querySelector("i").className = "fa fa-check";
+        },
+        () => {
+          $("#copy-message-signals").querySelector("i").className = "fa fa-times";
+        });
     }
-    
+
     setTimeout(() => {
-        $("#copy-message-signals").querySelector("i").className = "fa fa-copy";
+      $("#copy-message-signals").querySelector("i").className = "fa fa-copy";
     }, 1000);
   });
   $("#copy-message-text").addEventListener("click", () => {
@@ -374,26 +374,26 @@ export const initialiseUI = () => {
       $("#copy-message-text").querySelector("i").className = "fa fa-times";
     } else {
       navigator.clipboard.writeText(res).then(
-      () => {
-        $("#copy-message-text").querySelector("i").className = "fa fa-check";
-      },
-      () => {
-        $("#copy-message-text").querySelector("i").className = "fa fa-times";
-      });
+        () => {
+          $("#copy-message-text").querySelector("i").className = "fa fa-check";
+        },
+        () => {
+          $("#copy-message-text").querySelector("i").className = "fa fa-times";
+        });
     }
-    
+
     setTimeout(() => {
-        $("#copy-message-text").querySelector("i").className = "fa fa-copy";
+      $("#copy-message-text").querySelector("i").className = "fa fa-copy";
     }, 1000);
   });
   $("#download-gltf-file").addEventListener("click", () => {
     // Transform the sphereData into the correct test
     sphereDataToGltf();
-  
+
     $("#download-gltf-file").querySelector("i").className = "fa fa-check";
-    
+
     setTimeout(() => {
-        $("#download-gltf-file").querySelector("i").className = "fa fa-download";
+      $("#download-gltf-file").querySelector("i").className = "fa fa-download";
     }, 1000);
   });
 
@@ -421,7 +421,7 @@ export const initialiseUI = () => {
       addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, true);
 
       $("#duplicate-button").textContent = "COPIED";
-    
+
       setTimeout(() => {
         $("#duplicate-button").setAttribute("data-status", "not");
         doTranslation();
@@ -443,7 +443,7 @@ export const initialiseUI = () => {
     addToHistory();
     if (res) {
       sphereData.forEach(element => {
-        removeSphere(element.mesh,false);
+        removeSphere(element.mesh, false);
       });
       setSignalCounter();
     }

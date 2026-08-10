@@ -88,7 +88,7 @@ export const initialiseDict = () => {
   window.addEventListener("drop", (e) => {
     e.preventDefault();
   });
-  
+
   window.addEventListener("drop", dropHandler);
   window.addEventListener("dragover", (e) => {
     const fileItems = [...e.dataTransfer.items].filter(
@@ -99,7 +99,7 @@ export const initialiseDict = () => {
       e.dataTransfer.dropEffect = "copy";
     }
   });
-  
+
   let dict = localStorage.getItem("dict");
   let dictRaw = localStorage.getItem("dict-raw");
   if (!dict) {

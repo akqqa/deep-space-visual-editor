@@ -28,7 +28,7 @@ export const loadSphereData = (text) => {
   addToHistory();
   // delete all current spheres
   sphereData.forEach(element => {
-    removeSphere(element.mesh,false);
+    removeSphere(element.mesh, false);
   });
   setSphereData([]);
   // for each sphere, add to sphereData and scene
@@ -89,7 +89,7 @@ export const getCurrentSignals = () => {
   if (sphereData.length == 0) {
     return false;
   }
-  let res = [-53,-14];
+  let res = [-53, -14];
   sphereData.forEach((element) => {
     element.mesh.geometry.computeBoundingSphere();
     const geometryRadius = element.mesh.geometry.boundingSphere.radius;
@@ -101,11 +101,11 @@ export const getCurrentSignals = () => {
       p.x,
       p.y,
       p.z,
-      geometryRadius*2
+      geometryRadius * 2
     ].map(v => {
       let resArray = []
       // Set negative signal if applicable
-      if (v < 0) { 
+      if (v < 0) {
         resArray.push(-1)
       }
       v = Math.abs(v);
@@ -113,7 +113,7 @@ export const getCurrentSignals = () => {
       const stringV = v.toString();
       if (stringV.includes(".")) {
         const decimalIndex = stringV.indexOf(".");
-        resArray.push(Number(stringV.slice(0,decimalIndex))); // Push the number before the .
+        resArray.push(Number(stringV.slice(0, decimalIndex))); // Push the number before the .
         resArray.push(-10);
         resArray.push(Number(stringV[decimalIndex + 1]));
       } else {
@@ -122,7 +122,7 @@ export const getCurrentSignals = () => {
       return resArray;
     });
 
-    res = res.concat([-52,...posX,-3,...posY,-3,...posZ,-3,...diameter,-3,element.color,-3])
+    res = res.concat([-52, ...posX, -3, ...posY, -3, ...posZ, -3, ...diameter, -3, element.color, -3])
   });
   res.pop();
   res.push(-15);
@@ -144,7 +144,7 @@ export const sphereDataToExportSignals = () => {
     } else {
       signals += element.toString() + " ";
     }
-  }); 
+  });
   console.log(signals)
   return signals;
 }
@@ -182,7 +182,7 @@ export const setSignalCounter = () => {
   const newSignalCount = count ? count.length : 0;
   $("#signalAmount").innerHTML = newSignalCount;
   if (currentSignalCount <= 2000 && newSignalCount > 2000) {
-    alert("Warning: You are over the 2000 signal limit. You can still edit the model, but the model cannot be sent in the DSCR unless the signal count is 2000 or below." )
+    alert("Warning: You are over the 2000 signal limit. You can still edit the model, but the model cannot be sent in the DSCR unless the signal count is 2000 or below.")
   }
   setCurrentSignalCount(newSignalCount);
 }
