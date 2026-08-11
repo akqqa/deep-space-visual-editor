@@ -402,18 +402,15 @@ export const initialiseEditor = () => {
     if (!isDragSelecting) {
       return;
     }
-
     const rect = sceneDiv.getBoundingClientRect();
 
     const startX = dragStartX - rect.left;
     const startY = dragStartY - rect.top;
-
     const currentX = event.clientX - rect.left;
     const currentY = event.clientY - rect.top;
 
     const left = Math.min(startX, currentX);
     const top = Math.min(startY, currentY);
-
     const width = Math.abs(currentX - startX);
     const height = Math.abs(currentY - startY);
 
@@ -425,7 +422,6 @@ export const initialiseEditor = () => {
     // Update SelectionBox
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
     selectionBox.endPoint.set(x, y, 0.5);
   });
   sceneDiv.addEventListener("mouseup", (event) => {
