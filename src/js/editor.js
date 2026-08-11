@@ -245,6 +245,7 @@ export const initialiseEditor = () => {
   tc.maxY = maxZ;
   tc.minY = minZ;
   setTransformControls(tc);
+  let isTransformDragging = false;
 
   const selectionBox = new SelectionBox(camera, scene);
   let isDragSelecting = false;
@@ -348,6 +349,7 @@ export const initialiseEditor = () => {
   const mouse = new THREE.Vector2();
   transformControls.addEventListener("dragging-changed", (event) => { // Disable orbit controls when dragging transformcontrols
     orbitControls.enabled = !event.value;
+    isTransformDragging = event.value;
     if (event.value == true) {
       addToHistory();
     }
@@ -381,6 +383,9 @@ export const initialiseEditor = () => {
     mouseDownPos.set(event.clientX, event.clientY);
     if (!controlHeld) {
         return;
+    }
+    if (isTransformDragging) {
+      return;
     }
     isDragSelecting = true;
     dragStartX = event.clientX;
