@@ -168,6 +168,32 @@ $("#colorSlider").addEventListener("mousedown", () => {
   addToHistory(); // Only add to history on start!
 })
 
+// Event listeners for group parameters changing
+$("#groupPosX").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minX), maxX);
+  event.target.value = num;
+  groupObject.position.x = Number(event.target.value);
+  setLocalStorageSphereData();
+  setSignalCounter();
+});
+$("#groupPosY").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minY), maxY);
+  event.target.value = num;
+  groupObject.position.z = -Number(event.target.value);
+  setLocalStorageSphereData();
+  setSignalCounter();
+});
+$("#groupPosZ").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minZ), maxZ);
+  event.target.value = num;
+  groupObject.position.y = Number(event.target.value);
+  setLocalStorageSphereData();
+  setSignalCounter();
+});
+
 export const initialiseEditor = () => {
   // Create the scene
   let sceneDiv = document.getElementById("view");
@@ -324,11 +350,21 @@ export const initialiseEditor = () => {
     if (globalSelection || !currentSpheres[0]) {
       return;
     }
-    // Update parameters in ui
-    let p = toAlien(currentSpheres[0].position.x, currentSpheres[0].position.y, currentSpheres[0].position.z);
-    $("#posX").value = p.x.toFixed(1);
-    $("#posY").value = p.y.toFixed(1);
-    $("#posZ").value = p.z.toFixed(1);
+    if (currentSpheres.length == 1) {
+      // Update parameters in ui
+      let p = toAlien(currentSpheres[0].position.x, currentSpheres[0].position.y, currentSpheres[0].position.z);
+      $("#posX").value = p.x.toFixed(1);
+      $("#posY").value = p.y.toFixed(1);
+      $("#posZ").value = p.z.toFixed(1);
+    } else if (currentSpheres.length > 1) {
+      let worldPos = new THREE.Vector3();
+      groupObject.getWorldPosition(worldPos);
+      let p = toAlien(worldPos.x, worldPos.y, worldPos.z);
+      $("#groupPosX").value = p.x.toFixed(1);
+      $("#groupPosY").value = p.y.toFixed(1);
+      $("#groupPosZ").value = p.z.toFixed(1);
+    }
+    
   })
 
   // Sphere selection

@@ -1,6 +1,6 @@
 import { $ } from "./query.js";
 import { scene, sphereData, setSphereData, currentSpheres, setCurrentSpheres, transformControls, overlayScene, outlinesEnabled, outlinePass, setGroupObject, groupObject } from "./state.js";
-import { calculateColor, toThree } from "./editor.js";
+import { calculateColor, toAlien, toThree } from "./editor.js";
 import { setLocalStorageSphereData, setSignalCounter } from "./persistence.js";
 import { addToHistory } from "./history.js";
 import { getAveragePosition } from "./ui.js";
@@ -219,6 +219,13 @@ export const addSphereToGroup = (sphere) => {
   $("#sphere-parameters").setAttribute("data-disabled", "true");
   $("#group-parameters").setAttribute("data-disabled", "false");
   $("#sphereNumber").setAttribute("hidden", "true");
+
+  let worldPos = new THREE.Vector3();
+  groupObject.getWorldPosition(worldPos);
+  let p = toAlien(worldPos.x, worldPos.y, worldPos.z);
+  $("#groupPosX").value = p.x.toFixed(1);
+  $("#groupPosY").value = p.y.toFixed(1);
+  $("#groupPosZ").value = p.z.toFixed(1);
   
 }
 
