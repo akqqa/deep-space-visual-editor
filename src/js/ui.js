@@ -1,13 +1,10 @@
 import { $ } from "./query.js";
-import { scene, transformControls, overlayScene, sphereData, globalSelection, setGlobalSelection, globalObject, setGlobalObject, outlinesEnabled, outlinePass, currentSphere, setOutlinesEnabled } from "./state.js";
-import { selectSphere, deselectSphere, addSphere, removeSphere } from "./spheres.js";
+import { sphereData, outlinesEnabled, outlinePass, currentSpheres, setOutlinesEnabled } from "./state.js";
+import { selectSphere, deselectSphere, addSphere, removeSphere, duplicateSphere, duplicateGroup, removeSelectedSpheres, addSphereToGroup, clearAllSelections } from "./spheres.js";
 import { lastLoadedDict, loadDictionary } from "./dictionary.js";
 import { undo, redo, addToHistory } from "./history.js";
 import { loadSphereData, sphereDataToExportSignals, sphereDataToExportString, sphereDataToGltf, setSignalCounter } from "./persistence.js";
-import { toAlien } from "./editor.js";
 import { doTranslation } from "./translation.js";
-
-import * as THREE from 'three';
 
 let theme = 0;
 const themeColors = ["#66aa00", "#b6a8e5", "#c49b9b", "#b1d6e9", "#ccc", "#fffb00", "#4f4f85", "#ff9538"];
@@ -164,34 +161,12 @@ $("#sphereNumber").addEventListener("keydown", (event) => {
 });
 
 export const toggleGlobalSelection = () => {
-  setGlobalSelection(!globalSelection);
-
-  if (globalSelection) {
-    // Start global selection logic. bind an invisible object to the center of the screen, bind the movement logic to moving every sphere if globalselection is toggled, disable clicking anything else or the screen excet the translation controls, disable the spheredata to the side, basically disable everyhting if this is true
-    deselectSphere();
-    setGlobalObject(new THREE.Object3D());
-    const [ax, ay, az] = getAveragePosition();
-    globalObject.position.set(ax, ay, az); // Alien coords!
-    scene.add(globalObject);
-    transformControls.attach(globalObject);
-    overlayScene.add(transformControls.getHelper());
-    sphereData.forEach((sphere) => {
-      globalObject.attach(sphere.mesh);
+  const allSelected = sphereData.every(sphere => currentSpheres.includes(sphere.mesh));
+  clearAllSelections();
+  if (!allSelected) { // Toggling on, select all spheres
+    sphereData.forEach(sphere => {
+      addSphereToGroup(sphere.mesh)
     });
-    if (outlinesEnabled) {
-      outlinePass.selectedObjects = sphereData.map(sphere => sphere.mesh);
-    }
-  } else {
-    transformControls.detach();
-    overlayScene.remove(transformControls.getHelper());
-    scene.remove(globalObject);
-    setGlobalObject(null);
-    sphereData.forEach((sphere) => {
-      scene.attach(sphere.mesh);
-    });
-    if (outlinesEnabled) {
-      outlinePass.selectedObjects = [];
-    }
   }
 }
 
@@ -201,31 +176,27 @@ export const toggleOutlines = () => {
   localStorage.setItem("outlines", outlinesEnabled);
 
   if (outlinesEnabled) { // If just reenabled, make current selection outlined
-    if (!globalSelection) {
-      if (currentSphere) {
-        outlinePass.selectedObjects = [currentSphere];
-      } else {
-        outlinePass.selectedObjects = [];
-      }
+    if (currentSpheres[0]) {
+      outlinePass.selectedObjects = currentSpheres;
     } else {
-      outlinePass.selectedObjects = sphereData.map(sphere => sphere.mesh);
+      outlinePass.selectedObjects = [];
     }
   } else { // Disable all outlines
     outlinePass.selectedObjects = [];
   }
 }
 
-export const getAveragePosition = () => {
+export const getAveragePosition = (spheres) => {
   let ax = 0;
   let ay = 0;
   let az = 0;
   let weightSum = 0
-  sphereData.forEach(sphere => {
-    const radius = sphere.mesh.geometry.boundingSphere.radius;
+  spheres.forEach(sphere => {
+    const radius = sphere.geometry.boundingSphere.radius;
     weightSum += radius;
-    ax += sphere.mesh.position.x * radius;
-    ay += sphere.mesh.position.y * radius;
-    az += sphere.mesh.position.z * radius;
+    ax += sphere.position.x * radius;
+    ay += sphere.position.y * radius;
+    az += sphere.position.z * radius;
   });
 
   ax = Math.round((ax / weightSum) * 10) / 10;
@@ -234,6 +205,18 @@ export const getAveragePosition = () => {
 
   return [ax, ay, az];
 }
+
+const rotateGroupBy = (angle) => {
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+
+  currentSpheres.forEach(sphere => {
+    const x = sphere.position.x;
+    const z = sphere.position.z;
+    sphere.position.x = (x * cos - z * sin).toFixed(1);
+    sphere.position.z = (x * sin + z * cos).toFixed(1);
+  });
+};
 
 const initialiseOutlines = () => {
   const outlines = localStorage.getItem("outlines");
@@ -247,6 +230,7 @@ export const initialiseUI = () => {
   initialiseSidebar();
   initialiseOutlines();
   addTooltips();
+  $("#sphereNumber").value = null;
 
   // Setup clipboard
   $("#clipboard-zone").addEventListener("click", () => {
@@ -409,19 +393,9 @@ export const initialiseUI = () => {
 
   // UI logic
   window.duplicateCurrentSphere = () => {
-    if (currentSphere) {
-      currentSphere.geometry.computeBoundingSphere();
-      const color = sphereData.find(x => x.mesh == currentSphere).color;
-      // const randX = Number(((Math.random()) * 2 - 1).toFixed(1));
-      // const randZ = Number(((Math.random()) * 2 - 1).toFixed(1));
-      // const randY = Number(((Math.random()) * 2 - 1).toFixed(1));
-      let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z)
-      // HMM. if this is true at the end, its better for deletes, but worse for tab select... Select the new one as logically that makes more sense?
-      // maybe change behaviour of both, so tab selects next and delete deletes nearby..
-      addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, true);
-
+    if (currentSpheres[0]) {
+      duplicateSphere();
       $("#duplicate-button").textContent = "COPIED";
-
       setTimeout(() => {
         $("#duplicate-button").setAttribute("data-status", "not");
         doTranslation();
@@ -429,17 +403,19 @@ export const initialiseUI = () => {
     }
   }
 
-  window.deleteCurrentSphere = () => {
-    if (currentSphere) {
-      removeSphere(currentSphere);
+  window.duplicateCurrentGroup = () => {
+    if (currentSpheres.length > 1) {
+      duplicateGroup();
     }
+  }
+
+  window.deleteCurrentSphere = () => {
+    removeSelectedSpheres();
   }
 
   window.deleteAllSpheres = () => {
     const res = confirm("Are you sure you want to reset the canvas?");
-    if (globalSelection) {
-      toggleGlobalSelection();
-    }
+    clearAllSelections();
     addToHistory();
     if (res) {
       sphereData.forEach(element => {
@@ -455,5 +431,33 @@ export const initialiseUI = () => {
 
   window.newSphere = () => {
     addSphere(0, 0, 0, 2, 64, true);
+  }
+
+  window.mirrorX = () => {
+    addToHistory();
+    currentSpheres.forEach(sphere => {
+      sphere.position.x = (-sphere.position.x).toFixed(1)
+    });
+  }
+  window.mirrorY = () => {
+    addToHistory();
+    currentSpheres.forEach(sphere => {
+      sphere.position.z = (-sphere.position.z).toFixed(1)
+    });
+  }
+  window.mirrorZ = () => {
+    addToHistory();
+    currentSpheres.forEach(sphere => {
+      sphere.position.y = (-sphere.position.y).toFixed(1)
+    });
+  }
+
+  window.rotateClockwise = () => {
+    addToHistory();
+    rotateGroupBy(-Math.PI/2);
+  }
+  window.rotateAnticlockwise = () => {
+    addToHistory();
+    rotateGroupBy(Math.PI/2);
   }
 }

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 
 <head>
-  <link rel="icon" type="image/x-icon" href="./assets/icons/eye.ico"></link>
+  <link rel="icon" type="image/x-icon" href="./assets/icons/eye.ico">
+  </link>
   <title>Deep Space Visual Editor</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +19,7 @@
   <!-- TypewriterJS -->
   <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
 
-   <!-- Tooltips -->
+  <!-- Tooltips -->
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@6"></script>
 
@@ -59,15 +60,15 @@
 
       <div class="button-row">
 
-          <a id="import-button" style="transform: translateY(2px);">
-            <i class="fa fa-download"></i>
-          </a>
-          <button id="export-button" popovertarget="export-actions">
-            <i class="fa fa-upload"></i>
-          </button>
+        <a id="import-button" style="transform: translateY(2px);">
+          <i class="fa fa-download"></i>
+        </a>
+        <button id="export-button" popovertarget="export-actions">
+          <i class="fa fa-upload"></i>
+        </button>
 
-          <span style="flex:1"></span>
-          <span style="flex:1"></span>
+        <span style="flex:1"></span>
+        <span style="flex:1"></span>
 
         <a id="dscr" href="https://dscr.dixonary.co.uk/" target="_blank" style="color: inherit">
           <i class="fa fa-comments"></i>
@@ -79,11 +80,11 @@
           <i class="fa fa-bars"></i>
         </a>
 
-        
+
       </div>
     </div>
 
-        <p id="import-zone">
+    <p id="import-zone">
       <dialog class="import-paste">
         <div class="dialog-content">
           <p class="dialog-title">Paste Model String
@@ -91,14 +92,14 @@
               X
             </button>
           </p>
-          <p class="dialog-sub">Or choose an example: 
+          <p class="dialog-sub">Or choose an example:
             <button id="importSnowman">Snowman</button>
             <button id="importSolarSystem">Solar System</button>
             <button id="importStarryNight">Starry Night</button>
-            <button  id="importAmogus">do not press</button>
+            <button id="importAmogus">do not press</button>
           </p>
 
-          
+
 
           <textarea class="import-paste-contents" autofocus></textarea>
           <div class="button-row">
@@ -139,56 +140,102 @@
             </dialog>
           </p>
 
-          
+
         </div>
         <input type="file" id="dictionary-input" />
       </div>
 
       <div class="specific-controls-view">
-        <p class="sidebar-header" id="sphereHeader"><span id="sphereHeaderText" class="do-translate" data-original="[-52]" ></span> <input type="number" id="sphereNumber" min="0" value=""></input></p>
-        
+        <p class="sidebar-header" id="sphereHeader">
+          <span id="sphereHeaderText" class="do-translate" data-original="[-52]" style="padding:2px"></span>
+          <input type="number" id="sphereNumber" min="0" value=""></input>
+        </p>
+
         <div class="controls" style="padding-bottom: 0;">
-          <div id="sphere-parameters" data-disabled="true">
-            <div id="specific-controls">
-              <div class="position-controls">
-                  <div class="position-input">
-                      <span>X</span>
-                      <input type="number" id="posX" max="15" min="-15" step="0.1">
-                  </div>
+          <div class="controls-panel-stack">
 
+            <div id="sphere-parameters" data-disabled="true">
+              <div class="specific-controls">
+                <div class="position-controls">
                   <div class="position-input">
-                      <span>Y</span>
-                      <input type="number" id="posY" max="15" min="-15" step="0.1">
+                    <span>X</span>
+                    <input type="number" id="posX" max="15" min="-15" step="0.1">
                   </div>
-
                   <div class="position-input">
-                      <span>Z</span>
-                      <input type="number" id="posZ" max="10" min="-10" step="0.1">
+                    <span>Y</span>
+                    <input type="number" id="posY" max="15" min="-15" step="0.1">
                   </div>
-              </div>
-              <div class="range">
-                <p class="do-translate" data-original="[-22]"></p>
-                <input id="volumeSlider" class="range-slider" max="10" min="0.1" type="range" value="2" step="0.1" oninput="volumeAmount.value=volumeSlider.value">
-                <input id="volumeAmount" class="range-amount" type="number" value="2" oninput="volumeSlider.value=volumeAmount.value" step="0.1">
-              </div>
-              <div class="range" style="padding-bottom: 0;">
-                <p class="do-translate" data-original="[-54]"></p>
-                <input id="colorSlider" class="range-slider" max="64" min="0" type="range" value="64" step="1" oninput="colorAmount.value=colorSlider.value">
-                <input id="colorAmount" class="range-amount" type="number" value="2" oninput="colorSlider.value=colorAmount.value">
-              </div>
-              </div>
-
-              <div class="controls">
-                <button id="duplicate-button" onclick="duplicateCurrentSphere()" class="do-translate" data-original="[-144]"></button>
-                <button onclick="deleteCurrentSphere()" class="do-translate" data-original="[-88,-52]">DELETE SELECTED OBJECT</button>
+                  <div class="position-input">
+                    <span>Z</span>
+                    <input type="number" id="posZ" max="10" min="-10" step="0.1">
+                  </div>
                 </div>
+                <div class="range" style="padding-top: 5px;">
+                  <p class="do-translate" data-original="[-22]"></p>
+                  <input id="volumeSlider" class="range-slider" max="10" min="0.1" type="range" value="2" step="0.1"
+                    oninput="volumeAmount.value=volumeSlider.value">
+                  <input id="volumeAmount" class="range-amount" type="number" value="2"
+                    oninput="volumeSlider.value=volumeAmount.value" step="0.1">
+                </div>
+                <div class="range" style="padding-bottom: 0;">
+                  <p class="do-translate" data-original="[-54]"></p>
+                  <input id="colorSlider" class="range-slider" max="64" min="0" type="range" value="64" step="1"
+                    oninput="colorAmount.value=colorSlider.value">
+                  <input id="colorAmount" class="range-amount" type="number" value="2"
+                    oninput="colorSlider.value=colorAmount.value">
+                </div>
+              </div>
+
+              <div class="specific-controls-buttons">
+                <button id="duplicate-button" onclick="duplicateCurrentSphere()" class="do-translate"
+                  data-original="[-144]"></button>
+                <button onclick="deleteCurrentSphere()" class="do-translate" data-original="[-88,-52]">DELETE
+                  SELECTED OBJECT</button>
+              </div>
+            </div>
+
+            <div id="group-parameters" data-disabled="true">
+              <div class="specific-controls">
+                <div class="position-controls" style="padding-bottom: 0px;">
+                  <div class="position-input">
+                    <span>X</span>
+                    <input type="number" id="groupPosX" max="15" min="-15" step="0.1">
+                  </div>
+                  <div class="position-input">
+                    <span>Y</span>
+                    <input type="number" id="groupPosY" max="15" min="-15" step="0.1">
+                  </div>
+                  <div class="position-input">
+                    <span>Z</span>
+                    <input type="number" id="groupPosZ" max="10" min="-10" step="0.1">
+                  </div>
+                </div>
+              </div>
+
+              <div class="specific-controls-buttons">
+                <div class="undo-row">
+                  <p class="do-translate" data-original="[-87]" style="transform: translateY(4px);"></p>
+                  <button onclick="mirrorX()" class="do-translate" data-original="[-49]" style="background-color:#376DCC"></button>
+                  <button onclick="mirrorY()" class="do-translate" data-original="[-50]" style="background-color:#DB3B58;"></button>
+                  <button onclick="mirrorZ()" class="do-translate" data-original="[-51]" style="background-color:#68C134;"></button>
+                </div>
+                <div class="undo-row">
+                  <button onclick="rotateAnticlockwise()" class="do-translate" data-original="[-33, -92]"></button>
+                  <button onclick="rotateClockwise()" class="do-translate" data-original="[-92, -32]"></button>
+                </div>
+                <button id="group-duplicate-button" onclick="duplicateCurrentGroup()" class="do-translate"
+                  data-original="[-144]"></button>
+                <button onclick="deleteCurrentSphere()" class="do-translate" data-original="[-88,-19]"></button>
+              </div>
             </div>
           </div>
+        </div>
       </div>
+
       <div class="general-controls-view">
         <p class="sidebar-header do-translate" data-original="[-53]"></p>
         <div class="controls">
-          <button onclick="newSphere()"  class="do-translate" data-original="[-38,-52]"></button>
+          <button onclick="newSphere()" class="do-translate" data-original="[-38,-52]"></button>
           <div class="undo-row">
             <button id="undoButton" class="do-translate" data-original="[-118,-121]"></button>
             <button id="redoButton" class="do-translate" data-original="[-120,-121]"></button>
@@ -216,6 +263,8 @@
         <p>Drag axes to move objects</p>
         <p>Hold CTRL to move objects more precisely (0.1 increments)</p>
         <p>Left Click / Tab - Select object</p>
+        <p>CTRL + Left Click - Add object to Group</p>
+        <p>CTRL + Left Click Drag - Add objects in box to Group</p>
         <p>G - Select ALL objects (movement only)</p>
         <p>Del - Delete selected object</p>
         <p>C - Duplicate selected object</p>
@@ -226,17 +275,14 @@
         <p>Use the buttons on the top right to Import/Export</p>
       </div>
 
-
-      
     </div>
     <div class="view" id="view" data-disabled="true">
       <div id="all-messages"></div>
     </div>
 
-
-    
     <div class="footer">
-      <p class="do-translate" data-original="[-130,1074,-86,-119,-237,-38,-85,-2,-2,-241,-193,-86,-119,-237,-38,-29,-85]">
+      <p class="do-translate"
+        data-original="[-130,1074,-86,-119,-237,-38,-85,-2,-2,-241,-193,-86,-119,-237,-38,-29,-85]">
       </p>
     </div>
   </main>

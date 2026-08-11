@@ -1,8 +1,7 @@
-import { sphereData, setSphereData, currentSphere, globalSelection } from "./state.js";
+import { sphereData, setSphereData, currentSpheres } from "./state.js";
 import { toAlien } from "./editor.js";
-import { removeSphere, addSphere, selectSphere } from "./spheres.js";
+import { removeSphere, addSphere, addSphereToGroup, removeSphereFromGroup, clearAllSelections } from "./spheres.js";
 import { setLocalStorageSphereData, setSignalCounter } from "./persistence.js";
-import { toggleGlobalSelection } from "./ui.js";
 
 import * as THREE from 'three';
 
@@ -22,8 +21,7 @@ export const getSnapshot = () => {
       z: p.z,
       diameter: element.mesh.geometry.boundingSphere.radius * 2,
       color: element.color,
-      selected: element.mesh === currentSphere ? true : false,
-      global: globalSelection
+      selected: currentSpheres.includes(element.mesh) ? true : false,
     }
   });
 
@@ -32,6 +30,7 @@ export const getSnapshot = () => {
 
 // Should be called any time a change happens to the scene
 export const addToHistory = () => {
+  console.trace();
   if (sceneHistory.length > MAX_HISTORY) {
     sceneHistory.shift();
   }
@@ -50,28 +49,19 @@ export const undo = () => {
     }
     sceneFuture.push(getSnapshot());
 
-    if (globalSelection) {
-      toggleGlobalSelection();
-    }
-
+    clearAllSelections();
     sphereData.forEach(element => {
       removeSphere(element.mesh, false);
     });
     setSphereData([]);
+    //return;
     // for each sphere, add to sphereData and scene
-    let toggleGlobal = false;
     snapshot.forEach(element => {
       const mesh = addSphere(element.x, element.y, element.z, element.diameter, element.color, false, false);
       if (element.selected) {
-        selectSphere(mesh);
-      }
-      if (element.global) {
-        toggleGlobal = true;
+        addSphereToGroup(mesh);
       }
     });
-    if (toggleGlobal) {
-      toggleGlobalSelection();
-    }
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT
     setSignalCounter();
@@ -88,28 +78,18 @@ export const redo = () => {
     }
     sceneHistory.push(getSnapshot());
 
-    if (globalSelection) {
-      toggleGlobalSelection();
-    }
-
     sphereData.forEach(element => {
+      removeSphereFromGroup(element.mesh);
       removeSphere(element.mesh, false);
     });
     setSphereData([]);
     // for each sphere, add to sphereData and scene
-    let toggleGlobal = false;
     snapshot.forEach(element => {
       const mesh = addSphere(element.x, element.y, element.z, element.diameter, element.color, false, false);
       if (element.selected) {
-        selectSphere(mesh);
-      }
-      if (element.global) {
-        toggleGlobal = true;
+        addSphereToGroup(mesh);
       }
     });
-    if (toggleGlobal) {
-      toggleGlobalSelection();
-    }
     setLocalStorageSphereData();
     // UPDATE SIGNAL COUNT
     setSignalCounter();

@@ -1,8 +1,9 @@
 import { $ } from "./query.js";
-import { scene, sphereData, setSphereData, currentSphere, setCurrentSphere, transformControls, overlayScene, outlinesEnabled, outlinePass } from "./state.js";
-import { calculateColor, toThree } from "./editor.js";
+import { scene, sphereData, setSphereData, currentSpheres, setCurrentSpheres, transformControls, overlayScene, outlinesEnabled, outlinePass, setGroupObject, groupObject } from "./state.js";
+import { calculateColor, toAlien, toThree } from "./editor.js";
 import { setLocalStorageSphereData, setSignalCounter } from "./persistence.js";
 import { addToHistory } from "./history.js";
+import { getAveragePosition } from "./ui.js";
 
 import * as THREE from 'three';
 
@@ -94,9 +95,9 @@ export const removeSphere = (sphereMesh, saveHistory = true) => {
     addToHistory();
   }
   let index = undefined;
-  if (currentSphere == sphereMesh) {
+  if (currentSpheres[0] == sphereMesh && currentSpheres.length == 1) {
     // Select previous sphere if deleting current!
-    index = sphereData.findIndex(x => x.mesh == currentSphere);
+    index = sphereData.findIndex(x => x.mesh == currentSpheres[0]);
     deselectSphere();
   }
   scene.remove(sphereMesh);
@@ -124,21 +125,52 @@ export const removeSphere = (sphereMesh, saveHistory = true) => {
   }
 }
 
+// For use when deleting selected spheres
+export const removeSelectedSpheres = () => {
+  if (currentSpheres.length == 1) {
+    removeSphere(currentSpheres[0], true);
+    return;
+  }
+  addToHistory();
+  let currentClone = [...currentSpheres];
+  currentClone.forEach(sphere => {
+    removeSphereFromGroup(sphere);
+    scene.remove(sphere);
+    sphere.geometry.dispose();
+    sphere.material.dispose();
+    setSphereData(sphereData.filter(item => item.mesh !== sphere));
+  });
+  setLocalStorageSphereData();
+  setSignalCounter();
+}
+
+// Logic  for creating the group and the object must be put here! or in other mehtods that are called with the ctrl click / drag
+
 // Add logic for enabling the parameters here
 export const selectSphere = (sphere) => {
-  setCurrentSphere(sphere);
-  transformControls.attach(currentSphere);
+  // Clear current selection gracefully
+  clearAllSelections();
+
+  setCurrentSpheres([sphere]);
+  transformControls.attach(currentSpheres[0]);
   overlayScene.add(transformControls.getHelper());
+
+  if ($("#sphereHeaderText").getAttribute("data-original") != "[-52]") {
+    $("#sphereHeaderText").setAttribute("data-original", "[-52]");
+    $("#sphereHeaderText").removeAttribute("data-status");
+  }
   $("#sphere-parameters").setAttribute("data-disabled", "false");
+  $("#group-parameters").setAttribute("data-disabled", "true");
+  $("#sphereNumber").removeAttribute("hidden");
   // Set volume and color parameters to the correct values! (xyz are handled already but i cant remember where?? lol oh well)
   sphere.geometry.computeBoundingSphere();
   const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
   $("#volumeAmount").value = Number(geometryDiameter.toFixed(1));
   $("#volumeSlider").value = Number(geometryDiameter.toFixed(1));
-  $("#colorAmount").value = sphereData.find(x => x.mesh == currentSphere).color;
-  $("#colorSlider").value = sphereData.find(x => x.mesh == currentSphere).color;
+  $("#colorAmount").value = sphereData.find(x => x.mesh == currentSpheres[0]).color;
+  $("#colorSlider").value = sphereData.find(x => x.mesh == currentSpheres[0]).color;
   // Update the number of the sphere!
-  let index = sphereData.findIndex(x => x.mesh == currentSphere);
+  let index = sphereData.findIndex(x => x.mesh == currentSpheres[0]);
   $("#sphereNumber").value = index;
   //  Add to outline pass
   if (outlinesEnabled) {
@@ -150,11 +182,144 @@ export const selectSphere = (sphere) => {
 export const deselectSphere = () => {
   transformControls.detach();
   overlayScene.remove(transformControls.getHelper());
-  setCurrentSphere(null);
+  setCurrentSpheres([]);
   $("#sphere-parameters").setAttribute("data-disabled", "true");
   $("#sphereNumber").value = null;
   // Remove from outline pass
   if (outlinesEnabled) {
     outlinePass.selectedObjects = [];
   }
+}
+
+// Adding spheres to group - case for no spheres means only one sphere should be added. if this is the case, the handler will call selectSphere instead on a click action
+export const addSphereToGroup = (sphere) => {
+  if (currentSpheres.length < 1) {
+    selectSphere(sphere);
+    return;
+  }
+  setCurrentSpheres([...currentSpheres, sphere]);
+  // Create/move group object and bind accordingly
+  if (currentSpheres.length == 2) { // If the first addition to a group, instantiate the groupObject with the original sphere attached
+    setGroupObject(new THREE.Object3D());
+    // Add first sphere to this group
+    groupObject.attach(currentSpheres[0]);
+    // Setup for new groupObject
+    scene.add(groupObject);
+    transformControls.attach(groupObject);
+    overlayScene.add(transformControls.getHelper());
+  }
+  // Move groupObject to new position and attach new sphere
+  groupObject.attach(sphere);
+  repositionGroup(currentSpheres);
+  if (outlinesEnabled) {
+    outlinePass.selectedObjects = currentSpheres;
+  }
+  // Change parameters
+  if ($("#sphereHeaderText").getAttribute("data-original") != "[-19]") {
+    $("#sphereHeaderText").setAttribute("data-original", "[-19]");
+    $("#sphereHeaderText").removeAttribute("data-status");
+  }
+  $("#sphere-parameters").setAttribute("data-disabled", "true");
+  $("#group-parameters").setAttribute("data-disabled", "false");
+  $("#sphereNumber").setAttribute("hidden", "true");
+
+  let worldPos = new THREE.Vector3();
+  groupObject.getWorldPosition(worldPos);
+  let p = toAlien(worldPos.x, worldPos.y, worldPos.z);
+  $("#groupPosX").value = p.x.toFixed(1);
+  $("#groupPosY").value = p.y.toFixed(1);
+  $("#groupPosZ").value = p.z.toFixed(1);
+  
+}
+
+// Removing spheres from group - case for two spheres means it should no longer be a group and instead a regular selection. should never be called in the case of one sphere
+export const removeSphereFromGroup = (sphere) => {
+  if (!currentSpheres.includes(sphere)) { 
+    return;
+  }
+  if (currentSpheres.length < 2) {
+    deselectSphere(sphere);
+    return;
+  }
+  setCurrentSpheres(currentSpheres.filter((s) => s != sphere)); // Filters out the sphere we want to deselect
+  if (currentSpheres.length == 1) { // If removing a sphere to leave only one, we must destroy the groupObject and perform a standard selection on the final sphere
+    transformControls.detach();
+    overlayScene.remove(transformControls.getHelper());
+    scene.attach(sphere);
+    scene.attach(currentSpheres[0]);
+    selectSphere(currentSpheres[0]); // Is this valid???? check if bugs occur
+    scene.remove(groupObject);
+    setGroupObject(null);
+  } else {  // Otherwise, move groupobject and handle detachment of removed sphere
+    scene.attach(sphere);
+    repositionGroup(currentSpheres);
+  }
+  if (outlinesEnabled) {
+    outlinePass.selectedObjects = currentSpheres;
+  }
+
+}
+
+// 
+export const clearAllSelections = () => {
+  if (groupObject) {
+    transformControls.detach();
+    overlayScene.remove(transformControls.getHelper());
+    currentSpheres.forEach(sphere => scene.attach(sphere));
+    scene.remove(groupObject);
+    setGroupObject(null);
+  } else if (currentSpheres.length === 1) {
+    deselectSphere(currentSpheres[0]);
+  }
+  setCurrentSpheres([]);
+  if (outlinesEnabled) {
+    outlinePass.selectedObjects = [];
+  }
+  if ($("#sphereHeaderText").getAttribute("data-original") != "[-52]") {
+    $("#sphereHeaderText").setAttribute("data-original", "[-52]");
+    $("#sphereHeaderText").removeAttribute("data-status");
+  }
+  $("#sphere-parameters").setAttribute("data-disabled", "true");
+  $("#group-parameters").setAttribute("data-disabled", "true");
+  $("#sphereNumber").removeAttribute("hidden");
+  $("#sphereNumber").value = null;
+};
+
+// Moves the group object without affecting the positions of the spheres attached to it
+const repositionGroup = (spheres) => {
+  spheres.forEach(sphere => {
+    scene.attach(sphere);
+  });
+
+  const [ax, ay, az] = getAveragePosition(currentSpheres);
+  groupObject.position.set(ax, ay, az);
+
+  spheres.forEach(sphere => {
+    groupObject.attach(sphere);
+  });
+};
+
+export const duplicateSphere = () => {
+  currentSpheres[0].geometry.computeBoundingSphere();
+  const color = sphereData.find(x => x.mesh == currentSpheres[0]).color;
+  let p = toAlien(currentSpheres[0].position.x, currentSpheres[0].position.y, currentSpheres[0].position.z);
+  addSphere(p.x, p.y, p.z, currentSpheres[0].geometry.boundingSphere.radius * 2, color, true);
+}
+
+export const duplicateGroup = () => {
+  addToHistory();
+  let newlySelected = [];
+  let worldPos = new THREE.Vector3();
+  currentSpheres.forEach(sphere => {
+    sphere.geometry.computeBoundingSphere();
+    const color = sphereData.find(x => x.mesh == sphere).color;
+    sphere.getWorldPosition(worldPos);
+    let p = toAlien(worldPos.x, worldPos.y, worldPos.z); // need to get world coordinates.
+    newlySelected.push(addSphere(p.x, p.y, p.z, sphere.geometry.boundingSphere.radius * 2, color, false, false));
+  });
+  setSignalCounter();
+  clearAllSelections();
+  newlySelected.forEach(sphere => {
+    addSphereToGroup(sphere);
+  });
 }
