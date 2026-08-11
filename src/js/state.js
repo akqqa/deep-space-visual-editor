@@ -1,5 +1,5 @@
 export let sphereData = []; // For simplicity, sphereData is stored as an array of {mesh: sphereMesh, color: color}
-export let currentSphere; // The currently selected sphere (as a mesh) for transformation and alteration
+export let currentSpheres = []; // The currently selected spheres (as a mesh) for transformation and alteration
 export let transformControls;
 
 export let camera;
@@ -14,7 +14,9 @@ export let outlinePass;
 export let outlinesEnabled = true;
 
 export let globalSelection = false;
-export let globalObject;
+export let groupObject;
+
+export let controlHeld = false;
 
 export let currentSignalCount = 0;
 
@@ -46,18 +48,26 @@ export const setCurrentSignalCount = (sc) => {
   currentSignalCount = sc;
 }
 
-export const setCurrentSphere = (cs) => {
-  currentSphere = cs;
+export const setCurrentSpheres = (cs) => {
+  currentSpheres = cs;
 }
+
+export const isMultipleSelected = () => {
+  return (currentSpheres.length > 1);
+} 
 
 export const setGlobalSelection = (gs) => {
   globalSelection = gs;
 }
 
-export const setGlobalObject = (go) => {
-  globalObject = go;
+export const setGroupObject = (go) => {
+  groupObject = go;
 }
 
 export const setOutlinesEnabled = (oe) => {
   outlinesEnabled = oe;
+}
+
+export const setControlHeld = (ch) => {
+  controlHeld = ch;
 }

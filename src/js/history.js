@@ -1,6 +1,6 @@
-import { sphereData, setSphereData, currentSphere, globalSelection } from "./state.js";
+import { sphereData, setSphereData, currentSpheres, globalSelection } from "./state.js";
 import { toAlien } from "./editor.js";
-import { removeSphere, addSphere, selectSphere } from "./spheres.js";
+import { removeSphere, addSphere, addSphereToGroup, removeSphereFromGroup } from "./spheres.js";
 import { setLocalStorageSphereData, setSignalCounter } from "./persistence.js";
 import { toggleGlobalSelection } from "./ui.js";
 
@@ -22,7 +22,7 @@ export const getSnapshot = () => {
       z: p.z,
       diameter: element.mesh.geometry.boundingSphere.radius * 2,
       color: element.color,
-      selected: element.mesh === currentSphere ? true : false,
+      selected: currentSpheres.includes(element.mesh) ? true : false,
       global: globalSelection
     }
   });
@@ -55,6 +55,7 @@ export const undo = () => {
     }
 
     sphereData.forEach(element => {
+      removeSphereFromGroup(element.mesh);
       removeSphere(element.mesh, false);
     });
     setSphereData([]);
@@ -63,7 +64,7 @@ export const undo = () => {
     snapshot.forEach(element => {
       const mesh = addSphere(element.x, element.y, element.z, element.diameter, element.color, false, false);
       if (element.selected) {
-        selectSphere(mesh);
+        addSphereToGroup(mesh);
       }
       if (element.global) {
         toggleGlobal = true;
@@ -93,6 +94,7 @@ export const redo = () => {
     }
 
     sphereData.forEach(element => {
+      removeSphereFromGroup(element.mesh);
       removeSphere(element.mesh, false);
     });
     setSphereData([]);
@@ -101,7 +103,7 @@ export const redo = () => {
     snapshot.forEach(element => {
       const mesh = addSphere(element.x, element.y, element.z, element.diameter, element.color, false, false);
       if (element.selected) {
-        selectSphere(mesh);
+        addSphereToGroup(mesh);
       }
       if (element.global) {
         toggleGlobal = true;

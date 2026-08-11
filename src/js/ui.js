@@ -1,5 +1,5 @@
 import { $ } from "./query.js";
-import { scene, transformControls, overlayScene, sphereData, globalSelection, setGlobalSelection, globalObject, setGlobalObject, outlinesEnabled, outlinePass, currentSphere, setOutlinesEnabled } from "./state.js";
+import { scene, transformControls, overlayScene, sphereData, globalSelection, setGlobalSelection, groupObject, setGroupObject, outlinesEnabled, outlinePass, currentSpheres, setOutlinesEnabled } from "./state.js";
 import { selectSphere, deselectSphere, addSphere, removeSphere } from "./spheres.js";
 import { lastLoadedDict, loadDictionary } from "./dictionary.js";
 import { undo, redo, addToHistory } from "./history.js";
@@ -169,14 +169,14 @@ export const toggleGlobalSelection = () => {
   if (globalSelection) {
     // Start global selection logic. bind an invisible object to the center of the screen, bind the movement logic to moving every sphere if globalselection is toggled, disable clicking anything else or the screen excet the translation controls, disable the spheredata to the side, basically disable everyhting if this is true
     deselectSphere();
-    setGlobalObject(new THREE.Object3D());
-    const [ax, ay, az] = getAveragePosition();
-    globalObject.position.set(ax, ay, az); // Alien coords!
-    scene.add(globalObject);
-    transformControls.attach(globalObject);
+    setGroupObject(new THREE.Object3D());
+    const [ax, ay, az] = getAveragePosition(sphereData.map(({ mesh }) => mesh));
+    groupObject.position.set(ax, ay, az); // Alien coords!
+    scene.add(groupObject);
+    transformControls.attach(groupObject);
     overlayScene.add(transformControls.getHelper());
     sphereData.forEach((sphere) => {
-      globalObject.attach(sphere.mesh);
+      groupObject.attach(sphere.mesh);
     });
     if (outlinesEnabled) {
       outlinePass.selectedObjects = sphereData.map(sphere => sphere.mesh);
@@ -184,8 +184,8 @@ export const toggleGlobalSelection = () => {
   } else {
     transformControls.detach();
     overlayScene.remove(transformControls.getHelper());
-    scene.remove(globalObject);
-    setGlobalObject(null);
+    scene.remove(groupObject);
+    setGroupObject(null);
     sphereData.forEach((sphere) => {
       scene.attach(sphere.mesh);
     });
@@ -202,8 +202,8 @@ export const toggleOutlines = () => {
 
   if (outlinesEnabled) { // If just reenabled, make current selection outlined
     if (!globalSelection) {
-      if (currentSphere) {
-        outlinePass.selectedObjects = [currentSphere];
+      if (currentSpheres[0]) {
+        outlinePass.selectedObjects = currentSpheres;
       } else {
         outlinePass.selectedObjects = [];
       }
@@ -215,17 +215,17 @@ export const toggleOutlines = () => {
   }
 }
 
-export const getAveragePosition = () => {
+export const getAveragePosition = (spheres) => {
   let ax = 0;
   let ay = 0;
   let az = 0;
   let weightSum = 0
-  sphereData.forEach(sphere => {
-    const radius = sphere.mesh.geometry.boundingSphere.radius;
+  spheres.forEach(sphere => {
+    const radius = sphere.geometry.boundingSphere.radius;
     weightSum += radius;
-    ax += sphere.mesh.position.x * radius;
-    ay += sphere.mesh.position.y * radius;
-    az += sphere.mesh.position.z * radius;
+    ax += sphere.position.x * radius;
+    ay += sphere.position.y * radius;
+    az += sphere.position.z * radius;
   });
 
   ax = Math.round((ax / weightSum) * 10) / 10;
@@ -409,16 +409,16 @@ export const initialiseUI = () => {
 
   // UI logic
   window.duplicateCurrentSphere = () => {
-    if (currentSphere) {
-      currentSphere.geometry.computeBoundingSphere();
-      const color = sphereData.find(x => x.mesh == currentSphere).color;
+    if (currentSpheres[0]) {
+      currentSpheres[0].geometry.computeBoundingSphere();
+      const color = sphereData.find(x => x.mesh == currentSpheres[0]).color;
       // const randX = Number(((Math.random()) * 2 - 1).toFixed(1));
       // const randZ = Number(((Math.random()) * 2 - 1).toFixed(1));
       // const randY = Number(((Math.random()) * 2 - 1).toFixed(1));
-      let p = toAlien(currentSphere.position.x, currentSphere.position.y, currentSphere.position.z)
+      let p = toAlien(currentSpheres[0].position.x, currentSpheres[0].position.y, currentSpheres[0].position.z)
       // HMM. if this is true at the end, its better for deletes, but worse for tab select... Select the new one as logically that makes more sense?
       // maybe change behaviour of both, so tab selects next and delete deletes nearby..
-      addSphere(p.x, p.y, p.z, currentSphere.geometry.boundingSphere.radius * 2, color, true);
+      addSphere(p.x, p.y, p.z, currentSpheres[0].geometry.boundingSphere.radius * 2, color, true);
 
       $("#duplicate-button").textContent = "COPIED";
 
@@ -430,8 +430,8 @@ export const initialiseUI = () => {
   }
 
   window.deleteCurrentSphere = () => {
-    if (currentSphere) {
-      removeSphere(currentSphere);
+    if (currentSpheres[0]) {
+      removeSphere(currentSpheres[0]);
     }
   }
 

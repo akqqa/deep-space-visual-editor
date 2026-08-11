@@ -119,7 +119,7 @@ export const getCurrentSignals = () => {
       } else {
         resArray.push(v)
       }
-      return resArray;
+      return resArray; 
     });
 
     res = res.concat([-52, ...posX, -3, ...posY, -3, ...posZ, -3, ...diameter, -3, element.color, -3])
