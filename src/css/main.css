@@ -406,6 +406,7 @@ textarea.import-paste-contents {
   }
 
 .view {
+  position: relative;
   grid-area: vwr;
   overflow: hidden;
   min-height: 0;
@@ -783,4 +784,15 @@ input[type="number"] {
     background-color: var(--theme-color-dark);
     font-family: 'Hack', 'Courier New', Courier, monospace;
   }
+}
+
+#view {
+  position: relative;
+}
+
+.selectBox {
+  position: absolute;
+  border: 1px solid var(--theme-color);
+  background-color: color-mix(in srgb, var(--theme-color-darker) 15%, transparent);
+  pointer-events: none;
 }

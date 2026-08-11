@@ -1,12 +1,10 @@
 import { $ } from "./query.js";
-import { scene, transformControls, overlayScene, sphereData, globalSelection, setGlobalSelection, groupObject, setGroupObject, outlinesEnabled, outlinePass, currentSpheres, setOutlinesEnabled } from "./state.js";
-import { selectSphere, deselectSphere, addSphere, removeSphere, duplicateSphere, duplicateGroup, removeSelectedSpheres } from "./spheres.js";
+import { sphereData, outlinesEnabled, outlinePass, currentSpheres, setOutlinesEnabled } from "./state.js";
+import { selectSphere, deselectSphere, addSphere, removeSphere, duplicateSphere, duplicateGroup, removeSelectedSpheres, addSphereToGroup, clearAllSelections } from "./spheres.js";
 import { lastLoadedDict, loadDictionary } from "./dictionary.js";
 import { undo, redo, addToHistory } from "./history.js";
 import { loadSphereData, sphereDataToExportSignals, sphereDataToExportString, sphereDataToGltf, setSignalCounter } from "./persistence.js";
 import { doTranslation } from "./translation.js";
-
-import * as THREE from 'three';
 
 let theme = 0;
 const themeColors = ["#66aa00", "#b6a8e5", "#c49b9b", "#b1d6e9", "#ccc", "#fffb00", "#4f4f85", "#ff9538"];
@@ -163,34 +161,12 @@ $("#sphereNumber").addEventListener("keydown", (event) => {
 });
 
 export const toggleGlobalSelection = () => {
-  setGlobalSelection(!globalSelection);
-
-  if (globalSelection) {
-    // Start global selection logic. bind an invisible object to the center of the screen, bind the movement logic to moving every sphere if globalselection is toggled, disable clicking anything else or the screen excet the translation controls, disable the spheredata to the side, basically disable everyhting if this is true
-    deselectSphere();
-    setGroupObject(new THREE.Object3D());
-    const [ax, ay, az] = getAveragePosition(sphereData.map(({ mesh }) => mesh));
-    groupObject.position.set(ax, ay, az); // Alien coords!
-    scene.add(groupObject);
-    transformControls.attach(groupObject);
-    overlayScene.add(transformControls.getHelper());
-    sphereData.forEach((sphere) => {
-      groupObject.attach(sphere.mesh);
+  const allSelected = sphereData.every(sphere => currentSpheres.includes(sphere.mesh));
+  clearAllSelections();
+  if (!allSelected) { // Toggling on, select all spheres
+    sphereData.forEach(sphere => {
+      addSphereToGroup(sphere.mesh)
     });
-    if (outlinesEnabled) {
-      outlinePass.selectedObjects = sphereData.map(sphere => sphere.mesh);
-    }
-  } else {
-    transformControls.detach();
-    overlayScene.remove(transformControls.getHelper());
-    scene.remove(groupObject);
-    setGroupObject(null);
-    sphereData.forEach((sphere) => {
-      scene.attach(sphere.mesh);
-    });
-    if (outlinesEnabled) {
-      outlinePass.selectedObjects = [];
-    }
   }
 }
 
@@ -200,14 +176,10 @@ export const toggleOutlines = () => {
   localStorage.setItem("outlines", outlinesEnabled);
 
   if (outlinesEnabled) { // If just reenabled, make current selection outlined
-    if (!globalSelection) {
-      if (currentSpheres[0]) {
-        outlinePass.selectedObjects = currentSpheres;
-      } else {
-        outlinePass.selectedObjects = [];
-      }
+    if (currentSpheres[0]) {
+      outlinePass.selectedObjects = currentSpheres;
     } else {
-      outlinePass.selectedObjects = sphereData.map(sphere => sphere.mesh);
+      outlinePass.selectedObjects = [];
     }
   } else { // Disable all outlines
     outlinePass.selectedObjects = [];
@@ -443,9 +415,7 @@ export const initialiseUI = () => {
 
   window.deleteAllSpheres = () => {
     const res = confirm("Are you sure you want to reset the canvas?");
-    if (globalSelection) {
-      toggleGlobalSelection();
-    }
+    clearAllSelections();
     addToHistory();
     if (res) {
       sphereData.forEach(element => {
@@ -481,7 +451,7 @@ export const initialiseUI = () => {
       sphere.position.y = (-sphere.position.y).toFixed(1)
     });
   }
-  
+
   window.rotateClockwise = () => {
     addToHistory();
     rotateGroupBy(-Math.PI/2);

@@ -1,8 +1,8 @@
 import { $ } from './query.js';
 import { addToHistory } from './history.js';
-import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, globalSelection, setControlHeld, controlHeld, groupObject } from './state.js';
+import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, setControlHeld, controlHeld, groupObject } from './state.js';
 import { setLocalStorageSphereData, setSignalCounter } from './persistence.js';
-import { selectSphere, deselectSphere, removeSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections, duplicateSphere, duplicateGroup } from './spheres.js';
+import { selectSphere, deselectSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections, duplicateSphere, duplicateGroup } from './spheres.js';
 import { undo, redo } from './history.js';
 import { toggleOutlines, toggleGlobalSelection } from './ui.js';
 
@@ -13,6 +13,7 @@ import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelated
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { ViewHelper } from 'three/addons/helpers/ViewHelper.js';
+import { SelectionBox } from 'three/addons/interactive/SelectionBox.js';
 import * as holdEvent from "https://unpkg.com/hold-event@1.1.2/dist/hold-event.module.js";
 
 import { setEditorState } from './state.js';
@@ -245,6 +246,14 @@ export const initialiseEditor = () => {
   tc.minY = minZ;
   setTransformControls(tc);
 
+  const selectionBox = new SelectionBox(camera, scene);
+  let isDragSelecting = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  const selectionDiv = document.createElement("div");
+  selectionDiv.className = ("selectBox");
+  sceneDiv.appendChild(selectionDiv);
+
   // Set an observer to ensure the editor window is always sized correctly
   const observer = new ResizeObserver(() => {
     console.log("observerFired")
@@ -347,7 +356,7 @@ export const initialiseEditor = () => {
     setSignalCounter();
   });
   transformControls.addEventListener("change", () => {
-    if (globalSelection || !currentSpheres[0]) {
+    if (currentSpheres.length < 1) {
       return;
     }
     if (currentSpheres.length == 1) {
@@ -370,15 +379,85 @@ export const initialiseEditor = () => {
   // Sphere selection
   sceneDiv.addEventListener("mousedown", (event) => {
     mouseDownPos.set(event.clientX, event.clientY);
+    if (!controlHeld) {
+        return;
+    }
+    isDragSelecting = true;
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+    orbitControls.enabled = false;
+    selectionDiv.style.display = "block";
+
+    const rect = sceneDiv.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    selectionBox.startPoint.set(x, y, 0.5);
+  });
+  sceneDiv.addEventListener("mousemove", (event) => {
+    if (!isDragSelecting) {
+      return;
+    }
+
+    const rect = sceneDiv.getBoundingClientRect();
+
+    const startX = dragStartX - rect.left;
+    const startY = dragStartY - rect.top;
+
+    const currentX = event.clientX - rect.left;
+    const currentY = event.clientY - rect.top;
+
+    const left = Math.min(startX, currentX);
+    const top = Math.min(startY, currentY);
+
+    const width = Math.abs(currentX - startX);
+    const height = Math.abs(currentY - startY);
+
+    selectionDiv.style.left = `${left}px`;
+    selectionDiv.style.top = `${top}px`;
+    selectionDiv.style.width = `${width}px`;
+    selectionDiv.style.height = `${height}px`;
+
+    // Update SelectionBox
+    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    selectionBox.endPoint.set(x, y, 0.5);
+  });
+  sceneDiv.addEventListener("mouseup", (event) => {
+    if (!isDragSelecting) return;
+    isDragSelecting = false;
+    orbitControls.enabled = true;
+
+    selectionDiv.style.display = "none";
+    selectionDiv.style.left = `0px`;
+    selectionDiv.style.top = `0px`;
+    selectionDiv.style.width = `0px`;
+    selectionDiv.style.height = `0px`;
+
+    const rect = sceneDiv.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    selectionBox.endPoint.set(x, y, 0.5);
+
+    // Only treat as a select if the mouse actually moved
+    const newMousePos = new THREE.Vector2(event.clientX, event.clientY);
+    if (newMousePos.equals(mouseDownPos)) return;
+
+    selectionBox.collection = sphereData.map(s => s.mesh);
+    const selected = selectionBox.select();
+
+    const sphereMeshes = sphereData.map(({ mesh }) => mesh); // Must test this as otherwise can add the gridhelpers!
+    selected.forEach(mesh => {
+      if (sphereMeshes.includes(mesh) && !currentSpheres.includes(mesh)) {
+        addSphereToGroup(mesh);
+      }
+    });
   });
   sceneDiv.addEventListener("click", (event) => {
     // CHECK IF MOUSE DIDNT MOVE SINCE MOUSEDOWN, ONLY COUNT AS CLICK THEN
     let newMousePos = new THREE.Vector2(event.clientX, event.clientY);
     if (!newMousePos.equals(mouseDownPos)) {
       return;
-    }
-    if (globalSelection) {
-      toggleGlobalSelection();
     }
 
     // Handle the raycasting
@@ -410,19 +489,11 @@ export const initialiseEditor = () => {
       setControlHeld(true);
     }
     if (event.code == "Delete") {
-      if (globalSelection) {
-        addToHistory();
-        toggleGlobalSelection();
-        sphereData.forEach(element => {
-          removeSphere(element.mesh, false);
-        });
-        setSignalCounter();
-      } else if (currentSpheres[0]) {
+      if (currentSpheres.length > 0) {
         removeSelectedSpheres();
       }
     }
     if (event.code == "KeyC") {
-      if (globalSelection) return;
       if (currentSpheres.length == 1) {
         duplicateSphere();
       } else if (currentSpheres.length > 1) { // Copy a group
@@ -501,7 +572,6 @@ export const initialiseEditor = () => {
     }
 
     if (event.code == "Tab") {
-      if (globalSelection) return;
       event.preventDefault();
       if (currentSpheres[0]) {
         const index = sphereData.findIndex(x => x.mesh == currentSpheres[0]);
