@@ -148,6 +148,9 @@ export const removeSelectedSpheres = () => {
 
 // Add logic for enabling the parameters here
 export const selectSphere = (sphere) => {
+  // Clear current selection gracefully
+  clearAllSelections();
+
   setCurrentSpheres([sphere]);
   transformControls.attach(currentSpheres[0]);
   overlayScene.add(transformControls.getHelper());
@@ -296,4 +299,27 @@ const repositionGroup = (spheres) => {
   });
 };
 
-// next, need to alter the click handling to call the right methods at the right times. or create a sphereAdd/sphereRmove handler to do that for it
+export const duplicateSphere = () => {
+  currentSpheres[0].geometry.computeBoundingSphere();
+  const color = sphereData.find(x => x.mesh == currentSpheres[0]).color;
+  let p = toAlien(currentSpheres[0].position.x, currentSpheres[0].position.y, currentSpheres[0].position.z);
+  addSphere(p.x, p.y, p.z, currentSpheres[0].geometry.boundingSphere.radius * 2, color, true);
+}
+
+export const duplicateGroup = () => {
+  addToHistory();
+  let newlySelected = [];
+  let worldPos = new THREE.Vector3();
+  currentSpheres.forEach(sphere => {
+    sphere.geometry.computeBoundingSphere();
+    const color = sphereData.find(x => x.mesh == sphere).color;
+    sphere.getWorldPosition(worldPos);
+    let p = toAlien(worldPos.x, worldPos.y, worldPos.z); // need to get world coordinates.
+    newlySelected.push(addSphere(p.x, p.y, p.z, sphere.geometry.boundingSphere.radius * 2, color, false, false));
+  });
+  setSignalCounter();
+  clearAllSelections();
+  newlySelected.forEach(sphere => {
+    addSphereToGroup(sphere);
+  });
+}

@@ -1,10 +1,9 @@
 import { $ } from "./query.js";
 import { scene, transformControls, overlayScene, sphereData, globalSelection, setGlobalSelection, groupObject, setGroupObject, outlinesEnabled, outlinePass, currentSpheres, setOutlinesEnabled } from "./state.js";
-import { selectSphere, deselectSphere, addSphere, removeSphere } from "./spheres.js";
+import { selectSphere, deselectSphere, addSphere, removeSphere, duplicateSphere, duplicateGroup, removeSelectedSpheres } from "./spheres.js";
 import { lastLoadedDict, loadDictionary } from "./dictionary.js";
 import { undo, redo, addToHistory } from "./history.js";
 import { loadSphereData, sphereDataToExportSignals, sphereDataToExportString, sphereDataToGltf, setSignalCounter } from "./persistence.js";
-import { toAlien } from "./editor.js";
 import { doTranslation } from "./translation.js";
 
 import * as THREE from 'three';
@@ -235,6 +234,18 @@ export const getAveragePosition = (spheres) => {
   return [ax, ay, az];
 }
 
+const rotateGroupBy = (angle) => {
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+
+  currentSpheres.forEach(sphere => {
+    const x = sphere.position.x;
+    const z = sphere.position.z;
+    sphere.position.x = (x * cos - z * sin).toFixed(1);
+    sphere.position.z = (x * sin + z * cos).toFixed(1);
+  });
+};
+
 const initialiseOutlines = () => {
   const outlines = localStorage.getItem("outlines");
   if (outlines === "false") {
@@ -411,18 +422,8 @@ export const initialiseUI = () => {
   // UI logic
   window.duplicateCurrentSphere = () => {
     if (currentSpheres[0]) {
-      currentSpheres[0].geometry.computeBoundingSphere();
-      const color = sphereData.find(x => x.mesh == currentSpheres[0]).color;
-      // const randX = Number(((Math.random()) * 2 - 1).toFixed(1));
-      // const randZ = Number(((Math.random()) * 2 - 1).toFixed(1));
-      // const randY = Number(((Math.random()) * 2 - 1).toFixed(1));
-      let p = toAlien(currentSpheres[0].position.x, currentSpheres[0].position.y, currentSpheres[0].position.z)
-      // HMM. if this is true at the end, its better for deletes, but worse for tab select... Select the new one as logically that makes more sense?
-      // maybe change behaviour of both, so tab selects next and delete deletes nearby..
-      addSphere(p.x, p.y, p.z, currentSpheres[0].geometry.boundingSphere.radius * 2, color, true);
-
+      duplicateSphere();
       $("#duplicate-button").textContent = "COPIED";
-
       setTimeout(() => {
         $("#duplicate-button").setAttribute("data-status", "not");
         doTranslation();
@@ -430,10 +431,14 @@ export const initialiseUI = () => {
     }
   }
 
-  window.deleteCurrentSphere = () => {
-    if (currentSpheres[0]) {
-      removeSphere(currentSpheres[0]);
+  window.duplicateCurrentGroup = () => {
+    if (currentSpheres.length > 1) {
+      duplicateGroup();
     }
+  }
+
+  window.deleteCurrentSphere = () => {
+    removeSelectedSpheres();
   }
 
   window.deleteAllSpheres = () => {
@@ -456,5 +461,33 @@ export const initialiseUI = () => {
 
   window.newSphere = () => {
     addSphere(0, 0, 0, 2, 64, true);
+  }
+
+  window.mirrorX = () => {
+    addToHistory();
+    currentSpheres.forEach(sphere => {
+      sphere.position.x = (-sphere.position.x).toFixed(1)
+    });
+  }
+  window.mirrorY = () => {
+    addToHistory();
+    currentSpheres.forEach(sphere => {
+      sphere.position.z = (-sphere.position.z).toFixed(1)
+    });
+  }
+  window.mirrorZ = () => {
+    addToHistory();
+    currentSpheres.forEach(sphere => {
+      sphere.position.y = (-sphere.position.y).toFixed(1)
+    });
+  }
+  
+  window.rotateClockwise = () => {
+    addToHistory();
+    rotateGroupBy(-Math.PI/2);
+  }
+  window.rotateAnticlockwise = () => {
+    addToHistory();
+    rotateGroupBy(Math.PI/2);
   }
 }

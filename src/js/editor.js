@@ -2,7 +2,7 @@ import { $ } from './query.js';
 import { addToHistory } from './history.js';
 import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, globalSelection, setControlHeld, controlHeld, groupObject } from './state.js';
 import { setLocalStorageSphereData, setSignalCounter } from './persistence.js';
-import { selectSphere, deselectSphere, addSphere, removeSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections } from './spheres.js';
+import { selectSphere, deselectSphere, removeSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections, duplicateSphere, duplicateGroup } from './spheres.js';
 import { undo, redo } from './history.js';
 import { toggleOutlines, toggleGlobalSelection } from './ui.js';
 
@@ -424,26 +424,9 @@ export const initialiseEditor = () => {
     if (event.code == "KeyC") {
       if (globalSelection) return;
       if (currentSpheres.length == 1) {
-        currentSpheres[0].geometry.computeBoundingSphere();
-        const color = sphereData.find(x => x.mesh == currentSpheres[0]).color;
-        let p = toAlien(currentSpheres[0].position.x, currentSpheres[0].position.y, currentSpheres[0].position.z);
-        addSphere(p.x, p.y, p.z, currentSpheres[0].geometry.boundingSphere.radius * 2, color, true);
+        duplicateSphere();
       } else if (currentSpheres.length > 1) { // Copy a group
-        addToHistory();
-        let newlySelected = [];
-        let worldPos = new THREE.Vector3();
-        currentSpheres.forEach(sphere => {
-          sphere.geometry.computeBoundingSphere();
-          const color = sphereData.find(x => x.mesh == sphere).color;
-          sphere.getWorldPosition(worldPos);
-          let p = toAlien(worldPos.x, worldPos.y, worldPos.z); // need to get world coordinates.
-          newlySelected.push(addSphere(p.x, p.y, p.z, sphere.geometry.boundingSphere.radius * 2, color, false, false));
-        });
-        setSignalCounter();
-        clearAllSelections();
-        newlySelected.forEach(sphere => {
-          addSphereToGroup(sphere);
-        });
+        duplicateGroup();
       }
     }
     if (event.code == "KeyZ") {

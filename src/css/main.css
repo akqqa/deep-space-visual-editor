@@ -636,11 +636,12 @@ div [data-disabled="true"] {
 }
 
 .range {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding-bottom: 10px;
+  min-height: 2.36rem;
 }
 
 .range-slider {
