@@ -406,6 +406,7 @@ textarea.import-paste-contents {
   }
 
 .view {
+  position: relative;
   grid-area: vwr;
   overflow: hidden;
   min-height: 0;
@@ -552,6 +553,7 @@ textarea.import-paste-contents {
     & .load-entry {
       display: flex;
     }
+
   }
 }
 
@@ -591,6 +593,27 @@ div [data-disabled="true"] {
     gap: 18px;
 }
 
+.specific-controls-buttons {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  padding: 16px;
+  gap: 18px;
+}
+
+.specific-controls-buttons button {
+  width: 100%;
+}
+
+.controls-panel-stack {
+  display:grid;
+}
+
+.controls-panel-stack > div {
+  grid-area: 1/1;
+}
+
+
 .instructions {
     display: flex;
     flex-direction: column;
@@ -614,11 +637,12 @@ div [data-disabled="true"] {
 }
 
 .range {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding-bottom: 10px;
+  min-height: 2.36rem;
 }
 
 .range-slider {
@@ -631,7 +655,7 @@ div [data-disabled="true"] {
     flex: 0 0 60px;
 }
 
-#specific-controls button {
+.specific-controls button {
     width: 100%;
 }
 
@@ -760,4 +784,15 @@ input[type="number"] {
     background-color: var(--theme-color-dark);
     font-family: 'Hack', 'Courier New', Courier, monospace;
   }
+}
+
+#view {
+  position: relative;
+}
+
+.selectBox {
+  position: absolute;
+  border: 1px solid var(--theme-color);
+  background-color: color-mix(in srgb, var(--theme-color-darker) 15%, transparent);
+  pointer-events: none;
 }

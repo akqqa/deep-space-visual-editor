@@ -1,10 +1,9 @@
 import { $ } from "./query.js";
-import { sphereData, setSphereData, currentSignalCount, setCurrentSignalCount, globalSelection } from "./state.js";
-import { addSphere, removeSphere, selectSphere } from "./spheres.js";
+import { sphereData, setSphereData, currentSignalCount, setCurrentSignalCount } from "./state.js";
+import { addSphere, clearAllSelections, removeSphere, selectSphere } from "./spheres.js";
 import { toAlien, calculateColor } from "./editor.js";
 import { parseText, parseSphereData } from "./parsing.js";
 import { addToHistory } from "./history.js";
-import { toggleGlobalSelection } from "./ui.js";
 import { getRawTranslation } from "./translation.js";
 
 import * as THREE from 'three';
@@ -12,9 +11,6 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 
 // Loads sphereData (as an array of meshes) into the editor scene
 export const loadSphereData = (text) => {
-  if (globalSelection) {
-    toggleGlobalSelection();
-  }
   // import is a plain string
   // first convert to signal array
   // next pase with parseSphereData
@@ -27,6 +23,7 @@ export const loadSphereData = (text) => {
 
   addToHistory();
   // delete all current spheres
+  clearAllSelections();
   sphereData.forEach(element => {
     removeSphere(element.mesh, false);
   });
@@ -119,7 +116,7 @@ export const getCurrentSignals = () => {
       } else {
         resArray.push(v)
       }
-      return resArray;
+      return resArray; 
     });
 
     res = res.concat([-52, ...posX, -3, ...posY, -3, ...posZ, -3, ...diameter, -3, element.color, -3])
