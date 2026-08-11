@@ -95,7 +95,7 @@ export const removeSphere = (sphereMesh, saveHistory = true) => {
     addToHistory();
   }
   let index = undefined;
-  if (currentSpheres[0] == sphereMesh) {
+  if (currentSpheres[0] == sphereMesh && currentSpheres.length == 1) {
     // Select previous sphere if deleting current!
     index = sphereData.findIndex(x => x.mesh == currentSpheres[0]);
     deselectSphere();
@@ -151,8 +151,14 @@ export const selectSphere = (sphere) => {
   setCurrentSpheres([sphere]);
   transformControls.attach(currentSpheres[0]);
   overlayScene.add(transformControls.getHelper());
+
+  if ($("#sphereHeaderText").getAttribute("data-original") != "[-52]") {
+    $("#sphereHeaderText").setAttribute("data-original", "[-52]");
+    $("#sphereHeaderText").removeAttribute("data-status");
+  }
   $("#sphere-parameters").setAttribute("data-disabled", "false");
   $("#group-parameters").setAttribute("data-disabled", "true");
+  $("#sphereNumber").removeAttribute("hidden");
   // Set volume and color parameters to the correct values! (xyz are handled already but i cant remember where?? lol oh well)
   sphere.geometry.computeBoundingSphere();
   const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
@@ -182,16 +188,6 @@ export const deselectSphere = () => {
   }
 }
 
-// Deselects all spheres whether in group or alone
-export const deselectAllSpheres = () => {
-  if (currentSpheres.length == 0) {
-    return;
-  }
-  while (currentSpheres.length > 0) {
-    removeSphereFromGroup(currentSpheres[0]);
-  }
-}
-
 // Adding spheres to group - case for no spheres means only one sphere should be added. if this is the case, the handler will call selectSphere instead on a click action
 export const addSphereToGroup = (sphere) => {
   if (currentSpheres.length < 1) {
@@ -216,12 +212,21 @@ export const addSphereToGroup = (sphere) => {
     outlinePass.selectedObjects = currentSpheres;
   }
   // Change parameters
+  if ($("#sphereHeaderText").getAttribute("data-original") != "[-19]") {
+    $("#sphereHeaderText").setAttribute("data-original", "[-19]");
+    $("#sphereHeaderText").removeAttribute("data-status");
+  }
   $("#sphere-parameters").setAttribute("data-disabled", "true");
   $("#group-parameters").setAttribute("data-disabled", "false");
+  $("#sphereNumber").setAttribute("hidden", "true");
+  
 }
 
 // Removing spheres from group - case for two spheres means it should no longer be a group and instead a regular selection. should never be called in the case of one sphere
 export const removeSphereFromGroup = (sphere) => {
+  if (!currentSpheres.includes(sphere)) { 
+    return;
+  }
   if (currentSpheres.length < 2) {
     deselectSphere(sphere);
     return;
@@ -244,6 +249,31 @@ export const removeSphereFromGroup = (sphere) => {
   }
 
 }
+
+// 
+export const clearAllSelections = () => {
+  if (groupObject) {
+    transformControls.detach();
+    overlayScene.remove(transformControls.getHelper());
+    currentSpheres.forEach(sphere => scene.attach(sphere));
+    scene.remove(groupObject);
+    setGroupObject(null);
+  } else if (currentSpheres.length === 1) {
+    deselectSphere(currentSpheres[0]);
+  }
+  setCurrentSpheres([]);
+  if (outlinesEnabled) {
+    outlinePass.selectedObjects = [];
+  }
+  if ($("#sphereHeaderText").getAttribute("data-original") != "[-52]") {
+    $("#sphereHeaderText").setAttribute("data-original", "[-52]");
+    $("#sphereHeaderText").removeAttribute("data-status");
+  }
+  $("#sphere-parameters").setAttribute("data-disabled", "true");
+  $("#group-parameters").setAttribute("data-disabled", "true");
+  $("#sphereNumber").removeAttribute("hidden");
+  $("#sphereNumber").value = null;
+};
 
 // Moves the group object without affecting the positions of the spheres attached to it
 const repositionGroup = (spheres) => {

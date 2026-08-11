@@ -2,7 +2,7 @@ import { $ } from './query.js';
 import { addToHistory } from './history.js';
 import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, globalSelection, setControlHeld, controlHeld, groupObject } from './state.js';
 import { setLocalStorageSphereData, setSignalCounter } from './persistence.js';
-import { selectSphere, deselectSphere, addSphere, removeSphere, removeSphereFromGroup, addSphereToGroup, deselectAllSpheres, removeSelectedSpheres } from './spheres.js';
+import { selectSphere, deselectSphere, addSphere, removeSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections } from './spheres.js';
 import { undo, redo } from './history.js';
 import { toggleOutlines, toggleGlobalSelection } from './ui.js';
 
@@ -363,7 +363,7 @@ export const initialiseEditor = () => {
         selectSphere(intersects[0].object);
       }
     } else { // If empty space is clicked, deselect all spheres no matter what
-      deselectAllSpheres();
+      clearAllSelections();
     }
   });
 
@@ -404,7 +404,7 @@ export const initialiseEditor = () => {
           newlySelected.push(addSphere(p.x, p.y, p.z, sphere.geometry.boundingSphere.radius * 2, color, false, false));
         });
         setSignalCounter();
-        deselectAllSpheres();
+        clearAllSelections();
         newlySelected.forEach(sphere => {
           addSphereToGroup(sphere);
         });

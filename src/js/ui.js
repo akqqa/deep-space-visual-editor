@@ -247,6 +247,7 @@ export const initialiseUI = () => {
   initialiseSidebar();
   initialiseOutlines();
   addTooltips();
+  $("#sphereNumber").value = null;
 
   // Setup clipboard
   $("#clipboard-zone").addEventListener("click", () => {

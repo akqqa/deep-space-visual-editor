@@ -1,6 +1,6 @@
 import { $ } from "./query.js";
 import { sphereData, setSphereData, currentSignalCount, setCurrentSignalCount, globalSelection } from "./state.js";
-import { addSphere, removeSphere, selectSphere } from "./spheres.js";
+import { addSphere, clearAllSelections, removeSphere, selectSphere } from "./spheres.js";
 import { toAlien, calculateColor } from "./editor.js";
 import { parseText, parseSphereData } from "./parsing.js";
 import { addToHistory } from "./history.js";
@@ -27,6 +27,7 @@ export const loadSphereData = (text) => {
 
   addToHistory();
   // delete all current spheres
+  clearAllSelections();
   sphereData.forEach(element => {
     removeSphere(element.mesh, false);
   });

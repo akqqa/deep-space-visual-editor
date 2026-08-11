@@ -1,6 +1,6 @@
 import { sphereData, setSphereData, currentSpheres, globalSelection } from "./state.js";
 import { toAlien } from "./editor.js";
-import { removeSphere, addSphere, addSphereToGroup, removeSphereFromGroup } from "./spheres.js";
+import { removeSphere, addSphere, addSphereToGroup, removeSphereFromGroup, clearAllSelections } from "./spheres.js";
 import { setLocalStorageSphereData, setSignalCounter } from "./persistence.js";
 import { toggleGlobalSelection } from "./ui.js";
 
@@ -55,11 +55,12 @@ export const undo = () => {
       toggleGlobalSelection();
     }
 
+    clearAllSelections();
     sphereData.forEach(element => {
-      removeSphereFromGroup(element.mesh);
       removeSphere(element.mesh, false);
     });
     setSphereData([]);
+    //return;
     // for each sphere, add to sphereData and scene
     let toggleGlobal = false;
     snapshot.forEach(element => {
