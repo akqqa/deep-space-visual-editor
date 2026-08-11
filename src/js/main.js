@@ -7,8 +7,8 @@ import { initialiseUI } from "./ui.js";
 window.onload = () => {
   initialiseDict();
   initialiseTranslation();
-  initialiseUI();
   initialiseEditor();
+  initialiseUI();
   initialisePersistence();
 }
 
