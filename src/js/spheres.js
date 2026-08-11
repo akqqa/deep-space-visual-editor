@@ -152,6 +152,7 @@ export const selectSphere = (sphere) => {
   transformControls.attach(currentSpheres[0]);
   overlayScene.add(transformControls.getHelper());
   $("#sphere-parameters").setAttribute("data-disabled", "false");
+  $("#group-parameters").setAttribute("data-disabled", "true");
   // Set volume and color parameters to the correct values! (xyz are handled already but i cant remember where?? lol oh well)
   sphere.geometry.computeBoundingSphere();
   const geometryDiameter = sphere.geometry.boundingSphere.radius * 2;
@@ -216,6 +217,7 @@ export const addSphereToGroup = (sphere) => {
   }
   // Change parameters
   $("#sphere-parameters").setAttribute("data-disabled", "true");
+  $("#group-parameters").setAttribute("data-disabled", "false");
 }
 
 // Removing spheres from group - case for two spheres means it should no longer be a group and instead a regular selection. should never be called in the case of one sphere

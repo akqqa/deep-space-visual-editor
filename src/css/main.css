@@ -552,6 +552,7 @@ textarea.import-paste-contents {
     & .load-entry {
       display: flex;
     }
+
   }
 }
 
@@ -590,6 +591,27 @@ div [data-disabled="true"] {
     padding: 16px;
     gap: 18px;
 }
+
+.specific-controls-buttons {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  padding: 16px;
+  gap: 18px;
+}
+
+.specific-controls-buttons button {
+  width: 100%;
+}
+
+.controls-panel-stack {
+  display:grid;
+}
+
+.controls-panel-stack > div {
+  grid-area: 1/1;
+}
+
 
 .instructions {
     display: flex;
@@ -631,7 +653,7 @@ div [data-disabled="true"] {
     flex: 0 0 60px;
 }
 
-#specific-controls button {
+.specific-controls button {
     width: 100%;
 }
 
