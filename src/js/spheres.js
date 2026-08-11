@@ -125,6 +125,25 @@ export const removeSphere = (sphereMesh, saveHistory = true) => {
   }
 }
 
+// For use when deleting selected spheres
+export const removeSelectedSpheres = () => {
+  if (currentSpheres.length == 1) {
+    removeSphere(currentSpheres[0], true);
+    return;
+  }
+  addToHistory();
+  let currentClone = [...currentSpheres];
+  currentClone.forEach(sphere => {
+    removeSphereFromGroup(sphere);
+    scene.remove(sphere);
+    sphere.geometry.dispose();
+    sphere.material.dispose();
+    setSphereData(sphereData.filter(item => item.mesh !== sphere));
+  });
+  setLocalStorageSphereData();
+  setSignalCounter();
+}
+
 // Logic  for creating the group and the object must be put here! or in other mehtods that are called with the ctrl click / drag
 
 // Add logic for enabling the parameters here

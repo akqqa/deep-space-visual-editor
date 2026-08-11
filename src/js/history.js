@@ -32,6 +32,7 @@ export const getSnapshot = () => {
 
 // Should be called any time a change happens to the scene
 export const addToHistory = () => {
+  console.trace();
   if (sceneHistory.length > MAX_HISTORY) {
     sceneHistory.shift();
   }
