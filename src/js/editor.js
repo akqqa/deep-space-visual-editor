@@ -375,14 +375,14 @@ export const initialiseEditor = () => {
       $("#groupPosY").value = p.y.toFixed(1);
       $("#groupPosZ").value = p.z.toFixed(1);
     }
-    
+
   })
 
   // Sphere selection
   sceneDiv.addEventListener("mousedown", (event) => {
     mouseDownPos.set(event.clientX, event.clientY);
     if (!controlHeld) {
-        return;
+      return;
     }
     if (isTransformDragging) {
       return;
