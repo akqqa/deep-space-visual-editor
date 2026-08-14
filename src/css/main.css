@@ -34,7 +34,7 @@ main {
     "sbr vwr vwr"
     "sbr vwr vwr"
     "ftr ftr ftr";
-  grid-template-columns: clamp(21rem, 18vw, 28rem) 1fr;
+  grid-template-columns: clamp(18rem, 18vw, 28rem) 1fr;
   grid-template-rows: auto 1fr 3em 3em;
   background-color: black;
 
@@ -611,6 +611,7 @@ div [data-disabled="true"] {
 
 .controls-panel-stack > div {
   grid-area: 1/1;
+  min-width: 0;
 }
 
 
@@ -628,7 +629,6 @@ div [data-disabled="true"] {
 .position-controls {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
     padding-bottom: 10px;
 }
 
