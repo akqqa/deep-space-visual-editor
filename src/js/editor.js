@@ -383,6 +383,10 @@ export const initialiseEditor = () => {
   // Sphere selection
   sceneDiv.addEventListener("mousedown", (event) => {
     mouseDownPos.set(event.clientX, event.clientY);
+    // Check for ctrl no longer being held to fix sticky ctrl bug
+    if (controlHeld !== event.ctrlKey) {
+      setControlHeld(event.ctrlKey);
+    }
     if (!controlHeld) {
       return;
     }
@@ -401,10 +405,6 @@ export const initialiseEditor = () => {
     selectionBox.startPoint.set(x, y, 0.5);
   });
   sceneDiv.addEventListener("mousemove", (event) => {
-    // Check for ctrl no longer being held to fix sticky ctrl bug
-    if (controlHeld && !event.ctrlKey) {
-      setControlHeld(false);
-    }
     if (!isDragSelecting) {
       return;
     }
