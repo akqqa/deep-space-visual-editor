@@ -2,7 +2,7 @@
 
 A 3D Modelling program based on the game "The Message from Deep Space". Try it [here!](https://dsve.akqqa.dev)
 
-<img width="2560" height="1274" alt="DSVEExample" src="https://github.com/user-attachments/assets/ea61920e-a8e0-4e89-8a23-ebfbdabd5341" />
+<img width="2557" height="1268" alt="image" src="https://github.com/user-attachments/assets/05d3fadc-65c6-4416-8835-fe2094eec827" />
 
 *"Solar System" model created by Konstans*
 
@@ -23,16 +23,15 @@ Models can be imported and exported as strings - which are compatible with the [
 - Changing volume and colour
 - Duplication
 - Undo/Redo change history
-- Tab selection
-- Global selection
 - Full camera movement
+- Group selection/deselection with either clicking or dragging over desired spheres
+- Group movement with custom rotational/mirror operations
 - Importing/Exporting as raw signal or dictionary defined strings
 - Signal counter to keep track of message length
 - Download as a .GLB file
 
 ## Planned Features
 
-- True multi-selection with movement, rotation and duplication
 - Even more game-accurate fresnel shading
 - A curated gallery to share models that can be viewed by other users
 
