@@ -239,6 +239,7 @@ export const initialiseEditor = () => {
   const tc = new TransformControls(camera, sceneDiv);
   tc.rotationSnap = Math.PI/2;
   tc.translationSnap = 1;
+  tc.showXYZE = false;
   tc.showE = false;
   tc.maxX = maxX;
   tc.minX = minX;
