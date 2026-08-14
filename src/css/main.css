@@ -665,11 +665,11 @@ div [data-disabled="true"] {
 
 .undo-row {
     display: flex;
-    gap: 5px;
+    gap: 10px;
 }
 
 .undo-row button {
-    flex: 1.5;
+    flex: 1;
 }
 
 button {

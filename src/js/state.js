@@ -35,6 +35,7 @@ export const minVol = 0.1;
 export const maxColor = 64;
 export const minColor = 0;
 
+
 export const setEditorState = (s) => {
   ({ camera, renderer, composer, sceneDiv, scene, overlayScene, orbitControls, outlinePass } = s);
 };
