@@ -1,5 +1,5 @@
 import { $ } from "./query.js";
-import { scene, sphereData, setSphereData, currentSpheres, setCurrentSpheres, transformControls, overlayScene, outlinesEnabled, outlinePass, setGroupObject, groupObject } from "./state.js";
+import { scene, sphereData, setSphereData, currentSpheres, setCurrentSpheres, transformControls, overlayScene, outlinesEnabled, outlinePass, setGroupObject, groupObject, toggleTransformMode } from "./state.js";
 import { calculateColor, toAlien, toThree } from "./editor.js";
 import { setLocalStorageSphereData, setSignalCounter } from "./persistence.js";
 import { addToHistory } from "./history.js";
@@ -13,13 +13,16 @@ export const createSphere = (x, y, z, radius, color, scene) => {
   let c = calculateColor(color);
   // https://medium.com/@aurelienagtn/introduction-to-shaders-with-three-js-create-an-animated-sphere-d4920fbab126
   // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/2.2.basic_lighting_specular/2.2.basic_lighting.fs
+  // https://discourse.threejs.org/t/instance-mesh-and-normals-with-transformations/60958
   const mat = new THREE.ShaderMaterial({
     vertexShader: `
         varying vec3 Normal;
         varying vec3 camDir;
         
         void main() {
-        Normal = normalize(normal);
+        
+        mat3 normalMatrix = mat3(modelMatrix);
+        Normal = normalize( normalMatrix * normal );
 
         vec3 sphereCenter = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
         camDir = normalize(cameraPosition - sphereCenter);
@@ -150,6 +153,12 @@ export const removeSelectedSpheres = () => {
 export const selectSphere = (sphere) => {
   // Clear current selection gracefully
   clearAllSelections();
+
+  // Set transform mode to transform as rotation is meaningless
+  // Note: since selectSphere is called more than necessary, it will reset even on global toggle off, etc.
+  if (transformControls.mode == "rotate") {
+    toggleTransformMode();
+  }
 
   setCurrentSpheres([sphere]);
   transformControls.attach(currentSpheres[0]);

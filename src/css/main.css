@@ -665,11 +665,11 @@ div [data-disabled="true"] {
 
 .undo-row {
     display: flex;
-    gap: 10px;
+    gap: 5px;
 }
 
 .undo-row button {
-    flex: 1;
+    flex: 1.5;
 }
 
 button {
@@ -734,6 +734,7 @@ input[type="number"] {
   border: 2px solid var(--theme-color-darker);
   border-radius: 0;
 }
+
 
 #sphereHeader {
   display: flex;

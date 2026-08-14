@@ -1,5 +1,5 @@
 import { $ } from "./query.js";
-import { sphereData, outlinesEnabled, outlinePass, currentSpheres, setOutlinesEnabled } from "./state.js";
+import { sphereData, outlinesEnabled, outlinePass, currentSpheres, setOutlinesEnabled, toggleTransformMode } from "./state.js";
 import { selectSphere, deselectSphere, addSphere, removeSphere, duplicateSphere, duplicateGroup, removeSelectedSpheres, addSphereToGroup, clearAllSelections } from "./spheres.js";
 import { lastLoadedDict, loadDictionary } from "./dictionary.js";
 import { undo, redo, addToHistory } from "./history.js";
@@ -205,18 +205,6 @@ export const getAveragePosition = (spheres) => {
 
   return [ax, ay, az];
 }
-
-const rotateGroupBy = (angle) => {
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-
-  currentSpheres.forEach(sphere => {
-    const x = sphere.position.x;
-    const z = sphere.position.z;
-    sphere.position.x = (x * cos - z * sin).toFixed(1);
-    sphere.position.z = (x * sin + z * cos).toFixed(1);
-  });
-};
 
 const initialiseOutlines = () => {
   const outlines = localStorage.getItem("outlines");
@@ -452,12 +440,8 @@ export const initialiseUI = () => {
     });
   }
 
-  window.rotateClockwise = () => {
-    addToHistory();
-    rotateGroupBy(-Math.PI/2);
+  window.rotateMode = () => {
+    toggleTransformMode();
   }
-  window.rotateAnticlockwise = () => {
-    addToHistory();
-    rotateGroupBy(Math.PI/2);
-  }
+    
 }

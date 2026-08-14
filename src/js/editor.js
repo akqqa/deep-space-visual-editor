@@ -1,6 +1,6 @@
 import { $ } from './query.js';
 import { addToHistory } from './history.js';
-import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, setControlHeld, controlHeld, groupObject } from './state.js';
+import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, setControlHeld, controlHeld, groupObject, toggleTransformMode } from './state.js';
 import { setLocalStorageSphereData, setSignalCounter } from './persistence.js';
 import { selectSphere, deselectSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections, duplicateSphere, duplicateGroup } from './spheres.js';
 import { undo, redo } from './history.js';
@@ -237,7 +237,9 @@ export const initialiseEditor = () => {
   const orbitControls = new OrbitControls(camera, renderer.domElement);
 
   const tc = new TransformControls(camera, sceneDiv);
+  tc.rotationSnap = Math.PI/2;
   tc.translationSnap = 1;
+  tc.showE = false;
   tc.maxX = maxX;
   tc.minX = minX;
   tc.maxZ = -minY;
@@ -509,6 +511,11 @@ export const initialiseEditor = () => {
     }
     if (event.code == "KeyT") {
       toggleMovementEnabled();
+    }
+    if (event.code == "KeyB") {
+      // Technically this can be done whenever. HOWEVER selectsphere is always called first in a group select, which means it is reset on load. This means rotation can only be used in a group
+      // and for toggling during - not save. I like this behaviour but if you ever want to change it, then this is important to note
+      toggleTransformMode();
     }
 
     // Camera based controls

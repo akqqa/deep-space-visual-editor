@@ -1,3 +1,6 @@
+import { $ } from "./query.js";
+import { doTranslation } from "./translation.js";
+
 export let sphereData = []; // For simplicity, sphereData is stored as an array of {mesh: sphereMesh, color: color}
 export let currentSpheres = []; // The currently selected spheres (as a mesh) for transformation and alteration
 export let transformControls;
@@ -70,4 +73,19 @@ export const setOutlinesEnabled = (oe) => {
 
 export const setControlHeld = (ch) => {
   controlHeld = ch;
+}
+
+export const toggleTransformMode = () => {
+  console.log("hi")
+  if (transformControls.mode == "translate") {
+    transformControls.setMode("rotate");
+    $("#rotate-button").setAttribute("data-original", "[-39]");
+    $("#rotate-button").setAttribute("data-status", "not");
+    doTranslation();
+  } else if (transformControls.mode == "rotate") {
+    transformControls.setMode("translate");
+    $("#rotate-button").setAttribute("data-original", "[-92]");
+    $("#rotate-button").setAttribute("data-status", "not");
+    doTranslation();
+  }
 }
