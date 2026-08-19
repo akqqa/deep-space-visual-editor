@@ -678,6 +678,16 @@ export const initialiseEditor = () => {
         }
       }
     }
+
+    // Key for enabling weird terrible broken scaling for funsies
+    if (event.code == "Semicolon") {
+      if (transformControls.mode != "scale") {
+        transformControls.setMode("scale");
+      } else {
+        transformControls.setMode("translate");
+      }
+    }  
+
   });
 
   window.addEventListener("keyup", (event) => {

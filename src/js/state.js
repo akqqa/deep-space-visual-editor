@@ -82,18 +82,12 @@ export const setAltHeld = (ch) => {
 }
 
 export const toggleTransformMode = () => {
-  console.log("hi")
   if (transformControls.mode == "translate") {
     transformControls.setMode("rotate");
     $("#rotate-button").setAttribute("data-original", "[-39]");
     $("#rotate-button").setAttribute("data-status", "not");
     doTranslation();
-  } else if (transformControls.mode == "rotate") {
-    transformControls.setMode("scale");
-    // $("#rotate-button").setAttribute("data-original", "[-92]");
-    // $("#rotate-button").setAttribute("data-status", "not");
-    // doTranslation();
-  } else if (transformControls.mode == "scale") {
+  } else {
     transformControls.setMode("translate");
     $("#rotate-button").setAttribute("data-original", "[-92]");
     $("#rotate-button").setAttribute("data-status", "not");
