@@ -611,6 +611,65 @@ export const initialiseEditor = () => {
     if (event.code == "KeyO") {
       toggleOutlines();
     }
+
+
+    const SCALE_FACTOR = 1.5;
+    const roundToPointFive = (value) => Math.round(value * 20) / 20; // nearest 0.05
+
+    // Scaling. Note that while increasing the size of a group is fine, decreasing it by a multiplicative scale will reduce positioning errors due to the global 0.1 grid. Add a warning in the instructions
+    if (event.code === "Equal") {
+      if (currentSpheres.length > 0) {
+        const wouldGoTooLarge = currentSpheres.some(sphere => {
+          const currentRadius = sphere.geometry.parameters.radius;
+          const newRadius = currentRadius * SCALE_FACTOR;
+          return newRadius > maxVol / 2;
+        });
+
+        if (!wouldGoTooLarge) {
+          addToHistory();
+          currentSpheres.forEach(sphere => {
+            const currentRadius = sphere.geometry.parameters.radius;
+            sphere.geometry.dispose();
+            sphere.geometry = new THREE.SphereGeometry(roundToPointFive(currentRadius * SCALE_FACTOR));
+
+            if (currentSpheres.length > 1) {
+              sphere.position.x = roundToPointFive(sphere.position.x * SCALE_FACTOR);
+              sphere.position.y = roundToPointFive(sphere.position.y * SCALE_FACTOR);
+              sphere.position.z = roundToPointFive(sphere.position.z * SCALE_FACTOR);
+            }
+          });
+          setLocalStorageSphereData();
+          setSignalCounter();
+        }
+      }
+    }
+
+    if (event.code === "Minus") {
+      if (currentSpheres.length > 0) {
+        const wouldGoTooSmall = currentSpheres.some(sphere => {
+          const currentRadius = sphere.geometry.parameters.radius;
+          const newRadius = currentRadius / SCALE_FACTOR;
+          return newRadius < minVol / 2;
+        });
+
+        if (!wouldGoTooSmall) {
+          addToHistory();
+          currentSpheres.forEach(sphere => {
+            const currentRadius = sphere.geometry.parameters.radius;
+            sphere.geometry.dispose();
+            sphere.geometry = new THREE.SphereGeometry(roundToPointFive(currentRadius / SCALE_FACTOR));
+
+            if (currentSpheres.length > 1) {
+              sphere.position.x = roundToPointFive(sphere.position.x / SCALE_FACTOR);
+              sphere.position.y = roundToPointFive(sphere.position.y / SCALE_FACTOR);
+              sphere.position.z = roundToPointFive(sphere.position.z / SCALE_FACTOR);
+            }
+          });
+          setLocalStorageSphereData();
+          setSignalCounter();
+        }
+      }
+    }
   });
 
   window.addEventListener("keyup", (event) => {

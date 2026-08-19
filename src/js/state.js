@@ -84,6 +84,11 @@ export const toggleTransformMode = () => {
     $("#rotate-button").setAttribute("data-status", "not");
     doTranslation();
   } else if (transformControls.mode == "rotate") {
+    transformControls.setMode("scale");
+    // $("#rotate-button").setAttribute("data-original", "[-92]");
+    // $("#rotate-button").setAttribute("data-status", "not");
+    // doTranslation();
+  } else if (transformControls.mode == "scale") {
     transformControls.setMode("translate");
     $("#rotate-button").setAttribute("data-original", "[-92]");
     $("#rotate-button").setAttribute("data-status", "not");
