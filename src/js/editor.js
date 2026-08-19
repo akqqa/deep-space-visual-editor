@@ -653,6 +653,11 @@ export const initialiseEditor = () => {
               sphere.position.z = roundToPointFive(sphere.position.z * SCALE_FACTOR);
             }
           });
+          if (currentSpheres.length == 1) {
+            console.log("LAREGER")
+            $("#volumeSlider").value = Number((currentSpheres[0].geometry.parameters.radius * 2).toFixed(1));
+            $("#volumeAmount").value = Number((currentSpheres[0].geometry.parameters.radius * 2).toFixed(1));
+          }
           setLocalStorageSphereData();
           setSignalCounter();
         }
@@ -678,6 +683,10 @@ export const initialiseEditor = () => {
               sphere.position.x = roundToPointFive(sphere.position.x / SCALE_FACTOR);
               sphere.position.y = roundToPointFive(sphere.position.y / SCALE_FACTOR);
               sphere.position.z = roundToPointFive(sphere.position.z / SCALE_FACTOR);
+            }
+            if (currentSpheres.length == 1) {
+              $("#volumeSlider").value = Number((currentSpheres[0].geometry.parameters.radius * 2).toFixed(1));
+              $("#volumeAmount").value = Number((currentSpheres[0].geometry.parameters.radius * 2).toFixed(1));
             }
           });
           setLocalStorageSphereData();
