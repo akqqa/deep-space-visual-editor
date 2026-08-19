@@ -20,6 +20,7 @@ export let globalSelection = false;
 export let groupObject;
 
 export let controlHeld = false;
+export let altHeld = false;
 
 export let currentSignalCount = 0;
 
@@ -74,6 +75,10 @@ export const setOutlinesEnabled = (oe) => {
 
 export const setControlHeld = (ch) => {
   controlHeld = ch;
+}
+
+export const setAltHeld = (ch) => {
+  altHeld = ch;
 }
 
 export const toggleTransformMode = () => {

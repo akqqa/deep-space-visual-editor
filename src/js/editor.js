@@ -1,6 +1,6 @@
 import { $ } from './query.js';
 import { addToHistory } from './history.js';
-import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, setControlHeld, controlHeld, groupObject, toggleTransformMode } from './state.js';
+import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, setControlHeld, controlHeld, altHeld, setAltHeld, groupObject, toggleTransformMode } from './state.js';
 import { setLocalStorageSphereData, setSignalCounter } from './persistence.js';
 import { selectSphere, deselectSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections, duplicateSphere, duplicateGroup } from './spheres.js';
 import { undo, redo } from './history.js';
@@ -388,7 +388,10 @@ export const initialiseEditor = () => {
     if (controlHeld !== event.ctrlKey) {
       setControlHeld(event.ctrlKey);
     }
-    if (!controlHeld) {
+    if (altHeld !== event.altKey) {
+      setAltHeld(event.altKey);
+    }
+    if (!controlHeld && !altHeld) {
       return;
     }
     if (isTransformDragging) {
@@ -475,7 +478,7 @@ export const initialiseEditor = () => {
 
     const intersects = raycaster.intersectObjects(sphereData.map(sphere => sphere.mesh), false);
     if (intersects.length > 0) { // ADD CHECKING FOR CTRLHELD AND ADDING/REMOVING SPHERE FROM GROUP IF SO
-      if (controlHeld) { // run addtogroup if control is held and a sphere is clicked
+      if (controlHeld || altHeld) { // run addtogroup if control is held and a sphere is clicked
         // If an already selected sphere is clicked, remove from group. if not selected already, add to group
         if (currentSpheres.includes(intersects[0].object)) {
           removeSphereFromGroup(intersects[0].object);
@@ -495,6 +498,11 @@ export const initialiseEditor = () => {
       // If control held, transform scale goes to 0.1
       transformControls.translationSnap = 0.1;
       setControlHeld(true);
+    }
+    if (event.code == "AltLeft") {
+      // If control held, transform scale goes to 0.1
+      transformControls.translationSnap = 0.1;
+      setAltHeld(true);
     }
     if (event.code == "Delete") {
       if (currentSpheres.length > 0) {
@@ -677,6 +685,11 @@ export const initialiseEditor = () => {
       // If control released, transform scale goes to 1
       transformControls.translationSnap = 1;
       setControlHeld(false);
+    }
+    if (event.code == "AltLeft") {
+      // If control released, transform scale goes to 1
+      transformControls.translationSnap = 1;
+      setAltHeld(false);
     }
   })
 
