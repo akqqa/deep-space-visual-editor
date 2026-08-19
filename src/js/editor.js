@@ -494,6 +494,10 @@ export const initialiseEditor = () => {
   });
 
   window.addEventListener("keydown", (event) => {
+    if (event.target.tagName.toUpperCase() === 'INPUT' || event.target.tagName.toUpperCase() === 'TEXTAREA') {
+        return;
+    }
+
     if (event.code == "ControlLeft") {
       // If control held, transform scale goes to 0.1
       transformControls.translationSnap = 0.1;
