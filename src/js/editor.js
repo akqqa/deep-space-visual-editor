@@ -598,7 +598,7 @@ export const initialiseEditor = () => {
 
     if (event.code == "Tab") {
       event.preventDefault();
-      if (currentSpheres[0]) {
+      if (currentSpheres.length == 1) {
         const index = sphereData.findIndex(x => x.mesh == currentSpheres[0]);
         console.log("index: " + index)
         if (index >= sphereData.length - 1) {
@@ -608,6 +608,9 @@ export const initialiseEditor = () => {
           console.log(sphereData[index + 1].mesh);
           selectSphere(sphereData[index + 1].mesh);
         }
+      } else if (currentSpheres.length > 1) {
+        clearAllSelections();
+        selectSphere(sphereData[0].mesh);
       }
       // If no currrentSphere yet spheres exist
       else if (sphereData.length > 0) {
