@@ -238,6 +238,9 @@ export const addSphereToGroup = (sphere) => {
   $("#groupPosX").value = p.x.toFixed(1);
   $("#groupPosY").value = p.y.toFixed(1);
   $("#groupPosZ").value = p.z.toFixed(1);
+
+  $("#groupColorSlider").value = null;
+  $("#groupColorAmount").value = null;
   
 }
 

@@ -171,18 +171,18 @@
                   </div>
                 </div>
                 <div class="range" style="padding-top: 5px;">
-                  <p class="do-translate" data-original="[-22]"></p>
-                  <input id="volumeSlider" class="range-slider" max="10" min="0.1" type="range" value="2" step="0.1"
-                    oninput="volumeAmount.value=volumeSlider.value">
-                  <input id="volumeAmount" class="range-amount" type="number" value="2"
-                    oninput="volumeSlider.value=volumeAmount.value" step="0.1">
-                </div>
-                <div class="range" style="padding-bottom: 0;">
                   <p class="do-translate" data-original="[-54]"></p>
                   <input id="colorSlider" class="range-slider" max="64" min="0" type="range" value="64" step="1"
                     oninput="colorAmount.value=colorSlider.value">
                   <input id="colorAmount" class="range-amount" type="number" value="2"
                     oninput="colorSlider.value=colorAmount.value">
+                </div>
+                <div class="range" style="padding-bottom: 0;">
+                  <p class="do-translate" data-original="[-22]"></p>
+                  <input id="volumeSlider" class="range-slider" max="10" min="0.1" type="range" value="2" step="0.1"
+                    oninput="volumeAmount.value=volumeSlider.value">
+                  <input id="volumeAmount" class="range-amount" type="number" value="2"
+                    oninput="volumeSlider.value=volumeAmount.value" step="0.1">
                 </div>
               </div>
 
@@ -196,7 +196,7 @@
 
             <div id="group-parameters" data-disabled="true">
               <div class="specific-controls">
-                <div class="position-controls" style="padding-bottom: 0px;">
+                <div class="position-controls">
                   <div class="position-input">
                     <span>X</span>
                     <input type="number" id="groupPosX" max="15" min="-15" step="0.1">
@@ -210,9 +210,17 @@
                     <input type="number" id="groupPosZ" max="10" min="-10" step="0.1">
                   </div>
                 </div>
+
+                <div class="range" style="padding-top: 5px;">
+                  <p class="do-translate" data-original="[-54]"></p>
+                  <input id="groupColorSlider" class="range-slider" max="64" min="0" type="range" value="64" step="1"
+                    oninput="groupColorAmount.value=groupColorSlider.value">
+                  <input id="groupColorAmount" class="range-amount" type="number" value="2"
+                    oninput="groupColorSlider.value=groupColorAmount.value">
+                </div>
               </div>
 
-              <div class="specific-controls-buttons">
+              <div class="specific-controls-buttons" style="padding-top: 11px;">
                 <div class="undo-row">
                   <p class="do-translate" data-original="[-87]" style="transform: translateY(4px);"></p>
                   <button onclick="mirrorX()" class="do-translate" data-original="[-49]" style="background-color:#376DCC"></button>

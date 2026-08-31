@@ -168,6 +168,33 @@ $("#colorSlider").addEventListener("input", (event) => {
 $("#colorSlider").addEventListener("mousedown", () => {
   addToHistory(); // Only add to history on start!
 })
+$("#groupColorAmount").addEventListener("change", (event) => {
+  addToHistory();
+  const num = Math.min(Math.max(Math.round(Number(event.target.value)), minColor), maxColor);
+  event.target.value = num;
+  const c = calculateColor(num);
+  currentSpheres.forEach(element => {
+    element.material.uniforms.objectColor.value.set(c);
+    sphereData.find(x => x.mesh == element).color = num;
+  })
+  // ALSO SET FOR SPHEREDATA COLOR
+  sphereData.find(x => x.mesh == currentSpheres[0]).color = num;
+  setLocalStorageSphereData();
+  setSignalCounter();
+})
+$("#groupColorSlider").addEventListener("input", (event) => {
+  const num = Math.min(Math.max(Number(Number(event.target.value).toFixed(1)), minColor), maxColor);
+  const c = calculateColor(num);
+  currentSpheres.forEach(element => {
+    element.material.uniforms.objectColor.value.set(c);
+    sphereData.find(x => x.mesh == element).color = num;
+  })
+  setLocalStorageSphereData();
+  setSignalCounter();
+})
+$("#groupColorSlider").addEventListener("mousedown", () => {
+  addToHistory(); // Only add to history on start!
+})
 
 // Event listeners for group parameters changing
 $("#groupPosX").addEventListener("change", (event) => {
