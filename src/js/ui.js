@@ -186,26 +186,6 @@ export const toggleOutlines = () => {
   }
 }
 
-export const getAveragePosition = (spheres) => {
-  let ax = 0;
-  let ay = 0;
-  let az = 0;
-  let weightSum = 0
-  spheres.forEach(sphere => {
-    const radius = sphere.geometry.boundingSphere.radius;
-    weightSum += radius;
-    ax += sphere.position.x * radius;
-    ay += sphere.position.y * radius;
-    az += sphere.position.z * radius;
-  });
-
-  ax = Math.round((ax / weightSum) * 10) / 10;
-  ay = Math.round((ay / weightSum) * 10) / 10;
-  az = Math.round((az / weightSum) * 10) / 10;
-
-  return [ax, ay, az];
-}
-
 const initialiseOutlines = () => {
   const outlines = localStorage.getItem("outlines");
   if (outlines === "false") {

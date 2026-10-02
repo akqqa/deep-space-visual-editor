@@ -3,7 +3,6 @@ import { scene, sphereData, setSphereData, currentSpheres, setCurrentSpheres, tr
 import { calculateColor, toAlien, toThree } from "./editor.js";
 import { setLocalStorageSphereData, setSignalCounter } from "./persistence.js";
 import { addToHistory } from "./history.js";
-import { getAveragePosition } from "./ui.js";
 
 import * as THREE from 'three';
 
@@ -296,6 +295,60 @@ export const clearAllSelections = () => {
   $("#sphereNumber").removeAttribute("hidden");
   $("#sphereNumber").value = null;
 };
+
+const getAveragePosition = (spheres) => {
+  let ax = 0;
+  let ay = 0;
+  let az = 0;
+  let weightSum = 0
+  spheres.forEach(sphere => {
+    const radius = sphere.geometry.boundingSphere.radius;
+    weightSum += radius;
+    ax += sphere.position.x * radius;
+    ay += sphere.position.y * radius;
+    az += sphere.position.z * radius;
+  });
+
+  ax = Math.round((ax / weightSum) * 10) / 10;
+  ay = Math.round((ay / weightSum) * 10) / 10;
+  az = Math.round((az / weightSum) * 10) / 10;
+
+  return [ax, ay, az];
+}
+
+// Finds the center of the bounding box of all spheres selected, rather than the weighted average
+export const getCentralPosition = (spheres) => {
+  let maxPos = new THREE.Vector3( -Infinity, -Infinity, -Infinity );
+  let minPos = new THREE.Vector3( Infinity, Infinity, Infinity );
+  spheres.forEach(sphere => {
+    if (sphere.position.x > maxPos.x) {
+      maxPos.x = sphere.position.x;
+    }
+    if (sphere.position.y > maxPos.y) {
+      maxPos.y = sphere.position.y;
+    }
+    if (sphere.position.z > maxPos.z) {
+      maxPos.z = sphere.position.z;
+    }
+    if (sphere.position.x < minPos.x) {
+      minPos.x = sphere.position.x;
+    }
+    if (sphere.position.y < minPos.y) {
+      minPos.y = sphere.position.y;
+    }
+    if (sphere.position.z < minPos.z) {
+      minPos.z = sphere.position.z;
+    }
+  })
+
+  // Get center of two positions
+
+  let ax = Math.round(((maxPos.x + minPos.x) / 2) * 10) / 10;
+  let ay = Math.round(((maxPos.y + minPos.y) / 2) * 10) / 10;
+  let az = Math.round(((maxPos.z + minPos.z) / 2) * 10) / 10;
+
+  return [ax, ay, az];
+}
 
 // Moves the group object without affecting the positions of the spheres attached to it
 const repositionGroup = (spheres) => {
