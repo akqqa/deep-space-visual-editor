@@ -1,5 +1,5 @@
 import { $ } from "./query.js";
-import { scene, sphereData, setSphereData, currentSpheres, setCurrentSpheres, transformControls, overlayScene, outlinesEnabled, outlinePass, setGroupObject, groupObject, toggleTransformMode } from "./state.js";
+import { scene, sphereData, setSphereData, currentSpheres, setCurrentSpheres, transformControls, overlayScene, outlinesEnabled, outlinePass, setGroupObject, groupObject, toggleTransformMode, boundingBoxGroup } from "./state.js";
 import { calculateColor, toAlien, toThree } from "./editor.js";
 import { setLocalStorageSphereData, setSignalCounter } from "./persistence.js";
 import { addToHistory } from "./history.js";
@@ -351,17 +351,33 @@ export const getCentralPosition = (spheres) => {
 }
 
 // Moves the group object without affecting the positions of the spheres attached to it
-const repositionGroup = (spheres) => {
+export const repositionGroup = (spheres) => {
+  if (spheres.length < 2) {
+    return;
+  }
+
   spheres.forEach(sphere => {
     scene.attach(sphere);
   });
 
-  const [ax, ay, az] = getAveragePosition(currentSpheres);
+  let ax, ay, az;
+  if (boundingBoxGroup) {
+    [ax, ay, az] = getCentralPosition(currentSpheres);
+  } else {
+    [ax, ay, az] = getAveragePosition(currentSpheres);
+  }
   groupObject.position.set(ax, ay, az);
 
   spheres.forEach(sphere => {
     groupObject.attach(sphere);
   });
+
+  let worldPos = new THREE.Vector3();
+  groupObject.getWorldPosition(worldPos);
+  let p = toAlien(worldPos.x, worldPos.y, worldPos.z);
+  $("#groupPosX").value = p.x.toFixed(1);
+  $("#groupPosY").value = p.y.toFixed(1);
+  $("#groupPosZ").value = p.z.toFixed(1);
 };
 
 export const duplicateSphere = () => {

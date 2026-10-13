@@ -2,7 +2,7 @@ import { $ } from './query.js';
 import { addToHistory } from './history.js';
 import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, setControlHeld, controlHeld, altHeld, setAltHeld, groupObject, toggleTransformMode } from './state.js';
 import { setLocalStorageSphereData, setSignalCounter } from './persistence.js';
-import { selectSphere, deselectSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections, duplicateSphere, duplicateGroup } from './spheres.js';
+import { selectSphere, deselectSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections, duplicateSphere, duplicateGroup, repositionGroup } from './spheres.js';
 import { undo, redo } from './history.js';
 import { toggleOutlines, toggleGlobalSelection } from './ui.js';
 
@@ -16,7 +16,7 @@ import { ViewHelper } from 'three/addons/helpers/ViewHelper.js';
 import { SelectionBox } from 'three/addons/interactive/SelectionBox.js';
 import * as holdEvent from "https://unpkg.com/hold-event@1.1.2/dist/hold-event.module.js";
 
-import { setEditorState } from './state.js';
+import { setEditorState, toggleBoundingBox } from './state.js';
 
 const cameraMovementSpeed = 0.02;
 const cameraRotateSpeed = 0.002;
@@ -560,6 +560,10 @@ export const initialiseEditor = () => {
       // Technically this can be done whenever. HOWEVER selectsphere is always called first in a group select, which means it is reset on load. This means rotation can only be used in a group
       // and for toggling during - not save. I like this behaviour but if you ever want to change it, then this is important to note
       toggleTransformMode();
+    }
+    if (event.code == "KeyY") {
+      toggleBoundingBox();
+      repositionGroup(currentSpheres);
     }
 
     // Camera based controls

@@ -24,6 +24,8 @@ export let altHeld = false;
 
 export let currentSignalCount = 0;
 
+export let boundingBoxGroup = false;
+
 export const maxX = 15;
 export const minX = -15;
 export const maxY = 15;
@@ -79,6 +81,10 @@ export const setControlHeld = (ch) => {
 
 export const setAltHeld = (ch) => {
   altHeld = ch;
+}
+
+export const toggleBoundingBox = () => {
+  boundingBoxGroup = !boundingBoxGroup;
 }
 
 export const toggleTransformMode = () => {
