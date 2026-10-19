@@ -251,10 +251,9 @@ export const initialiseEditor = () => {
   outlinePass.hiddenEdgeColor.set('0xFFFFFF');
   outlinePass.edgeStrength = 5;
 
-  const bottomGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
+  const bottomGrid = new THREE.GridHelper(32, 4, 0x13831F, 0x246E1A);
   bottomGrid.position.y = -8;
-  bottomGrid.color
-  const topGrid = new THREE.GridHelper(30, 4, 0x13831F, 0x246E1A);
+  const topGrid = new THREE.GridHelper(32, 4, 0x13831F, 0x246E1A);
   topGrid.position.y = 8;
   scene.add(bottomGrid);
   scene.add(topGrid);
