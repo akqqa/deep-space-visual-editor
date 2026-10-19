@@ -28,10 +28,10 @@ export let boundingBoxGroup = false;
 
 export let pixelated = true;
 
-export const maxX = 15;
-export const minX = -15;
-export const maxY = 15;
-export const minY = -15;
+export const maxX = 16;
+export const minX = -16;
+export const maxY = 16;
+export const minY = -16;
 export const maxZ = 10;
 export const minZ = -10
 
