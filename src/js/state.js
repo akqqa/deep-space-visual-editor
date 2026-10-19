@@ -26,6 +26,8 @@ export let currentSignalCount = 0;
 
 export let boundingBoxGroup = false;
 
+export let pixelated = true;
+
 export const maxX = 15;
 export const minX = -15;
 export const maxY = 15;
@@ -85,6 +87,10 @@ export const setAltHeld = (ch) => {
 
 export const toggleBoundingBox = () => {
   boundingBoxGroup = !boundingBoxGroup;
+}
+
+export const togglePixelated = () => {
+  pixelated = !pixelated;
 }
 
 export const toggleTransformMode = () => {

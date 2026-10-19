@@ -1,6 +1,6 @@
 import { $ } from './query.js';
 import { addToHistory } from './history.js';
-import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, setControlHeld, controlHeld, altHeld, setAltHeld, groupObject, toggleTransformMode } from './state.js';
+import { currentSpheres, sphereData, minX, maxX, minY, maxY, minZ, maxZ, minVol, maxVol, minColor, maxColor, transformControls, setTransformControls, setControlHeld, controlHeld, altHeld, setAltHeld, groupObject, toggleTransformMode, pixelated, togglePixelated } from './state.js';
 import { setLocalStorageSphereData, setSignalCounter } from './persistence.js';
 import { selectSphere, deselectSphere, removeSphereFromGroup, addSphereToGroup, removeSelectedSpheres, clearAllSelections, duplicateSphere, duplicateGroup, repositionGroup } from './spheres.js';
 import { undo, redo } from './history.js';
@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { ViewHelper } from 'three/addons/helpers/ViewHelper.js';
@@ -242,6 +243,7 @@ export const initialiseEditor = () => {
   sceneDiv.appendChild(renderer.domElement);
   let composer = new EffectComposer(renderer);
   const renderPixelatedPass = new RenderPixelatedPass(4, scene, camera);
+  const renderPass = new RenderPass(scene, camera); // Used for toggling pixelation
   composer.addPass(renderPixelatedPass);
   const resolution = new THREE.Vector2(sceneDiv.clientWidth, sceneDiv.clientHeight);
   const outlinePass = new OutlinePass(resolution, scene, camera);
@@ -734,6 +736,20 @@ export const initialiseEditor = () => {
         transformControls.setMode("translate");
       }
     }  
+
+    if (event.code == "KeyP") {
+      console.log("toggligng")
+      if (pixelated) {
+        togglePixelated();
+        composer.removePass(renderPixelatedPass);
+        composer.insertPass(renderPass, 0);
+
+      } else {
+        togglePixelated();
+        composer.removePass(renderPass);
+        composer.insertPass(renderPixelatedPass, 0);
+      }
+    }
 
   });
 
