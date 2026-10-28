@@ -309,9 +309,9 @@ const getAveragePosition = (spheres) => {
     az += sphere.position.z * radius;
   });
 
-  ax = Math.round((ax / weightSum) * 10) / 10;
-  ay = Math.round((ay / weightSum) * 10) / 10;
-  az = Math.round((az / weightSum) * 10) / 10;
+  ax = Math.round((ax / weightSum));
+  ay = Math.round((ay / weightSum));
+  az = Math.round((az / weightSum));
 
   return [ax, ay, az];
 }
@@ -343,9 +343,9 @@ export const getCentralPosition = (spheres) => {
 
   // Get center of two positions
 
-  let ax = Math.round(((maxPos.x + minPos.x) / 2) * 10) / 10;
-  let ay = Math.round(((maxPos.y + minPos.y) / 2) * 10) / 10;
-  let az = Math.round(((maxPos.z + minPos.z) / 2) * 10) / 10;
+  let ax = Math.round(((maxPos.x + minPos.x) / 2));
+  let ay = Math.round(((maxPos.y + minPos.y) / 2));
+  let az = Math.round(((maxPos.z + minPos.z) / 2));
 
   return [ax, ay, az];
 }
